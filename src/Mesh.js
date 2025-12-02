@@ -1,4 +1,4 @@
-import { UsefulFunction } from "../../Useful-Function/src/UsefulFunction";
+import { UsefulFunction } from "../Useful-Function/src/UsefulFunction";
 import { Vector } from "./Vector";
 import { Line } from "./Line";
 import { Field } from "./Field";
