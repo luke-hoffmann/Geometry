@@ -1,3 +1,9 @@
+import { UsefulFunction } from "../../Useful-Function/src/UsefulFunction";
+import { Vector } from "./Vector";
+import { Line } from "./Line";
+import { Field } from "./Field";
+import { Triangle } from "./Triangle";
+
 export class Mesh {
     constructor (vertices,triangles,triangleColor,standalonePointDiameter,standalonePointColor,trianglePointDiameter,trianglePointColor,doGraphNormalVectors,normalVectorColor) {
         

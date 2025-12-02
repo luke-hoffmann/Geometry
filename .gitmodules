@@ -1,3 +1,6 @@
 [submodule "Useful-Function"]
 	path = Useful-Function
 	url = https://github.com/luke-hoffmann/Useful-Function
+[submodule "Color-Handler"]
+	path = Color-Handler
+	url = https://github.com/luke-hoffmann/Color-Handler

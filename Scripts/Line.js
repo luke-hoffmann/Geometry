@@ -1,3 +1,4 @@
+import { Vector } from "./Vector";
 export class Line {
     constructor(p1,p2){
         this.p1 = p1;
