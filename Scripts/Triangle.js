@@ -1,4 +1,6 @@
-class Triangle {
+import { Vector } from "./Vector";
+
+export class Triangle {
     constructor (verticeReferences,color) {
 
         this.verticeReferences = verticeReferences;

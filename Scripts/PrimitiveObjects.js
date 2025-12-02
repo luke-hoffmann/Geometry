@@ -1,4 +1,6 @@
-class PrimitiveObject {
+import { Mesh } from "./Mesh";
+import { Field } from "./Field";
+export class PrimitiveObject {
     
     static cube(sideLength,centeredAt) {
         if (centeredAt == undefined) {

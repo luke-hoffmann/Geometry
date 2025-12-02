@@ -1,7 +1,7 @@
 
 
 
-class Vector {
+export class Vector {
     constructor (x,y,z){
         this.points = [];
         if (x==undefined) {

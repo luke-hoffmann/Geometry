@@ -1,4 +1,5 @@
-class Light {
+
+export class Light {
     constructor (color,position,brightness){
         // brightness should be between 0 and 1;
         // r, g, b should be between 0 and 255;

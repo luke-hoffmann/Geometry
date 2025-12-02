@@ -1,4 +1,4 @@
-class UsefulFunction {
+export class UsefulFunction {
     static getIndexOfArrayMax(arrayOfNumbers) {
         let indexOfMax = 0;
         let max = arrayOfNumbers[0];
