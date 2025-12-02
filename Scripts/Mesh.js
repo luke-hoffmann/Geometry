@@ -1,4 +1,3 @@
-import 
 export class Mesh {
     constructor (vertices,triangles,triangleColor,standalonePointDiameter,standalonePointColor,trianglePointDiameter,trianglePointColor,doGraphNormalVectors,normalVectorColor) {
         
