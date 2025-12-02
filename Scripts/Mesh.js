@@ -3,7 +3,7 @@ import { Vector } from "./Vector";
 import { Line } from "./Line";
 import { Field } from "./Field";
 import { Triangle } from "./Triangle";
-
+import { ColorHandler } from "../Color-Handler/src/ColorHandler";
 export class Mesh {
     constructor (vertices,triangles,triangleColor,standalonePointDiameter,standalonePointColor,trianglePointDiameter,trianglePointColor,doGraphNormalVectors,normalVectorColor) {
         

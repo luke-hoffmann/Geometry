@@ -1,3 +1,5 @@
+import { Vector } from "./Vector";
+import { Triangle } from "./Triangle";
 export class Field {
     constructor(array) {
         
