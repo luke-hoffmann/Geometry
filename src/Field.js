@@ -1,5 +1,6 @@
 import { Vector } from "./Vector.js";
 import { Triangle } from "./Triangle.js";
+import {Line} from "./Line.js;"
 export class Field {
     constructor(array) {
         
