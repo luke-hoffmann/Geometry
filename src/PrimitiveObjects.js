@@ -1,5 +1,5 @@
-import { Mesh } from "./Mesh";
-import { Field } from "./Field";
+import { Mesh } from "./Mesh.js";
+import { Field } from "./Field.js";
 export class PrimitiveObject {
     
     static cube(sideLength,centeredAt) {

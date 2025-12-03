@@ -1,5 +1,5 @@
-import { Vector } from "./Vector";
-import { ColorHandler } from "../Color-Handler/src/ColorHandler";
+import { Vector } from "./Vector.js";
+import { ColorHandler } from "../Color-Handler/src/ColorHandler.js";
 export class Triangle {
     constructor (verticeReferences,color) {
 

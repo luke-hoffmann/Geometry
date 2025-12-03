@@ -1,9 +1,9 @@
-import { UsefulFunction } from "../Useful-Function/src/UsefulFunction";
-import { Vector } from "./Vector";
-import { Line } from "./Line";
-import { Field } from "./Field";
-import { Triangle } from "./Triangle";
-import { ColorHandler } from "../Color-Handler/src/ColorHandler";
+import { UsefulFunction } from "../Useful-Function/src/UsefulFunction.js";
+import { Vector } from "./Vector.js";
+import { Line } from "./Line.js";
+import { Field } from "./Field.js";
+import { Triangle } from "./Triangle.js";
+import { ColorHandler } from "../Color-Handler/src/ColorHandler.js";
 export class Mesh {
     constructor (vertices,triangles,triangleColor,standalonePointDiameter,standalonePointColor,trianglePointDiameter,trianglePointColor,doGraphNormalVectors,normalVectorColor) {
         

@@ -1,5 +1,5 @@
-import { Vector } from "./Vector";
-import { Triangle } from "./Triangle";
+import { Vector } from "./Vector/.js";
+import { Triangle } from "./Triangle.js";
 export class Field {
     constructor(array) {
         

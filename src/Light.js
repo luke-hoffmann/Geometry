@@ -1,4 +1,4 @@
-import { ColorHandler } from "../Color-Handler/src/ColorHandler";
+import { ColorHandler } from "../Color-Handler/src/ColorHandler.js";
 export class Light {
     constructor (color,position,brightness){
         // brightness should be between 0 and 1;
