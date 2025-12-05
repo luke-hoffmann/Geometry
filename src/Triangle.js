@@ -1,6 +1,6 @@
 import { Vector } from "./Vector.js";
-import { ColorHandler } from "../Color-Handler/src/ColorHandler.js";
-import { UsefulFunction } from "../Useful-Function/src/UsefulFunction.js";
+import { ColorHandler } from "../dep/Color-Handler/src/ColorHandler.js";
+import { UsefulFunction } from "../dep/Useful-Function/src/UsefulFunction.js";
 export class Triangle {
     constructor (verticeReferences,color) {
 
