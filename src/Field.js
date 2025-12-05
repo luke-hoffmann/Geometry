@@ -1,6 +1,7 @@
 import { Vector } from "./Vector.js";
 import { Triangle } from "./Triangle.js";
 import {Line} from "./Line.js";
+import { UsefulFunction } from "../Useful-Function/src/UsefulFunction.js";
 export class Field {
     constructor(array) {
         
