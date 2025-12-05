@@ -2,12 +2,10 @@ import { Vector } from "./Vector.js";
 import { ColorHandler } from "../dep/Color-Handler/src/ColorHandler.js";
 import { UsefulFunction } from "../dep/Useful-Function/src/UsefulFunction.js";
 export class Triangle {
-    constructor (verticeReferences,color) {
+    constructor (verticeReferences) {
 
         this.verticeReferences = verticeReferences;
-        this.color = ColorHandler.randomColorAtWithGeneralRadius(210,60,140,40);
-        if (color ==undefined) return;
-        this.color = color.copy();
+        
     }
     
     static doesUpspaceContain(field,triangle,point){
@@ -37,30 +35,7 @@ export class Triangle {
         return (dotProduct <= 0);
     }
 
-    static getColorOfTriangle(field,triangle,lights){
-        let light,lightingVector,observedColor;
-        let centerOfTriangle = this.computeCentroid(field,triangle);
-        let colorArray = [];
-        let angleBrightness;
-        for (let i =0; i < lights.length;i++) {
-            light = lights[i];
-            lightingVector = Vector.sub(centerOfTriangle,light.position);
-            lightingVector = Vector.normalize(lightingVector);
-            angleBrightness = this.getDotProductBetweenNormalAndVector(field,triangle,lightingVector);
-            observedColor = Light.calculateObservedColor(light,triangle.color);
-            observedColor.multiplyByNumber(angleBrightness);
-            colorArray.push(observedColor);
-        }
-        return ColorHandler.sumAndClamp(colorArray);
-    }
-
-    static getColorOfTriangles(field,triangles,lights) {
-        let colors = [];
-        for (const triangle of triangles) {
-            colors.push(this.getColorOfTriangle(field,triangle,lights));
-        }
-        return colors;
-    }
+    
 
     static computeNormal(field,triangle){
         let vertices = field.array;
@@ -250,22 +225,5 @@ export class Triangle {
 
 
 
-    static graphTriangleOutline(vertices,triangle,color,lineWeight) {
-        let verticesThatMakeUpTriangle = triangle.verticeReferences;
-        color.p5NoFill();
-        color.p5Stroke();
-        
-        renderGraphic.strokeWeight(lineWeight);
-        renderGraphic.strokeJoin(ROUND);
-        renderGraphic.triangle(vertices[verticesThatMakeUpTriangle[0]].x,vertices[verticesThatMakeUpTriangle[0]].y,vertices[verticesThatMakeUpTriangle[1]].x,vertices[verticesThatMakeUpTriangle[1]].y,vertices[verticesThatMakeUpTriangle[2]].x,vertices[verticesThatMakeUpTriangle[2]].y);
-    }
-    static graphTriangleFill(vertices,triangle,color) {
-        
-        let verticesThatMakeUpTriangle = triangle.verticeReferences;
-        color.p5Fill();
-        color.p5NoStroke();
-        renderGraphic.triangle(vertices[verticesThatMakeUpTriangle[0]].x,vertices[verticesThatMakeUpTriangle[0]].y,vertices[verticesThatMakeUpTriangle[1]].x,vertices[verticesThatMakeUpTriangle[1]].y,vertices[verticesThatMakeUpTriangle[2]].x,vertices[verticesThatMakeUpTriangle[2]].y);
-        
-        
-    }
+    
 }

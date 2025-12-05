@@ -156,11 +156,7 @@ export class Field {
         return indexOfLowestCoordinate
     }
 
-    static graph(field,diameter,color) {
-        for (const point of field.array) {
-            point.graph(diameter,color);
-        }
-    }
+    
 
 
     

@@ -169,20 +169,7 @@ export class Vector {
     static rotate2DVector(v,theta){
         return new this((v.x*Math.cos(theta)) -(v.y* Math.sin(theta)),(v.x*Math.sin(theta))+(v.y*Math.cos(theta)))
     }
-    graph(diameter,color,index) {
-        color.p5NoStroke();
-        color.p5Fill();
-        
-        
-        
-        renderGraphic.circle(this.x,this.y,diameter)
-        if (index== undefined) return;
     
-    }
-
-    labelPosition(index){
-        renderGraphic.text(index,this.x + 10,this.y + 10)
-    }
     copy(){
         return new this.constructor(this.x,this.y,this.z);
     }

@@ -12,40 +12,13 @@ export class Mesh {
         } else {
             this.standalonePointDiameter = standalonePointDiameter;
         }
-        if (standalonePointColor == undefined) {
-            this.standalonePointColor = new ColorHandler(0,0,0);
-        } else {
-            this.standalonePointColor = standalonePointColor
-        }
+        
         if (trianglePointDiameter == undefined) {
             this.trianglePointDiameter = 3;
         } else {
             this.trianglePointDiameter = trianglePointDiameter
         }
-        if (trianglePointColor == undefined) {
-            this.trianglePointColor =new ColorHandler(0,0,0);
-        } else {
-            this.trianglePointColor = trianglePointColor;
-        }
-        if (triangleColor == undefined) {
-            this.triangleColor = new ColorHandler(0,0,0);
-        } else {
-            this.triangleColor = triangleColor;
-        }
-        if (triangleColor == true) {
-            this.triangleColor = true;
-        }
-        if (normalVectorColor == undefined) {
-            this.normalVectorColor = new ColorHandler(0,0,0);
-        } else {
-            this.normalVectorColor = normalVectorColor;
-        }
-        if (doGraphNormalVectors == true) {
-            this.doGraphNormalVectors = true;
-        } else {
-            this.doGraphNormalVectors = false;
-        }
-
+        
         this.vertices = vertices;
         this.triangles = triangles;
         if (vertices ==undefined) {
@@ -56,19 +29,7 @@ export class Mesh {
         }
     }
     
-    static setColorOfTriangles(mesh,colors){
-        if (colors.length != mesh.triangles.length) throw new Error("Array size mismatch");
-        let newMesh = this.copy(mesh);
-        let triangles = [...newMesh.triangles];
-        for (let i = 0 ; i < colors.length;i++) {
-            let color = colors[i];
-            
-            triangles[i].color = color;
-            
-        }
-        newMesh.triangles = triangles;
-        return newMesh;
-    }
+    
 
     static removeTrianglesThatAreCoveredUp(field,triangles,boundaryPoints,farthestPoint,searchForDuplicateTriangles){
         
@@ -147,46 +108,7 @@ export class Mesh {
         return new this(field.array,triangles,false);
         
     }
-    graphNormalVectors(color,length){
-        for (triangle of this.triangles) {
-            let field = new Field(this.vertices);
-           
-            let centerOfTriangle = Triangle.computeCentroid(field,triangle);
-            let normalVector = Vector.scalarMult(Triangle.computeNormal(field,triangle),length);
-            normalVector = Vector.add(normalVector,centerOfTriangle)
-
-            Line.graphBetweenTwoPoints(normalVector,centerOfTriangle,color);
-        }
-    }
-    graphSpecificVertices(indices,diameter,color) {
-        for (const index of indices) {
-            this.vertices[index].graph(diameter,color);
-        }
-    }
-    graphVertices(diameter,color){
-        for (const vertex of this.vertices) {
-            vertex.graph(diameter,color);
-        }
-    }
-    getVerticesFromTriangle(triangle){
-        let vertices =[];
-        for (const reference of triangle.verticeReferences) {
-            vertices.push(reference);
-        }
-        return vertices;
-    }
     
-    graphTriangles(triangleColor,pointDiameter,pointColor,lineWeight){
-        for (triangle of this.triangles) {
-            if (triangleColor == true) {
-                Triangle.graphTriangleFill(this.vertices, triangle, triangle.color);
-                Triangle.graphTriangleOutline(this.vertices, triangle, new ColorHandler(0,0,0), lineWeight);
-                continue;
-            }
-            Triangle.graphTriangleOutline(this.vertices,triangle,triangleColor,1);
-        }
-    
-    }
 
     static backFaceCulling(mesh,viewVector) {
         let visibleTriangles = [];
@@ -200,19 +122,7 @@ export class Mesh {
         }
         return backFaceCulledMesh;
     }
-    static graph(mesh, graphTriangles,graphVertices,graphNormalVectors){
-        if (graphVertices) {
-            mesh.graphVertices(mesh.standalonePointDiameter,mesh.standalonePointColor);
-        }
-        if (graphTriangles) {
-            mesh.graphTriangles(mesh.triangleColor,mesh.trianglePointDiameter,mesh.trianglePointColor,1);
-        } 
-        
-        if (!graphNormalVectors) {
-            return
-        }
-        mesh.graphNormalVectors(mesh.normalVectorColor,40);
-    }
+    
 
     
     static rotate(mesh, angX,angY,angZ){
@@ -228,7 +138,7 @@ export class Mesh {
         
         newMesh.triangles = mesh.triangles.map(triangle => {
             // Create a new Triangle instance for each element in the triangles array
-            return new Triangle(triangle.verticeReferences, triangle.color);
+            return new Triangle(triangle.verticeReferences);
         });
         newMesh.vertices = mesh.vertices.map(vertex => {
             // Create a new Triangle instance for each element in the triangles array
@@ -240,25 +150,5 @@ export class Mesh {
     }
 
 
-    static graphConvexHullOnCanvas(mesh,t,graphConvexHull,doBackFaceCulling,doNormalVectors,triangleColor) {
-        let currentMesh = Mesh.copy(mesh);
-        let rotatedMesh = Mesh.rotate(currentMesh,t,t,0)
-        rotatedMesh.triangleColor = triangleColor;
-        
-        
-        if (!graphConvexHull) {
-            Mesh.graph(rotatedMesh,graphConvexHull,true,false);
-            return
-        } 
     
-        if (doBackFaceCulling) {
-            rotatedMesh = Mesh.backFaceCulling(rotatedMesh,viewVector);
-            let colors = Triangle.getColorOfTriangles(new Field(rotatedMesh.vertices),rotatedMesh.triangles,lights)
-            rotatedMesh = Mesh.setColorOfTriangles(rotatedMesh,colors);
-            Mesh.graph(rotatedMesh,graphConvexHull,false,doNormalVectors);
-        }   else {
-            rotatedMesh.triangleColor = new ColorHandler(0,0,0);
-            Mesh.graph(rotatedMesh,graphConvexHull,true,doNormalVectors);
-        }
-    }
 }
