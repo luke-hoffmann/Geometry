@@ -1,6 +1,7 @@
-[submodule "dep/ColorHandler"]
-	path = dep/ColorHandler
+
+[submodule "src/libs/ColorHandler"]
+	path = src/libs/ColorHandler
 	url = https://github.com/luke-hoffmann/ColorHandler
-[submodule "dep/UsefulFunction"]
-	path = dep/UsefulFunction
+[submodule "src/libs/UsefulFunction"]
+	path = src/libs/UsefulFunction
 	url = https://github.com/luke-hoffmann/UsefulFunction
