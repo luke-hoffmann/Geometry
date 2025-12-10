@@ -1,23 +1,11 @@
-import { UsefulFunction } from "../Useful-Function/src/UsefulFunction.js";
+import { UsefulFunction } from "../../dep/Useful-Function/src/UsefulFunction.js";
 import { Vector } from "./Vector.js";
 import { Line } from "./Line.js";
 import { Field } from "./Field.js";
 import { Triangle } from "./Triangle.js";
-import { ColorHandler } from "../Color-Handler/src/ColorHandler.js";
+import { NormalVector } from "./NormalVector.js";
 export class Mesh {
-    constructor (vertices,triangles,triangleColor,standalonePointDiameter,standalonePointColor,trianglePointDiameter,trianglePointColor,doGraphNormalVectors,normalVectorColor) {
-        
-        if (standalonePointDiameter == undefined) {
-            this.standalonePointDiameter = 3;
-        } else {
-            this.standalonePointDiameter = standalonePointDiameter;
-        }
-        
-        if (trianglePointDiameter == undefined) {
-            this.trianglePointDiameter = 3;
-        } else {
-            this.trianglePointDiameter = trianglePointDiameter
-        }
+    constructor (vertices,triangles,) {
         
         this.vertices = vertices;
         this.triangles = triangles;
@@ -30,7 +18,7 @@ export class Mesh {
     }
     
     
-
+    /*
     static removeTrianglesThatAreCoveredUp(field,triangles,boundaryPoints,farthestPoint,searchForDuplicateTriangles){
         
         let triangleReferenceCountList = Triangle.getTimesTriangleIsReferencedByBoundaryPoints(triangles,boundaryPoints);
@@ -47,8 +35,24 @@ export class Mesh {
 
         return temporaryTriangleList;
     }
+        */
+    static calculateTriangleNormalVector(mesh,triangle) {
+        let field = mesh.vertices;
+        let centerOfTriangle = Triangle.computeCentroid(field,triangle);
+        let normalVector = Triangle.computeNormal(field,triangle)
+        return new NormalVector(centerOfTriangle,normalVector);
+    }
+    static calculateTriangleNormalVectors(mesh){
+        let triangles = mesh.triangles;
+        let field = mesh.vertices; 
+        let normalVectors = []; 
+        for (const triangle of triangles) {
+            normalVectors.push(Mesh.calculateTriangleNormalVector(mesh,triangle));
+        
+        }
+        return normalVectors;
 
-
+    }
     static removeTrianglesFromArray(array,triangleIndices) {
         let triangles = [...array];
         let index;
@@ -97,27 +101,36 @@ export class Mesh {
         triangles = this.convexHullIterativeProcess(field,triangles,graphIndices);
         for (let i =0 ; i < iterationNumber;i++) {
             result = this.convexHullIterativeProcess(field,triangles,graphIndices,iterationNumber);
-            if (result == false) return new this(field.array,triangles,false);
+            if (result == false) return new this(field,triangles,false);
             triangles = result;
         }
         
 
         
-
-        
-        return new this(field.array,triangles,false);
+        return new this(field,triangles,false);
         
     }
     
 
-    static backFaceCulling(mesh,viewVector) {
+    static backFaceCulling(mesh,camera,isPerspective) {
+        //let viewVector = camera.viewVector;
+        let viewVector = new Vector(0,0,1);
         let visibleTriangles = [];
         let backFaceCulledMesh = this.copy(mesh);
         backFaceCulledMesh.triangles = [];
-        for (const triangle of mesh.triangles) {
-            let isTriangleVisible = Triangle.isTriangleFacingCamera(new Field(mesh.vertices),triangle,viewVector);
+
+        let normalVectors = Mesh.calculateTriangleNormalVectors(mesh);
+        for (let i =0; i < mesh.triangles.length ; i++) {
+            let isTriangleVisible;
+            if (isPerspective)  {
+                isTriangleVisible = Triangle.isDotProductLEThanX(mesh.vertices.array[mesh.triangles[i].verticeReferences[0]],normalVectors[i].direction,0);
+            } else {
+                isTriangleVisible = Triangle.isDotProductLEThanX(viewVector,normalVectors[i].direction,0);
+            }
+            
+           
             if (!isTriangleVisible) continue;
-            backFaceCulledMesh.triangles.push(triangle);
+            backFaceCulledMesh.triangles.push(mesh.triangles[i]);
             
         }
         return backFaceCulledMesh;
@@ -140,8 +153,7 @@ export class Mesh {
             // Create a new Triangle instance for each element in the triangles array
             return new Triangle(triangle.verticeReferences);
         });
-        newMesh.vertices = mesh.vertices.map(vertex => {
-            // Create a new Triangle instance for each element in the triangles array
+        newMesh.vertices.array = mesh.vertices.array.map(vertex => {
             return new Vector(vertex.x,vertex.y,vertex.z);
         });
 

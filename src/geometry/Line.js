@@ -15,7 +15,7 @@ export class Line {
         let farthestPoint = undefined
         let farthestPointIndex = undefined;
         for (let i =0 ; i <field.array.length ; i++) {
-            let pointIsFromLine = Vector.isVectorEqual(point,line.p1) || Vector.isVectorEqual(point,line.p2);
+            let pointIsFromLine = Vector.isVectorEqual(field.array[i],line.p1) || Vector.isVectorEqual(field.array[i],line.p2);
             if (pointIsFromLine) continue;
             let distance= line.distanceToPoint(field.array[i]);
             

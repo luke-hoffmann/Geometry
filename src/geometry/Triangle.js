@@ -1,6 +1,5 @@
 import { Vector } from "./Vector.js";
-import { ColorHandler } from "../dep/Color-Handler/src/ColorHandler.js";
-import { UsefulFunction } from "../dep/Useful-Function/src/UsefulFunction.js";
+import { UsefulFunction } from "../../dep/Useful-Function/src/UsefulFunction.js";
 export class Triangle {
     constructor (verticeReferences) {
 
@@ -30,9 +29,9 @@ export class Triangle {
         
     
     }
-    static isTriangleFacingCamera(field,triangle,viewVector) {
-        let dotProduct = this.getDotProductBetweenNormalAndVector(field,triangle,viewVector);
-        return (dotProduct <= 0);
+    static isDotProductLEThanX(v1,v2,x) {
+        let dotProduct = Vector.dotProduct(v1,v2);
+        return (dotProduct <= x);
     }
 
     
@@ -40,9 +39,11 @@ export class Triangle {
     static computeNormal(field,triangle){
         let vertices = field.array;
         let s1 = Vector.sub(vertices[triangle.verticeReferences[0]],vertices[triangle.verticeReferences[1]]);
+        
         let s2 = Vector.sub(vertices[triangle.verticeReferences[2]],vertices[triangle.verticeReferences[0]]);
         let cross = Vector.crossProduct(s1,s2);
-        return Vector.normalize(cross);
+
+        return Vector.unitVector(cross);
     }
     static distanceTo(field,triangle,v) {
         let normal = this.computeNormal(field,triangle);

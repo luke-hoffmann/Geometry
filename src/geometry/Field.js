@@ -1,7 +1,7 @@
 import { Vector } from "./Vector.js";
 import { Triangle } from "./Triangle.js";
 import {Line} from "./Line.js";
-import { UsefulFunction } from "../dep/Useful-Function/src/UsefulFunction.js";
+import { UsefulFunction } from "../../dep/Useful-Function/src/UsefulFunction.js";
 export class Field {
     constructor(array) {
         
@@ -71,13 +71,13 @@ export class Field {
 
     static getAverageDistanceBetweenPointsAndTriangles(field,triangles,pointIndices) {
         let distanceAveragesToAllTriangles = [];
-        for (point of pointIndices) {
+        for (const point of pointIndices) {
             if (point == false) {
                 distanceAveragesToAllTriangles.push(0);
                 continue;
             }
             let sum = 0;
-            for (triangle of triangles) {
+            for (const triangle of triangles) {
                 sum += Triangle.distanceTo(field,triangle,field.array[point]);
             }
             let average = sum/triangles.length;
@@ -90,7 +90,7 @@ export class Field {
         
         let farthestPoints = [];
         let farthestPoint;
-        for (triangle of triangles) {
+        for (const triangle of triangles) {
             
             farthestPoints.push(Triangle.getFarthestPoint(field,triangle,pointIndices));
         }

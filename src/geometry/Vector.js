@@ -71,9 +71,14 @@ export class Vector {
     static isVectorEqual(p1,p2) {
         return p1===p2;
     }
-
-
     
+    static unitVector(vector) {
+        let mag = vector.magnitude();
+        return new this(vector.x/mag,vector.y/mag,vector.z/mag);
+    }
+    static upVector(){
+        return new this(0,0,1);
+    }
     static generateVectorInSphere(mag){
         
         mag = Math.random()*mag*mag*mag;
@@ -81,7 +86,6 @@ export class Vector {
         let d = 2;
         let x,y,z;
         while (d > 1.0) {
-            console.log(1);
             x = (Math.random()*2)-1
             y = (Math.random()*2)-1
             z = (Math.random()*2)-1;
@@ -94,6 +98,9 @@ export class Vector {
 
     static magnitude(v){
         return Math.sqrt((v.x**2)+(v.y**2)+(v.z**2))
+    }
+    magnitude(){
+        return Vector.magnitude(this);
     }
     static distanceBetweenVectors(v1,v2) {
         return (((v1.x-v2.x)**2) + ((v1.y-v2.y)**2) + ((v1.z-v2.z)**2))
@@ -169,7 +176,33 @@ export class Vector {
     static rotate2DVector(v,theta){
         return new this((v.x*Math.cos(theta)) -(v.y* Math.sin(theta)),(v.x*Math.sin(theta))+(v.y*Math.cos(theta)))
     }
-    
+    static findVectorWithLowestZ(field){
+        let val = Infinity;
+        let index = -1;
+        for (let i =0 ; i < field.array.length;i++) {
+            let v = field.array[i];
+            if (v.z  < val) {
+                val = v.z;
+                index = i;
+            }
+        }
+        if (index == -1) throw Error("no vector found!");
+        return index;
+
+    }
+    static findVectorWithHighestZ(field){
+        let val = -Infinity;
+        let index = -1;
+        for (let i =0 ; i < field.array.length;i++) {
+            let v = field.array[i];
+            if (v.z  > val) {
+                val = v.z;
+                index = i;
+            }
+        }
+        if (index == -1) throw Error("no vector found!");
+        return index;
+    }
     copy(){
         return new this.constructor(this.x,this.y,this.z);
     }
