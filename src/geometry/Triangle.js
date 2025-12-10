@@ -1,5 +1,5 @@
 import { Vector } from "./Vector.js";
-import { UsefulFunction } from "../../dep/Useful-Function/src/UsefulFunction.js";
+import { UsefulFunction } from "../../dep/UsefulFunction/src/UsefulFunction.js";
 export class Triangle {
     constructor (verticeReferences) {
 

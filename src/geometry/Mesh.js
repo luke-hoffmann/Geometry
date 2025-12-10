@@ -1,4 +1,4 @@
-import { UsefulFunction } from "../../dep/Useful-Function/src/UsefulFunction.js";
+import { UsefulFunction } from "../../dep/UsefulFunction/src/UsefulFunction.js";
 import { Vector } from "./Vector.js";
 import { Line } from "./Line.js";
 import { Field } from "./Field.js";

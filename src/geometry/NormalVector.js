@@ -1,4 +1,3 @@
-import { p5MeshRenderer } from "../renderers/p5/p5Renderer/p5Meshrenderer.js";
 import { Vector } from "./Vector.js";
 export class NormalVector {
     constructor(position,direction){

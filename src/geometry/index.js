@@ -4,5 +4,5 @@ export { Triangle } from "./Triangle.js";
 export { Mesh } from "./Mesh.js";
 export { Field } from "./Field.js";
 export { Light } from "./Light.js";
-export { UsefulFunction } from "./../Useful-Function/src/UsefulFunction.js";
+export { UsefulFunction } from "./../UsefulFunction/src/UsefulFunction.js";
 export { PrimitiveObject } from "./PrimitiveObjects.js";
