@@ -1,0 +1,27 @@
+{
+  "name": "geometry",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luke-hoffmann/Geometry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/luke-hoffmann/Geometry/issues"
+  },
+  "homepage": "https://github.com/luke-hoffmann/Geometry#readme",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
