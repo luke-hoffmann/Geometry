@@ -1,9 +1,9 @@
-import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction";
+import { UsefulFunction } from "usefulfunction";
 import { Field } from "./Field.js";
 import { Triangle } from "./Triangle.js";
 import { Mesh } from "./Mesh.js";
 export class MeshGenerator {
-    static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
+    private static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
         triangles = [...triangles]
         let upSpaceIndices = field.getTrianglesUpspace(triangles,graphIndices);
         let farthestPoint = field.getFarthestPointFromTriangles(triangles,upSpaceIndices);
@@ -34,6 +34,7 @@ export class MeshGenerator {
         let unusedField = field;
         let searchToRemoveDuplicateTriangles = true;
         let triangles = undefined;
+        console.log(field)
         if (triangles == undefined) {
             triangles = [field.calculateLargestTriangleFromField()];
             triangles.push(triangles[0].flipNormal());

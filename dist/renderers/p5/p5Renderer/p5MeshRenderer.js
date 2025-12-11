@@ -1,13 +1,27 @@
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _p5MeshRenderer_graphicsBuffer, _p5MeshRenderer_p5;
 import { MeshRenderer } from "../../../interface/MeshRenderer.js";
-import { Mesh } from "../../../geometry/Mesh.js";
 import { Vector } from "../../../geometry/Vector.js";
 import { Field } from "../../../geometry/Field.js";
 import { Line } from "../../../geometry/Line.js";
 export class p5MeshRenderer extends MeshRenderer {
     constructor(mesh, screenSize, camera, lights, renderParameters, p) {
         super(mesh, camera, lights, renderParameters);
+        _p5MeshRenderer_graphicsBuffer.set(this, void 0);
+        _p5MeshRenderer_p5.set(this, void 0);
         p.createCanvas(screenSize.x, screenSize.y);
-        this.graphicsBuffer = p.createGraphics(screenSize.x, screenSize.y);
+        __classPrivateFieldSet(this, _p5MeshRenderer_p5, p, "f");
+        __classPrivateFieldSet(this, _p5MeshRenderer_graphicsBuffer, p.createGraphics(screenSize.x, screenSize.y), "f");
     }
     /*
 
@@ -22,11 +36,11 @@ export class p5MeshRenderer extends MeshRenderer {
 
             */
     preWork() {
-        this.graphicsBuffer.clear();
-        this.graphicsBuffer.background(200);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").clear();
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").background(200);
     }
     postWork() {
-        image(this.graphicsBuffer, 0, 0);
+        __classPrivateFieldGet(this, _p5MeshRenderer_p5, "f").image(__classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f"), 0, 0);
     }
     /**
      * Important that this function is placed inside the native p5.js draw() function.
@@ -35,52 +49,54 @@ export class p5MeshRenderer extends MeshRenderer {
     **/
     graph() {
         this.preWork();
-        let mesh = Mesh.copy(this.mesh);
+        let mesh = this.mesh.copy();
         mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
         if (this.renderParameters.doBackFaceCulling) {
-            mesh = Mesh.backFaceCulling(mesh, this.camera, this.renderParameters.isPerspective);
+            mesh = this.backFaceCulling();
         }
-        mesh = this.applyProjection(mesh, this.renderParameters.isPerspective);
-        mesh = this.meshToCanvas(mesh);
-        this.graphVertices(mesh);
-        this.graphTriangles(mesh, 0);
+        mesh = this.applyProjection();
+        mesh = this.meshToCanvas();
+        this.graphVertices();
+        this.graphTriangles(__classPrivateFieldGet(this, _p5MeshRenderer_p5, "f").color(0));
         this.postWork();
     }
-    static orthographicProjectIndividualVector(vector, camera) {
-        return new Vector(vector.x, vector.y, camera.focalDistance);
+    orthographicProjectIndividualVector(vector) {
+        return new Vector(vector.x, vector.y, this.camera.focalDistance);
     }
-    static perspectiveProjectIndividualVector(vector, camera) {
-        const ratio = camera.focalDistance / vector.z;
+    perspectiveProjectIndividualVector(vector) {
+        const ratio = this.camera.focalDistance / vector.z;
         let x = vector.x * ratio;
         let y = vector.y * ratio;
-        let z = camera.focalDistance;
+        let z = this.camera.focalDistance;
         return new Vector(x, y, z);
     }
-    static perspectiveProjectNormalVectorIntoLine(normalVector, camera, length) {
-        let p1 = p5MeshRenderer.perspectiveProjectIndividualVector(normalVector.position, camera);
-        let p2 = p5MeshRenderer.perspectiveProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction, length), normalVector.position), camera);
+    perspectiveProjectNormalVectorIntoLine(normalVector, length) {
+        let p1 = this.perspectiveProjectIndividualVector(normalVector.position);
+        let p2 = this.perspectiveProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction, length), normalVector.position));
         return new Line(p1, p2);
     }
-    static perspectiveProjectNormalVectorsIntoLines(normalVectors, camera, length) {
+    perspectiveProjectNormalVectorsIntoLines(normalVectors, length) {
         let lines = [];
         for (const v of normalVectors) {
-            lines.push(p5MeshRenderer.perspectiveProjectNormalVectorIntoLine(v, camera, length));
+            lines.push(this.perspectiveProjectNormalVectorIntoLine(v, length));
         }
         return lines;
     }
-    applyProjection(mesh, isPerspective) {
-        let newMesh = Mesh.copy(mesh);
-        let projectedField = new Field([]);
-        for (const v of mesh.vertices.array) {
+    applyProjection() {
+        let newMesh = this.mesh.copy();
+        let projectedArray = [];
+        for (let i = 0; i < newMesh.numPoints(); i++) {
             let pV;
-            if (isPerspective) {
-                pV = p5MeshRenderer.perspectiveProjectIndividualVector(v, this.camera);
+            const v = newMesh.getVertex(i);
+            if (this.renderParameters.isPerspective) {
+                pV = this.perspectiveProjectIndividualVector(v);
             }
             else {
-                pV = p5MeshRenderer.orthographicProjectIndividualVector(v, this.camera);
+                pV = this.orthographicProjectIndividualVector(v);
             }
-            projectedField.array.push(pV);
+            projectedArray.push(pV);
         }
+        let projectedField = new Field(projectedArray);
         newMesh.vertices = projectedField;
         return newMesh;
     }
@@ -91,61 +107,49 @@ export class p5MeshRenderer extends MeshRenderer {
         }
         return canvasLines;
     }
-    meshToCanvas(mesh) {
-        let canvasField = new Field([]);
-        mesh.vertices.array.forEach(element => {
-            canvasField.array.push(this.calculateCanvasPos(element));
-        });
-        mesh.vertices = canvasField;
+    meshToCanvas() {
+        let canvasArray = [];
+        for (let i = 0; i < this.mesh.numPoints(); i++) {
+            canvasArray.push(this.calculateCanvasPos(this.mesh.getVertex(i)));
+        }
+        let mesh = this.mesh.copy();
+        mesh.vertices = new Field(canvasArray);
         return mesh;
     }
     calculateCanvasPos(meshPos) {
-        return Vector.add(new Vector(this.graphicsBuffer.width / 2, this.graphicsBuffer.height / 2, 0), meshPos);
+        return Vector.add(new Vector(__classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").width / 2, __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").height / 2, 0), meshPos);
     }
-    graphVertices(mesh) {
-        for (let vertex of mesh.vertices.array) {
-            this.graphVertex(vertex, this.renderParameters.pointRadius);
-        }
-    }
-    graphVerticesWithZDeterminingSize(mesh, lowestRadius, highestRadius) {
-        let highestZ = mesh.vertices.array[Field.findVectorWithHighestZ(mesh.vertices)].z;
-        let lowestZ = mesh.vertices.array[Field.findVectorWithLowestZ(mesh.vertices)].z;
-        let zRange = highestZ - lowestZ;
-        let radiusRange = highestRadius - lowestRadius;
-        for (let vertex of mesh.vertices.array) {
-            let radius = ((vertex.z - lowestZ) * (radiusRange / zRange)) + lowestRadius;
-            this.graphVisibleVertex(vertex, radius);
+    graphVertices() {
+        for (let i = 0; i < this.mesh.numPoints(); i++) {
+            this.graphVertex(this.mesh.getVertex(i), this.renderParameters.pointRadius);
         }
     }
     graphVertex(vertex, size) {
-        this.graphicsBuffer.stroke(0);
-        this.graphicsBuffer.fill(0);
-        this.graphicsBuffer.circle(vertex.x, vertex.y, size);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").stroke(0);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").fill(0);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").circle(vertex.x, vertex.y, size);
     }
     graphVisibleVertex(vertex, size) {
         if (this.camera.isVertexVisible(vertex))
             this.graphVertex(vertex, size);
     }
-    graphVisibleVertices(mesh, size) {
-        for (const vertex of mesh.vertices.array) {
-            this.graphVisibleVertex(vertex, size);
+    graphVisibleVertices(size) {
+        for (let i = 0; i < this.mesh.numPoints(); i++) {
+            this.graphVisibleVertex(this.mesh.getVertex(i), size);
         }
     }
-    graphTriangle(field, triangle) {
-        let graphReferences = triangle.verticeReferences;
-        let p1 = field.array[graphReferences[0]];
-        let p2 = field.array[graphReferences[1]];
-        let p3 = field.array[graphReferences[2]];
-        this.graphicsBuffer.strokeJoin(ROUND);
-        this.graphicsBuffer.noFill(255);
-        this.graphicsBuffer.triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
+    graphTriangle(triangle) {
+        let p1 = this.mesh.getVertex(triangle.getVerticeRef(0));
+        let p2 = this.mesh.getVertex(triangle.getVerticeRef(1));
+        let p3 = this.mesh.getVertex(triangle.getVerticeRef(2));
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").strokeJoin(__classPrivateFieldGet(this, _p5MeshRenderer_p5, "f").ROUND);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").noFill();
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
     }
-    graphTriangles(mesh, color) {
-        this.graphicsBuffer.stroke(color);
-        let triangles = mesh.triangles;
-        let field = mesh.vertices;
-        for (const triangle of triangles) {
-            this.graphTriangle(field, triangle);
+    graphTriangles(color) {
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").stroke(color);
+        for (let i = 0; i < this.mesh.numTriangles(); i++) {
+            this.graphTriangle(this.mesh.getTriangle(i));
             continue;
         }
     }
@@ -158,11 +162,14 @@ export class p5MeshRenderer extends MeshRenderer {
         this.graphBetweenTwoPoints(line.p1, line.p2, color);
     }
     graphBetweenTwoPoints(p1, p2, color) {
-        this.graphicsBuffer.stroke(color);
-        this.graphicsBuffer.line(p1.x, p1.y, p2.x, p2.y);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").stroke(color);
+        __classPrivateFieldGet(this, _p5MeshRenderer_graphicsBuffer, "f").line(p1.x, p1.y, p2.x, p2.y);
     }
 }
+_p5MeshRenderer_graphicsBuffer = new WeakMap(), _p5MeshRenderer_p5 = new WeakMap();
+/*
 if (typeof window !== "undefined") {
-    window.p5MeshRenderer = p5MeshRenderer;
+    window.p5MeshRenderer  = p5MeshRenderer;
 }
-//# sourceMappingURL=p5MeshRenderer.js.map
+
+*/ 

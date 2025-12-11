@@ -24,6 +24,11 @@ export class NormalVector {
     copy() {
         return new NormalVector(__classPrivateFieldGet(this, _NormalVector_position, "f").copy(), __classPrivateFieldGet(this, _NormalVector_direction, "f").copy());
     }
+    get position() {
+        return __classPrivateFieldGet(this, _NormalVector_position, "f");
+    }
+    get direction() {
+        return __classPrivateFieldGet(this, _NormalVector_direction, "f");
+    }
 }
 _NormalVector_position = new WeakMap(), _NormalVector_direction = new WeakMap();
-//# sourceMappingURL=NormalVector.js.map

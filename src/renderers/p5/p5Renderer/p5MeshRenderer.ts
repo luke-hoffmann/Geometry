@@ -8,11 +8,15 @@ import { Line } from "../../../geometry/Line.js";
 import { Light } from "../../../geometry/Light.js";
 import { RenderParameters } from "../../../interface/RenderParameters.js";
 import type p5 from "p5";
+import { NormalVector } from "../../../geometry/NormalVector.js";
 export class p5MeshRenderer extends MeshRenderer  {
+    #graphicsBuffer : p5.Graphics;
+    #p5 : p5;
     constructor(mesh : Mesh,screenSize : Vector ,camera: Camera,lights : Light[],renderParameters : RenderParameters,p : p5) {
         super(mesh,camera,lights,renderParameters);
         p.createCanvas(screenSize.x,screenSize.y);
-        this.graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
+        this.#p5 = p;
+        this.#graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
     }
     /*
 
@@ -27,11 +31,11 @@ export class p5MeshRenderer extends MeshRenderer  {
 
             */
     preWork() {
-        this.graphicsBuffer.clear();
-        this.graphicsBuffer.background(200);
+        this.#graphicsBuffer.clear();
+        this.#graphicsBuffer.background(200);
     }
     postWork(){
-        image(this.graphicsBuffer,0,0);
+        this.#p5.image(this.#graphicsBuffer,0,0);
     }
     /**
      * Important that this function is placed inside the native p5.js draw() function.
@@ -43,134 +47,125 @@ export class p5MeshRenderer extends MeshRenderer  {
 
 
 
-        let mesh = Mesh.copy(this.mesh);
+        let mesh = this.mesh.copy();
         mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh)
         if (this.renderParameters.doBackFaceCulling) {
-            mesh = Mesh.backFaceCulling(mesh,this.camera,this.renderParameters.isPerspective)
+            mesh = this.backFaceCulling();
         }
-        mesh= this.applyProjection(mesh,this.renderParameters.isPerspective);
+        mesh= this.applyProjection();
         
-        mesh = this.meshToCanvas(mesh);
+        mesh = this.meshToCanvas();
         
-        this.graphVertices(mesh);
-        this.graphTriangles(mesh,0);
+        this.graphVertices();
+        this.graphTriangles(this.#p5.color(0));
 
         
         this.postWork();
     }
 
     
-    static orthographicProjectIndividualVector(vector,camera) {
-        return new Vector(vector.x,vector.y,camera.focalDistance);
+    orthographicProjectIndividualVector(vector : Vector): Vector {
+        return new Vector(vector.x,vector.y,this.camera.focalDistance);
     }
-    static perspectiveProjectIndividualVector(vector,camera) {
-        const ratio = camera.focalDistance/vector.z;
+    perspectiveProjectIndividualVector(vector : Vector) : Vector{
+        const ratio = this.camera.focalDistance/vector.z;
         let x = vector.x * ratio;
         let y= vector.y * ratio;
             
-        let z = camera.focalDistance;
+        let z = this.camera.focalDistance;
         return new Vector(x,y,z);
     }
 
-    static perspectiveProjectNormalVectorIntoLine(normalVector,camera,length) {
-        let p1 = p5MeshRenderer.perspectiveProjectIndividualVector(normalVector.position,camera);
-        let p2 = p5MeshRenderer.perspectiveProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction,length),normalVector.position),camera);
+    perspectiveProjectNormalVectorIntoLine(normalVector : NormalVector,length : number) : Line{
+        let p1 = this.perspectiveProjectIndividualVector(normalVector.position);
+        let p2 = this.perspectiveProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction,length),normalVector.position));
         return new Line(p1,p2);
     } 
-    static perspectiveProjectNormalVectorsIntoLines(normalVectors,camera,length){
+    perspectiveProjectNormalVectorsIntoLines(normalVectors : NormalVector[],length : number) : Line[]{
         let lines = [];
         for (const v of normalVectors) {
-            lines.push(p5MeshRenderer.perspectiveProjectNormalVectorIntoLine(v,camera,length));
+            lines.push(this.perspectiveProjectNormalVectorIntoLine(v,length));
         }
         return lines;
     }
     
-    applyProjection(mesh,isPerspective){
+    applyProjection() : Mesh{
     
-        let newMesh = Mesh.copy(mesh);
-        let projectedField = new Field([]);
-        for (const v of mesh.vertices.array) {
+        let newMesh = this.mesh.copy();
+        let projectedArray = [];
+        for (let i =0 ; i < newMesh.numPoints(); i++) {
             let pV;
-            if (isPerspective) {
-                pV =p5MeshRenderer.perspectiveProjectIndividualVector(v,this.camera);
+            const v = newMesh.getVertex(i);
+            if (this.renderParameters.isPerspective) {
+                pV =this.perspectiveProjectIndividualVector(v);
             } else {
-                pV = p5MeshRenderer.orthographicProjectIndividualVector(v,this.camera);
+                pV = this.orthographicProjectIndividualVector(v);
             }
 
-            projectedField.array.push(pV);
+            projectedArray.push(pV);
         }
+        let projectedField = new Field(projectedArray);
         newMesh.vertices = projectedField;
         return newMesh;
     }
-    linesToCanvas(lines) {
+    linesToCanvas(lines : Line[]) {
         let canvasLines = [];
         for (const line of lines) {
             canvasLines.push(new Line(this.calculateCanvasPos(line.p1),this.calculateCanvasPos(line.p2)));
         }
         return canvasLines;
     }
-    meshToCanvas(mesh) {
+    meshToCanvas() : Mesh{
         
-        let canvasField = new Field([]);
-        mesh.vertices.array.forEach(element => {
-            canvasField.array.push(this.calculateCanvasPos(element));
-        });
-        mesh.vertices = canvasField;
+        let canvasArray = [];
+        for (let i =0; i < this.mesh.numPoints(); i++) {
+            canvasArray.push(this.calculateCanvasPos(this.mesh.getVertex(i)));
+        }
+
+        let mesh = this.mesh.copy();
+        mesh.vertices = new Field(canvasArray);
         return mesh;
     }
-    calculateCanvasPos(meshPos) {
-        return Vector.add(new Vector(this.graphicsBuffer.width/2,this.graphicsBuffer.height/2,0),meshPos);
+    calculateCanvasPos(meshPos : Vector) {
+        return Vector.add(new Vector(this.#graphicsBuffer.width/2,this.#graphicsBuffer.height/2,0),meshPos);
     }
-    graphVertices(mesh) {
-        for (let vertex of mesh.vertices.array) {
-            this.graphVertex(vertex,this.renderParameters.pointRadius);
+    graphVertices() {
+        for (let i =0; i < this.mesh.numPoints(); i++) {
+            this.graphVertex(this.mesh.getVertex(i),this.renderParameters.pointRadius);
         }
+        
     }
-    graphVerticesWithZDeterminingSize(mesh,lowestRadius,highestRadius){
-        let highestZ = mesh.vertices.array[Field.findVectorWithHighestZ(mesh.vertices)].z;
-        let lowestZ = mesh.vertices.array[Field.findVectorWithLowestZ(mesh.vertices)].z;
-        let zRange = highestZ - lowestZ;
-        let radiusRange = highestRadius-lowestRadius;
-        for (let vertex of mesh.vertices.array) {
-            let radius = ((vertex.z-lowestZ)* (radiusRange/zRange)) + lowestRadius;
-
-            this.graphVisibleVertex(vertex,radius);
-        }
-
-
+    
+    graphVertex(vertex : Vector,size : number){
+        this.#graphicsBuffer.stroke(0);
+        this.#graphicsBuffer.fill(0);
+        this.#graphicsBuffer.circle(vertex.x,vertex.y,size);
     }
-    graphVertex(vertex,size){
-        this.graphicsBuffer.stroke(0);
-        this.graphicsBuffer.fill(0);
-        this.graphicsBuffer.circle(vertex.x,vertex.y,size);
-    }
-    graphVisibleVertex(vertex,size){
+    graphVisibleVertex(vertex : Vector,size : number){
         if (this.camera.isVertexVisible(vertex)) this.graphVertex(vertex,size);
     }
-    graphVisibleVertices(mesh,size) {
-        for (const vertex of mesh.vertices.array) {
-            this.graphVisibleVertex(vertex,size)
+    graphVisibleVertices(size : number) {
+        for (let i =0; i < this.mesh.numPoints(); i++) {
+            this.graphVisibleVertex(this.mesh.getVertex(i),size);
         }
     }
 
 
-    graphTriangle(field,triangle){
-        let graphReferences = triangle.verticeReferences;
-        let p1 = field.array[graphReferences[0]];
-        let p2 = field.array[graphReferences[1]];
-        let p3 = field.array[graphReferences[2]];
+    graphTriangle(triangle : Triangle){
+
+        let p1 = this.mesh.getVertex(triangle.getVerticeRef(0));
+        let p2 = this.mesh.getVertex(triangle.getVerticeRef(1));
+        let p3 = this.mesh.getVertex(triangle.getVerticeRef(2));
         
-        this.graphicsBuffer.strokeJoin(ROUND);
-        this.graphicsBuffer.noFill(255);
-        this.graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
+        this.#graphicsBuffer.strokeJoin(this.#p5.ROUND);
+        this.#graphicsBuffer.noFill();
+        this.#graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
     }
-    graphTriangles(mesh,color){
-        this.graphicsBuffer.stroke(color);
-        let triangles = mesh.triangles;
-        let field = mesh.vertices
-        for (const triangle of triangles) {
+    graphTriangles(color : p5.Color){
+        this.#graphicsBuffer.stroke(color);
+        for (let i = 0 ;i < this.mesh.numTriangles(); i++) {
             
-            this.graphTriangle(field, triangle);
+            this.graphTriangle(this.mesh.getTriangle(i));
 
             continue;
             
@@ -179,21 +174,23 @@ export class p5MeshRenderer extends MeshRenderer  {
 
     }
 
-    graphLines(lines,color){
+    graphLines(lines : Line[],color : p5.Color) : void{
         for (const line of lines) {
             this.graphLine(line,color);
         }
     }
-    graphLine(line,color) {
+    graphLine(line : Line,color : p5.Color) : void {
         this.graphBetweenTwoPoints(line.p1,line.p2,color)
     }
-    graphBetweenTwoPoints(p1,p2,color) {
-        this.graphicsBuffer.stroke(color);
-        this.graphicsBuffer.line(p1.x,p1.y,p2.x,p2.y);
+    graphBetweenTwoPoints(p1 : Vector,p2 : Vector,color : p5.Color) : void {
+        this.#graphicsBuffer.stroke(color);
+        this.#graphicsBuffer.line(p1.x,p1.y,p2.x,p2.y);
     }
 }
 
-
+/*
 if (typeof window !== "undefined") {
     window.p5MeshRenderer  = p5MeshRenderer;
 }
+
+*/

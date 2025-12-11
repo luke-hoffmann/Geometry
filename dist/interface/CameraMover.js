@@ -3,4 +3,3 @@ export class CameraMover {
         this.acceleration = acceleration;
     }
 }
-//# sourceMappingURL=CameraMover.js.map

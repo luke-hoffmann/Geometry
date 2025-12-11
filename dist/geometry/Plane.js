@@ -5,4 +5,3 @@ export class Plane {
         this.p3 = p3;
     }
 }
-//# sourceMappingURL=Plane.js.map

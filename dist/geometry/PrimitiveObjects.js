@@ -21,4 +21,3 @@ export class PrimitiveObject {
         return MeshGenerator.generateConvexMesh(fieldOfPoints, 8);
     }
 }
-//# sourceMappingURL=PrimitiveObjects.js.map

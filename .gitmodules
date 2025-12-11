@@ -1,7 +1,6 @@
-
-[submodule "src/libs/ColorHandler"]
-	path = src/libs/ColorHandler
+[submodule "public/libs/ColorHandler"]
+	path = public/libs/ColorHandler
 	url = https://github.com/luke-hoffmann/ColorHandler
-[submodule "src/libs/UsefulFunction"]
-	path = src/libs/UsefulFunction
+[submodule "public/libs/UsefulFunction"]
+	path = public/libs/UsefulFunction
 	url = https://github.com/luke-hoffmann/UsefulFunction

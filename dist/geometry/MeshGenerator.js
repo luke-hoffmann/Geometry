@@ -1,4 +1,4 @@
-import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction";
+import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
 import { Triangle } from "./Triangle.js";
 import { Mesh } from "./Mesh.js";
 export class MeshGenerator {
@@ -24,6 +24,7 @@ export class MeshGenerator {
         let unusedField = field;
         let searchToRemoveDuplicateTriangles = true;
         let triangles = undefined;
+        console.log(field);
         if (triangles == undefined) {
             triangles = [field.calculateLargestTriangleFromField()];
             triangles.push(triangles[0].flipNormal());
@@ -39,4 +40,3 @@ export class MeshGenerator {
         return new Mesh(field, triangles);
     }
 }
-//# sourceMappingURL=MeshGenerator.js.map

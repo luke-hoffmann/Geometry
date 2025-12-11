@@ -1,29 +1,14 @@
 {
   "name": "geometry",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "example": "examples"
-  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
-  "build": "tsc && if not exist dist\\libs mkdir dist\\libs && copyfiles --flat src/libs/p5.min.js dist/libs"
-},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/luke-hoffmann/Geometry.git"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/luke-hoffmann/Geometry/issues"
-  },
-  "homepage": "https://github.com/luke-hoffmann/Geometry#readme",
-  "devDependencies": {
-    "@types/p5": "^1.7.7",
-    "copyfiles": "^2.4.1",
-    "typescript": "^5.9.3"
+  "dependencies": {
+    "usefulfunction": "git+https://github.com/luke-hoffmann/UsefulFunction.git"
   }
 }

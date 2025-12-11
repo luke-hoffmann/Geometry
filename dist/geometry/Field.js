@@ -1,7 +1,7 @@
 import { Vector } from "./Vector.js";
 import { Triangle } from "./Triangle.js";
 import { Line } from "./Line.js";
-import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
+import { UsefulFunction } from "usefulfunction";
 export class Field {
     constructor(array) {
         this.array = array;
@@ -196,4 +196,3 @@ export class Field {
         return this.array.length;
     }
 }
-//# sourceMappingURL=Field.js.map

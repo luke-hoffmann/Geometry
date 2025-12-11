@@ -1,15 +1,20 @@
 import { Triangle } from "../geometry/Triangle.js";
 import { Field } from "../geometry/Field.js";
 import { Vector } from "../geometry/Vector.js";
+import { Camera } from "./Camera.js";
 export class ProjectionPlane {
-    constructor(topLeft,bottomLeft,topRight,bottomRight) {
-        this.tL = topLeft;
-        this.bL = bottomLeft;
-        this.tR = topRight;
-        this.bR = bottomRight;
+    #tL : Vector;
+    #bL : Vector;
+    #tR : Vector;
+    #bR : Vector;
+    constructor(topLeft : Vector,bottomLeft : Vector,topRight : Vector,bottomRight : Vector) {
+        this.#tL = topLeft;
+        this.#bL = bottomLeft;
+        this.#tR = topRight;
+        this.#bR = bottomRight;
     }
 
-    static generateProjectionPlaneFromCamera(camera,fovAngle,focalDistance,aspectRatio){
+    static generateProjectionPlaneFromCamera(camera : Camera){
         // aspect ratio is a number that is equivalent to height/width of the Projection Box/Plane
         let pointsOfProjectionPlane = new Field([])
         let centerPointOfPlane = Vector.add(Vector.scalarMult(camera.viewVector,focalDistance),camera.position);

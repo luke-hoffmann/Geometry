@@ -4,10 +4,10 @@ import type { Light } from "../geometry/index.js";
 import type { RenderParameters } from "./RenderParameters.js";
 import { Vector } from "../geometry/Vector.js"
 export class MeshRenderer {
-    private mesh : Mesh;
-    private camera : Camera;
-    private lights : Light[];
-    private renderParameters : RenderParameters;
+    protected mesh : Mesh;
+    protected camera : Camera;
+    protected lights : Light[];
+    protected renderParameters : RenderParameters;
     constructor (mesh: Mesh,camera: Camera,lights: Light[],renderParameters: RenderParameters) {
         this.mesh = mesh;
         this.camera = camera;
@@ -18,22 +18,26 @@ export class MeshRenderer {
         let viewVector = new Vector(0,0,1);
         let visibleTriangles = [];
         let backFaceCulledMesh = this.mesh.copy();
-        backFaceCulledMesh.triangles = [];
+        let cameraFacingTriangles = [];
 
-        let normalVectors = Mesh.calculateTriangleNormalVectors(mesh);
-        for (let i =0; i < mesh.triangles.length ; i++) {
+        let normalVectors = backFaceCulledMesh.calculateTriangleNormalVectors();
+        for (let i = 0; i < normalVectors.length; i++) {
+            //if (this.renderParameters.isPerspective)
+        }
+        for (let i =0; i < this.mesh.numTriangles() ; i++) {
             let isTriangleVisible;
-            if (isPerspective)  {
-                isTriangleVisible = Triangle.isDotProductLEThanX(mesh.vertices.array[mesh.triangles[i].verticeReferences[0]],normalVectors[i].direction,0);
+            if (this.renderParameters.isPerspective)  {
+                isTriangleVisible = this.mesh.getVertex(this.mesh.getTriangle(i).getVerticeRef(0)).isDotProductLEThanX(normalVectors[i].direction,0);
             } else {
-                isTriangleVisible = Triangle.isDotProductLEThanX(viewVector,normalVectors[i].direction,0);
+                isTriangleVisible = viewVector.isDotProductLEThanX(normalVectors[i].direction,0);
             }
             
            
             if (!isTriangleVisible) continue;
-            backFaceCulledMesh.triangles.push(mesh.triangles[i]);
+            cameraFacingTriangles.push(this.mesh.getTriangle(i));
             
         }
+        backFaceCulledMesh.triangles = cameraFacingTriangles;
         return backFaceCulledMesh;
     }
 }

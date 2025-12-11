@@ -12,7 +12,7 @@ export class p5CameraMover extends CameraMover {
         let newCam = camera.copy();
         let newPos = Vector.add(point,new Vector(Math.sin(this.currentTheta)*radius,0,Math.cos(this.currentTheta)*radius));
         this.currentTheta+=deltaTheta;
-        newCam.physicsBody.setPosition(newPos);
+        newCam.setPosition(newPos);
         newCam.pointAtPoint(point);
         return newCam;
     }

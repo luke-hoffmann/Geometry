@@ -35,6 +35,15 @@ export class PhysicsBody {
         __classPrivateFieldSet(this, _PhysicsBody_velocity, Vector.add(__classPrivateFieldGet(this, _PhysicsBody_velocity, "f"), Vector.scalarMult(__classPrivateFieldGet(this, _PhysicsBody_acceleration, "f"), deltaTime)), "f");
         __classPrivateFieldSet(this, _PhysicsBody_velocity, Vector.scalarMult(__classPrivateFieldGet(this, _PhysicsBody_velocity, "f"), 1 - __classPrivateFieldGet(this, _PhysicsBody_airFriction, "f")), "f");
     }
+    get position() {
+        return __classPrivateFieldGet(this, _PhysicsBody_position, "f").copy();
+    }
+    get velocity() {
+        return __classPrivateFieldGet(this, _PhysicsBody_velocity, "f").copy();
+    }
+    get acceleration() {
+        return __classPrivateFieldGet(this, _PhysicsBody_acceleration, "f").copy();
+    }
     set position(position) {
         if (!(position instanceof Vector))
             throw Error("Position input is not of type Vector");
@@ -55,4 +64,3 @@ export class PhysicsBody {
     }
 }
 _PhysicsBody_position = new WeakMap(), _PhysicsBody_velocity = new WeakMap(), _PhysicsBody_acceleration = new WeakMap(), _PhysicsBody_airFriction = new WeakMap();
-//# sourceMappingURL=PhysicsBody.js.map

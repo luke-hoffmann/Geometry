@@ -72,8 +72,8 @@ export class Triangle {
     
     
     
-    flipNormal() : this{
-        let outputTriangle = this.constructor(this.verticeReferences.reverse());
+    flipNormal() : Triangle{
+        let outputTriangle = new Triangle(this.verticeReferences.reverse());
         
         return outputTriangle;
     }

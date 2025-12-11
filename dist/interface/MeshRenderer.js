@@ -10,21 +10,24 @@ export class MeshRenderer {
         let viewVector = new Vector(0, 0, 1);
         let visibleTriangles = [];
         let backFaceCulledMesh = this.mesh.copy();
-        backFaceCulledMesh.triangles = [];
-        let normalVectors = Mesh.calculateTriangleNormalVectors(mesh);
-        for (let i = 0; i < mesh.triangles.length; i++) {
+        let cameraFacingTriangles = [];
+        let normalVectors = backFaceCulledMesh.calculateTriangleNormalVectors();
+        for (let i = 0; i < normalVectors.length; i++) {
+            //if (this.renderParameters.isPerspective)
+        }
+        for (let i = 0; i < this.mesh.numTriangles(); i++) {
             let isTriangleVisible;
-            if (isPerspective) {
-                isTriangleVisible = Triangle.isDotProductLEThanX(mesh.vertices.array[mesh.triangles[i].verticeReferences[0]], normalVectors[i].direction, 0);
+            if (this.renderParameters.isPerspective) {
+                isTriangleVisible = this.mesh.getVertex(this.mesh.getTriangle(i).getVerticeRef(0)).isDotProductLEThanX(normalVectors[i].direction, 0);
             }
             else {
-                isTriangleVisible = Triangle.isDotProductLEThanX(viewVector, normalVectors[i].direction, 0);
+                isTriangleVisible = viewVector.isDotProductLEThanX(normalVectors[i].direction, 0);
             }
             if (!isTriangleVisible)
                 continue;
-            backFaceCulledMesh.triangles.push(mesh.triangles[i]);
+            cameraFacingTriangles.push(this.mesh.getTriangle(i));
         }
+        backFaceCulledMesh.triangles = cameraFacingTriangles;
         return backFaceCulledMesh;
     }
 }
-//# sourceMappingURL=MeshRenderer.js.map

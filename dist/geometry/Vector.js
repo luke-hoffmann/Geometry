@@ -143,4 +143,3 @@ export class Vector {
     }
 }
 _Vector_x = new WeakMap(), _Vector_y = new WeakMap(), _Vector_z = new WeakMap();
-//# sourceMappingURL=Vector.js.map

@@ -1,36 +1,14 @@
 {
   "compilerOptions": {
-    // File structure
-    "rootDir": "./src",
-    "outDir": "./dist",
-
-    // Compile to browser-friendly JS
     "target": "es2020",
     "module": "es2020",
     "moduleResolution": "node",
-
-    // Use DOM + modern JavaScript types
-    "lib": ["dom", "es2020"],
-    "types": ["p5"],
-    "typeRoots": [
-      "./node_modules/@types"
-    ],
-    // Optional output settings
-    "sourceMap": true,
-
-    // Recommended TypeScript safety options
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
     "strict": true,
-    "skipLibCheck": true,
-
-    // Good development defaults
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "checkJs": false,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "resolveJsonModule": true
   },
-  "include": [
-    "src",
-    "src/libs/p5.min.js"
-  ]
+  "include": ["src"]
 }

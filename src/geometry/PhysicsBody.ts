@@ -21,6 +21,15 @@ export class PhysicsBody {
         this.#velocity = Vector.add(this.#velocity,Vector.scalarMult(this.#acceleration,deltaTime));
         this.#velocity = Vector.scalarMult(this.#velocity,1-this.#airFriction);
     }
+    get position () : Vector {
+        return this.#position.copy();
+    }
+    get velocity () : Vector {
+        return this.#velocity.copy();
+    }
+    get acceleration () : Vector {
+        return this.#acceleration.copy();
+    }
     set position(position : Vector) {
         if (!(position instanceof Vector)) throw Error("Position input is not of type Vector");
         this.#position = position;

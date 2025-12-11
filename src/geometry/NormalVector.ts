@@ -13,4 +13,10 @@ export class NormalVector {
     copy(){
         return new NormalVector(this.#position.copy(),this.#direction.copy());
     }
+    get position(){
+        return this.#position;
+    }
+    get direction() {
+        return this.#direction;
+    }
 }

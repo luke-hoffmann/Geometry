@@ -59,7 +59,7 @@ export class Triangle {
         return farthestPoint;
     }
     flipNormal() {
-        let outputTriangle = this.constructor(this.verticeReferences.reverse());
+        let outputTriangle = new Triangle(this.verticeReferences.reverse());
         return outputTriangle;
     }
     static addPointsFromTrianglesToMap(map, triangles) {
@@ -89,4 +89,3 @@ export class Triangle {
         return new Triangle(newTriangleReferences);
     }
 }
-//# sourceMappingURL=Triangle.js.map

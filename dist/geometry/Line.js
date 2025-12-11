@@ -40,4 +40,3 @@ export class Line {
     }
 }
 _Line_p1 = new WeakMap(), _Line_p2 = new WeakMap();
-//# sourceMappingURL=Line.js.map

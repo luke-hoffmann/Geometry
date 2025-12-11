@@ -33,4 +33,3 @@ export class Light {
     }
 }
 _Light_color = new WeakMap(), _Light_position = new WeakMap(), _Light_brightness = new WeakMap();
-//# sourceMappingURL=Light.js.map
