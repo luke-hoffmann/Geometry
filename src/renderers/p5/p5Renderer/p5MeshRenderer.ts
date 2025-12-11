@@ -5,11 +5,14 @@ import { Vector } from "../../../geometry/Vector.js";
 import { Field } from "../../../geometry/Field.js";
 import { Triangle } from "../../../geometry/Triangle.js";
 import { Line } from "../../../geometry/Line.js";
+import { Light } from "../../../geometry/Light.js";
+import { RenderParameters } from "../../../interface/RenderParameters.js";
+import type p5
 export class p5MeshRenderer extends MeshRenderer  {
-    constructor(mesh,screenSize,camera,lights,renderParameters) {
-        super(mesh,screenSize,camera,lights,renderParameters);
-        createCanvas(screenSize.x,screenSize.y);
-        this.graphicsBuffer = createGraphics(screenSize.x,screenSize.y);
+    constructor(mesh : Mesh,screenSize : Vector ,camera: Camera,lights : Light[],renderParameters : RenderParameters,p : p5) {
+        super(mesh,camera,lights,renderParameters);
+        p.createCanvas(screenSize.x,screenSize.y);
+        this.graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
     }
     /*
 
@@ -124,8 +127,8 @@ export class p5MeshRenderer extends MeshRenderer  {
         }
     }
     graphVerticesWithZDeterminingSize(mesh,lowestRadius,highestRadius){
-        let highestZ = mesh.vertices.array[Vector.findVectorWithHighestZ(mesh.vertices)].z;
-        let lowestZ = mesh.vertices.array[Vector.findVectorWithLowestZ(mesh.vertices)].z;
+        let highestZ = mesh.vertices.array[Field.findVectorWithHighestZ(mesh.vertices)].z;
+        let lowestZ = mesh.vertices.array[Field.findVectorWithLowestZ(mesh.vertices)].z;
         let zRange = highestZ - lowestZ;
         let radiusRange = highestRadius-lowestRadius;
         for (let vertex of mesh.vertices.array) {

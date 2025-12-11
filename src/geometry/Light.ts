@@ -1,5 +1,5 @@
-import { ColorHandler } from "../../dep/ColorHandler/src/ColorHandler.js";
-import { UsefulFunction } from "../../dep/UsefulFunction/src/UsefulFunction.js";
+import { ColorHandler } from "../libs/ColorHandler/src/ColorHandler.js"
+import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
 export class Light {
     constructor (color,position,brightness){
         // brightness should be between 0 and 1;

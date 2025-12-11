@@ -1,7 +1,7 @@
 import { Vector } from "./Vector.js";
 import { Triangle } from "./Triangle.js";
 import {Line} from "./Line.js";
-import { UsefulFunction } from "../../dep/UsefulFunction/src/UsefulFunction.js";
+import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
 export class Field {
     constructor(array) {
         
@@ -156,7 +156,33 @@ export class Field {
         return indexOfLowestCoordinate
     }
 
-    
+    static findVectorWithLowestZ(field){
+        let val = Infinity;
+        let index = -1;
+        for (let i =0 ; i < field.array.length;i++) {
+            let v = field.array[i];
+            if (v.z  < val) {
+                val = v.z;
+                index = i;
+            }
+        }
+        if (index == -1) throw Error("no vector found!");
+        return index;
+
+    }
+    static findVectorWithHighestZ(field){
+        let val = -Infinity;
+        let index = -1;
+        for (let i =0 ; i < field.array.length;i++) {
+            let v = field.array[i];
+            if (v.z  > val) {
+                val = v.z;
+                index = i;
+            }
+        }
+        if (index == -1) throw Error("no vector found!");
+        return index;
+    }
 
 
     

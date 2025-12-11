@@ -1,7 +1,8 @@
 import { Vector } from "./Vector.js";
-import { UsefulFunction } from "../../dep/UsefulFunction/src/UsefulFunction.js";
+import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
 export class Triangle {
-    constructor (verticeReferences) {
+    
+    constructor (verticeReferences : number[]) {
 
         this.verticeReferences = verticeReferences;
         
