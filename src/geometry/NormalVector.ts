@@ -1,14 +1,16 @@
 import { Vector } from "./Vector.js";
 export class NormalVector {
-    constructor(position,direction){
-        this.position = position;
-        this.direction = direction;
+    #position : Vector;
+    #direction : Vector;
+    constructor(position : Vector,direction : Vector){
+        this.#position = position;
+        this.#direction = direction;
     }
 
     worldPositionOfDirection(){
-        return Vector.add(this.position,this.direction);
+        return Vector.add(this.#position,this.#direction);
     }
     copy(){
-        return new NormalVector(this.position.copy(),this.direction.copy());
+        return new NormalVector(this.#position.copy(),this.#direction.copy());
     }
 }

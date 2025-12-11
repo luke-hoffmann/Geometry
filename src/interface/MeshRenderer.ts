@@ -17,7 +17,7 @@ export class MeshRenderer {
     backFaceCulling() {
         let viewVector = new Vector(0,0,1);
         let visibleTriangles = [];
-        let backFaceCulledMesh = this.mesh.copy(mesh);
+        let backFaceCulledMesh = this.mesh.copy();
         backFaceCulledMesh.triangles = [];
 
         let normalVectors = Mesh.calculateTriangleNormalVectors(mesh);

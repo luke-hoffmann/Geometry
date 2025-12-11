@@ -3,14 +3,16 @@ import { Field } from "./Field.js";
 import { Triangle } from "./Triangle.js";
 import { Mesh } from "./Mesh.js";
 export class MeshGenerator {
-    static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Mesh {
+    static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
         triangles = [...triangles]
-        let upSpaceIndices = Field.getTrianglesUpspace(field,triangles,graphIndices);
-        let farthestPoint = Field.getFarthestPointFromTriangles(field,triangles,upSpaceIndices);
+        let upSpaceIndices = field.getTrianglesUpspace(triangles,graphIndices);
+        let farthestPoint = field.getFarthestPointFromTriangles(triangles,upSpaceIndices);
         if (farthestPoint === false) {
-            return false;
+            throw Error("LOOK AT THIS CODE LINE IDK - 12/10/2025 - when i took on the task of converting it all to TS");
+            //return false;
         }
-        let trianglesWithPointInUpspace = Field.getTrianglesWithPointInUpspace(field,triangles,farthestPoint);
+        let triangleIndicesWithPointInUpspace = field.getTrianglesWithPointInUpspace(triangles,farthestPoint);
+        let trianglesWithPointInUpspace = field.getTrianglesWithPointInUpspace(triangles,farthestPoint);
        
 
         let newTriangleMap = new Map();
@@ -28,22 +30,22 @@ export class MeshGenerator {
     }
 
 
-    static generateConvexMesh(field : Mesh,iterationNumber : number) {
+    static generateConvexMesh(field : Field,iterationNumber : number) {
         let unusedField = field;
         let searchToRemoveDuplicateTriangles = true;
         let triangles = undefined;
         if (triangles == undefined) {
-            triangles = [Field.calculateLargestTriangleFromField(field)];
+            triangles = [field.calculateLargestTriangleFromField()];
             triangles.push(triangles[0].flipNormal());
         }
         
             
         let result;
-        let graphIndices = UsefulFunction.arrayOfIndices(field.array.length);
+        let graphIndices = UsefulFunction.arrayOfIndices(field.numPoints());
         triangles = this.convexHullIterativeProcess(field,triangles,graphIndices);
         for (let i =0 ; i < iterationNumber;i++) {
-            result = this.convexHullIterativeProcess(field,triangles,graphIndices,iterationNumber);
-            if (result == false) return new this(field,triangles,false);
+            result = this.convexHullIterativeProcess(field,triangles,graphIndices);
+            //if (result == false) return new Mesh(field,triangles);
             triangles = result;
         }
         

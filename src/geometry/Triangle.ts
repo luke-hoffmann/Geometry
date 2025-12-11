@@ -8,7 +8,9 @@ export class Triangle {
         this.verticeReferences = verticeReferences;
         
     }
-    
+    getVerticeRef(x : number) : number{
+        return this.verticeReferences[x];
+    }
     doesUpspaceContain(field : Field,point: number) : boolean{
 
         let PA = Vector.sub(field.getVertex(point),field.getVertex(this.verticeReferences[0]));

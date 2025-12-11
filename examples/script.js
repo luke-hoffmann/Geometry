@@ -1,11 +1,11 @@
-import { p5MeshRenderer } from "../src/renderers/p5/p5Renderer/p5Meshrenderer.js";
-import { Mesh } from "../src/geometry/Mesh.js";
-import { Field } from "../src/geometry/Field.js";
-import { Camera } from "../src/camera/Camera.js";
-import { Vector } from "../src/geometry/Vector.js";
-import { RenderParameters } from "../src/interface/RenderParameters.js";
-import { p5CameraMover } from "../src/renderers/p5/p5Renderer/p5CameraMover.js";
-import { PhysicsBody } from "../src/geometry/PhysicsBody.js";
+import { p5MeshRenderer } from "../dist/renderers/p5/p5Renderer/p5Meshrenderer.js";
+import { Mesh } from "../dist/geometry/Mesh.js";
+import { Field } from "../dist/geometry/Field.js";
+import { Camera } from "../dist/camera/Camera.js";
+import { Vector } from "../dist/geometry/Vector.js";
+import { RenderParameters } from "../dist/interface/RenderParameters.js";
+import { p5CameraMover } from "../dist/renderers/p5/p5Renderer/p5CameraMover.js";
+import { PhysicsBody } from "../dist/geometry/PhysicsBody.js";
 
 let mesh = Mesh.generateConvexMesh(Field.generateRandomFieldInSphere(200,200),100);
 

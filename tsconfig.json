@@ -25,7 +25,12 @@
     // Good development defaults
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "checkJs": false
+    "checkJs": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/libs/p5.min.js"
+  ]
 }

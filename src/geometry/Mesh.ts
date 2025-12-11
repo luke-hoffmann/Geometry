@@ -36,16 +36,14 @@ export class Mesh {
     }
     
     copy(){
-        let newMesh = new Mesh([],[])
         
-        for (const triangles of this.triangles) {
-            newMesh.triangles.push (new Triangle(triangle.verticeReferences));
+        let newTriangles = [];
+        for (const triangle of this.triangles) {
+            newTriangles.push (triangle.copy());
         }
-        for (const vertex of this.vertices.array) {
-            newMesh.vertices.array.push (new Vector(vertex.x,vertex.y,vertex.z));
-        }
+        
 
-        return newMesh;
+        return new Mesh(this.vertices.copy(),newTriangles);
     }
 
 

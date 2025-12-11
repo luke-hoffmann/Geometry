@@ -7,7 +7,7 @@ import { Triangle } from "../../../geometry/Triangle.js";
 import { Line } from "../../../geometry/Line.js";
 import { Light } from "../../../geometry/Light.js";
 import { RenderParameters } from "../../../interface/RenderParameters.js";
-import type p5
+import type p5 from "p5";
 export class p5MeshRenderer extends MeshRenderer  {
     constructor(mesh : Mesh,screenSize : Vector ,camera: Camera,lights : Light[],renderParameters : RenderParameters,p : p5) {
         super(mesh,camera,lights,renderParameters);

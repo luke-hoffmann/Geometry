@@ -7,8 +7,8 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "build": "tsc && if not exist dist\\libs mkdir dist\\libs && copyfiles --flat src/libs/p5.min.js dist/libs"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/luke-hoffmann/Geometry.git"
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/luke-hoffmann/Geometry#readme",
   "devDependencies": {
     "@types/p5": "^1.7.7",
+    "copyfiles": "^2.4.1",
     "typescript": "^5.9.3"
   }
 }

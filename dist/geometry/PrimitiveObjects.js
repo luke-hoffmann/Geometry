@@ -2,8 +2,7 @@ import { Field } from "./Field.js";
 import { Vector } from "./Vector.js";
 import { MeshGenerator } from "./MeshGenerator.js";
 export class PrimitiveObject {
-    
-    static cube(sideLength : number,centeredAt : Vector) {
+    static cube(sideLength, centeredAt) {
         if (centeredAt == undefined) {
             centeredAt = Vector.zero();
         }
@@ -17,10 +16,9 @@ export class PrimitiveObject {
             [-sideLength / 2, sideLength / 2, -sideLength / 2],
             [sideLength / 2, sideLength / 2, sideLength / 2]
         ];
-        let fieldOfPoints = Field.generateFieldFromMatrixOfPoints(pointsMatrix)
-
+        let fieldOfPoints = Field.generateFieldFromMatrixOfPoints(pointsMatrix);
         fieldOfPoints = fieldOfPoints.moveEntireField(centeredAt);
-
-        return MeshGenerator.generateConvexMesh(fieldOfPoints,8);
+        return MeshGenerator.generateConvexMesh(fieldOfPoints, 8);
     }
 }
+//# sourceMappingURL=PrimitiveObjects.js.map
