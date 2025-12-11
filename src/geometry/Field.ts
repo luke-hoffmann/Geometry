@@ -3,57 +3,60 @@ import { Triangle } from "./Triangle.js";
 import {Line} from "./Line.js";
 import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
 export class Field {
-    constructor(array) {
+    private array : Vector[];
+    constructor(array : Vector[]) {
         
         this.array = array;
         if(array == undefined) {
             this.array = [];
         }
     }
-    static generateFieldFromMatrixOfPoints(matrix){
+    getVertex(index : number) : Vector {
+        return this.array[index];
+    }
+    static generateFieldFromMatrixOfPoints(matrix : number[][]){
         let newField = new Field([]);
         for (const row of matrix) {
-            newField.array.push(new Vector(row));
+            newField.array.push(new Vector(row[0],row[1],row[2]));
         }   
         return newField;
     }
-    static generateRandomFieldInSphere(radius,n){
-        let newField = new Field([]);
+    generateRandomPointsInSphere(radius : number,n : number){
+        this.array = [];
         for (let i =0; i < n; i++) {
-            newField.array.push(Vector.generateVectorInSphere(radius));
+            this.array.push(Vector.generateVectorInSphere(radius));
         }
-        return newField;
     }
-    static getTriangleUpspace(field,triangle,indices){
+    getTriangleUpspace(triangle : Triangle,indices : number[]){
         let indicesAbovePlane = []
         for (const point of indices) {
             // need to replace to instead see if the point lies on the plane or not.
             if (point == triangle[0] || point == triangle[1] || point ==triangle[2] ) continue;
 
-            if (!Triangle.doesUpspaceContain(field,triangle,point)) continue;
+            if (!triangle.doesUpspaceContain(this,point)) continue;
             indicesAbovePlane.push(point)
 
         }
         return  indicesAbovePlane;
     }
 
-    static getTrianglesWithPointInUpspace(field,triangles,point){
+    static getTrianglesWithPointInUpspace(field,triangles,point) : Triangle[]{
         let trianglesContainingIndices = [];
         let triangle;
         for (let i =0; i < triangles.length;i++) {
             triangle = triangles[i]
             if (!Triangle.doesUpspaceContain(field,triangle,point)) continue;
-            trianglesContainingIndices.push(i);
+            trianglesContainingIndices.push(triangle);
         }
         return trianglesContainingIndices;
     }
 
 
-    static getTrianglesUpspace(field,triangles,indices) {
+    getTrianglesUpspace(triangles,indices) {
         
         let upspace= [];
         for (const triangle of triangles) {
-            upspace.push(this.getTriangleUpspace(field,triangle,indices));
+            upspace.push(this.getTriangleUpspace(triangle,indices));
         }
 
         upspace = UsefulFunction.combineArrays(upspace);
@@ -109,46 +112,62 @@ export class Field {
 
 
 
-    static getFarthestVectorFromVector(index,field){
+    getFarthestVectorFromVector(index : number){
         let greatestDistance = 0;
         let farthestDistancePoint = undefined
-        let farthestDistancePointIndex = undefined
-        let v = field.array[index];
-        for (let i =0; i< field.array.length; i++){
+        let farthestDistancePointIndex = -1
+        let v = this.array[index];
+        for (let i =0; i< this.array.length; i++){
 
-            let dist = Vector.distanceBetweenVectors(field.array[i],v);
+            let dist = Vector.distanceBetweenVectors(this.array[i],v);
             if (dist > greatestDistance){
                 greatestDistance = dist;
-                farthestDistancePoint = field.array[i]
+                farthestDistancePoint = this.array[i]
                 farthestDistancePointIndex = i;
             }
         }
+        if (farthestDistancePointIndex == -1 ) throw Error("no farthest distance point found at all");
         return farthestDistancePointIndex;
     }
 
-    static calculateLargestTriangleFromField(field) {
+    calculateLargestTriangleFromField() {
         
-        let point1Index = Field.lowestVectorInField(field)
+        let point1Index = this.lowestVectorInField()
 
-        let point2Index = Field.getFarthestVectorFromVector(point1Index,field);
-        let line = new Line(field.array[point1Index],field.array[point2Index]);
-        let point3Index = Line.calculateFarthestPoint(field,line);
+        let point2Index = this.getFarthestVectorFromVector(point1Index);
+        let line = new Line(this.array[point1Index],this.array[point2Index]);
+        let point3Index = this.calculateFarthestPoint(line);
         let triangle = new Triangle([point1Index,point2Index,point3Index]);
         return triangle;
 
     }
-    /**
-     * Lowest point based upon x value of vector points
-     * @param {*} field 
-     * @returns {Vector} point
-     */
-    static lowestVectorInField(field){
-        if (field.array.length == 0) return undefined;
-        let lowestCoordinate = field.array[0];
+
+    calculateFarthestPoint(line : Line) {
+        let farthestDistance = 0;
+        let farthestPoint = undefined
+        let farthestPointIndex = -1;
+        for (let i =0 ; i <this.array.length ; i++) {
+            let pointIsFromLine = Vector.isVectorEqual(this.array[i],line.p1) || Vector.isVectorEqual(this.array[i],line.p2);
+            if (pointIsFromLine) continue;
+            let distance= line.distanceToPoint(this.array[i]);
+            
+            if (farthestDistance < distance) {
+                farthestPoint = this.array[i];
+                farthestDistance = distance;
+                farthestPointIndex = i;
+            }
+        }
+        if (farthestPointIndex == -1) throw Error("no farthest point found");
+        return farthestPointIndex;
+    }
+    
+    lowestVectorInField(){
+        if (this.array.length == 0) throw Error ("array length is 0");
+        let lowestCoordinate = this.array[0];
         let indexOfLowestCoordinate = 0;
-        for (let i =0; i < field.array.length; i++) {
-            if(lowestCoordinate.x > field.array[i].x) {
-                lowestCoordinate = field.array[i];
+        for (let i =0; i < this.array.length; i++) {
+            if(lowestCoordinate.x > this.array[i].x) {
+                lowestCoordinate = this.array[i];
                 indexOfLowestCoordinate = i;
                 i = 0;
             }
@@ -156,11 +175,11 @@ export class Field {
         return indexOfLowestCoordinate
     }
 
-    static findVectorWithLowestZ(field){
+    findVectorWithLowestZ(){
         let val = Infinity;
         let index = -1;
-        for (let i =0 ; i < field.array.length;i++) {
-            let v = field.array[i];
+        for (let i =0 ; i < this.array.length;i++) {
+            let v = this.array[i];
             if (v.z  < val) {
                 val = v.z;
                 index = i;
@@ -170,11 +189,11 @@ export class Field {
         return index;
 
     }
-    static findVectorWithHighestZ(field){
+    findVectorWithHighestZ(){
         let val = -Infinity;
         let index = -1;
-        for (let i =0 ; i < field.array.length;i++) {
-            let v = field.array[i];
+        for (let i =0 ; i < this.array.length;i++) {
+            let v = this.array[i];
             if (v.z  > val) {
                 val = v.z;
                 index = i;
@@ -184,6 +203,6 @@ export class Field {
         return index;
     }
 
-
+    
     
 }

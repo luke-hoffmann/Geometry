@@ -1,16 +1,21 @@
 import { ColorHandler } from "../libs/ColorHandler/src/ColorHandler.js"
 import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
+import { Vector } from "./Vector.js";
 export class Light {
-    constructor (color,position,brightness){
+    #color : ColorHandler;
+    #position : Vector;
+    #brightness : number;
+
+    constructor (color : ColorHandler,position : Vector,brightness : number){
         // brightness should be between 0 and 1;
         // r, g, b should be between 0 and 255;
-        this.color=color;
-        this.brightness = brightness;
-        this.position = position;
+        this.#color=color;
+        this.#brightness = brightness;
+        this.#position = position;
     }
     
-    static calculateObservedColor(light,color){
-        light = UsefulFunction.multiplyArray(light.color.color,light.brightness);
+    calculateObservedColor(color : ColorHandler){
+        let light = UsefulFunction.multiplyArray(this.#color.color,this.#brightness);
         let normalizedLight = UsefulFunction.divideArray(light,255);
         let normalizedColor = UsefulFunction.divideArray(color.color,255);
         let observedColor = UsefulFunction.elementWiseMultiplication(normalizedColor,normalizedLight);

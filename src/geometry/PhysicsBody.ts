@@ -1,34 +1,39 @@
 import { Vector } from "./Vector.js";
 export class PhysicsBody {
-    constructor (position,velocity,acceleration,airFriction){
+
+    #position : Vector;
+    #velocity : Vector;
+    #acceleration : Vector;
+    #airFriction : number;
+    constructor (position : Vector,velocity : Vector,acceleration : Vector,airFriction : number){
         
-        this.position = position; 
-        if (!(position instanceof Vector)) this.position = new Vector(0,0,0);  
-        this.velocity = velocity;
-        if (!(velocity instanceof Vector)) this.velocity = new Vector(0,0,0);
-        this.acceleration = acceleration;
-        if (!(acceleration instanceof Vector)) this.acceleration = new Vector(0,0,0);   
-        this.airFriction = airFriction;
-        if (airFriction == undefined) airFriction = .01;
+        this.#position = position; 
+        if (!(position instanceof Vector)) this.#position = new Vector(0,0,0);  
+        this.#velocity = velocity;
+        if (!(velocity instanceof Vector)) this.#velocity = new Vector(0,0,0);
+        this.#acceleration = acceleration;
+        if (!(acceleration instanceof Vector)) this.#acceleration = new Vector(0,0,0);   
+        this.#airFriction = airFriction;
+        if (airFriction == undefined) this.#airFriction = .01;
     }
-    update(deltaTime){
-        this.position = Vector.add(this.position,Vector.scalarMult(this.velocity,deltaTime));
-        this.velocity = Vector.add(this.velocity,Vector.scalarMult(this.acceleration,deltaTime));
-        this.velocity = Vector.scalarMult(this.velocity,1-this.airFriction);
+    update(deltaTime : number){
+        this.#position = Vector.add(this.#position,Vector.scalarMult(this.#velocity,deltaTime));
+        this.#velocity = Vector.add(this.#velocity,Vector.scalarMult(this.#acceleration,deltaTime));
+        this.#velocity = Vector.scalarMult(this.#velocity,1-this.#airFriction);
     }
-    setPosition(position) {
+    set position(position : Vector) {
         if (!(position instanceof Vector)) throw Error("Position input is not of type Vector");
-        this.position = position;
+        this.#position = position;
     }
-    setVelocity(velocity) {
+    set velocity(velocity : Vector) {
         if (!(velocity instanceof Vector)) throw Error("Velocity input is not of type Vector");
-        this.velocity = velocity;
+        this.#velocity = velocity;
     }
-    setAcceleration(acceleration) {
+    set acceleration(acceleration : Vector) {
         if (!(acceleration instanceof Vector)) throw Error("Acceleration input is not of type Vector");
-        this.acceleration = acceleration;
+        this.#acceleration = acceleration;
     }
     copy(){
-        return new this.constructor(this.position.copy(),this.velocity.copy(),this.acceleration.copy(),this.airFriction);
+        return new PhysicsBody(this.#position.copy(),this.#velocity.copy(),this.#acceleration.copy(),this.#airFriction);
     }
 }

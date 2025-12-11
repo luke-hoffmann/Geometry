@@ -2,15 +2,23 @@
 
 
 export class Vector {
-    private x : number;
-    private y : number;
-    private z : number;
+    #x : number;
+    #y : number;
+    #z : number;
     constructor (x : number,y : number,z : number){
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.#x = x;
+        this.#y = y;
+        this.#z = z;
     }
-
+    get x(){
+        return this.#x;
+    }
+    get y() {
+        return this.#y;
+    }
+    get z(){
+        return this.#z;
+    }
     static zero() : Vector{
         return new this(0,0,0);
     }
@@ -118,10 +126,13 @@ export class Vector {
     static rotate2DVector(v: Vector,theta : number) : Vector{
         return new this((v.x*Math.cos(theta)) -(v.y* Math.sin(theta)),(v.x*Math.sin(theta))+(v.y*Math.cos(theta)),0);
     }
-    
-    copy(): this {
-        const Ctor = this.constructor as new (x: number, y: number, z: number) => this;
-        return new Ctor(this.x, this.y, this.z);
+    isDotProductLEThanX(vector : Vector,x : number) : boolean{
+        let dotProduct = Vector.dotProduct(this,vector);
+        return (dotProduct <= x);
+    }
+    copy(): Vector {
+        
+        return new Vector(this.#x, this.#y, this.#z);
     }
 }
 
