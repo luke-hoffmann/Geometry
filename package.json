@@ -9,6 +9,10 @@
     "prepare": "npm run build"
   },
   "dependencies": {
-    "usefulfunction": "git+https://github.com/luke-hoffmann/UsefulFunction.git"
+    "@types/node": "^25.0.1",
+    "@types/p5": "^1.7.7",
+    "p5": "^2.1.1",
+    "typescript": "^5.9.3",
+    "usefulfunction": "github:luke-hoffmann/usefulfunction"
   }
 }
