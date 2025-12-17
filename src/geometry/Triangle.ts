@@ -1,5 +1,5 @@
 import { Vector } from "./Vector.js";
-import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
+import { UsefulFunction } from "usefulfunction";
 import { Field } from "./Field.js";
 export class Triangle {
     private verticeReferences : number[];
@@ -80,7 +80,7 @@ export class Triangle {
     
 
     
-    static addPointsFromTrianglesToMap(map : Map<number,number>,triangles : Triangle[]){
+    static addPointsFromTrianglesToMap(map : Map<number,number[]>,triangles : Triangle[]){
         triangles= [...triangles]
         for (let i =0; i < triangles.length;i++) {
             let vertices = triangles[i].verticeReferences

@@ -1,5 +1,4 @@
 import {Vector} from "../geometry/Vector.js"
-import { ProjectionPlane } from "./ProjectionPlane.js";
 import { Field } from "../geometry/Field.js";
 import { Mesh } from "../geometry/Mesh.js";
 import { PhysicsBody } from "../geometry/PhysicsBody.js";
@@ -80,5 +79,10 @@ export class Camera {
         if (!(point instanceof Vector)) throw Error("point is not an instance of Vector")
         this.#viewVector = Vector.unitVector(Vector.sub(point,this.#physicsBody.position));
     }
-
+    log(){
+        console.log("start camer log")
+        console.log(this.#physicsBody.position);
+        console.log(this.#viewVector);
+        console.log("end camera log");
+    }
 }

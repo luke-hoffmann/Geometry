@@ -1,34 +1,33 @@
-import { Triangle } from "../geometry/Triangle.js";
-import { Field } from "../geometry/Field.js";
-import { Vector } from "../geometry/Vector.js";
-import { Camera } from "./Camera.js";
-export class ProjectionPlane {
-    #tL : Vector;
-    #bL : Vector;
-    #tR : Vector;
-    #bR : Vector;
-    constructor(topLeft : Vector,bottomLeft : Vector,topRight : Vector,bottomRight : Vector) {
-        this.#tL = topLeft;
-        this.#bL = bottomLeft;
-        this.#tR = topRight;
-        this.#bR = bottomRight;
-    }
+// import { Field } from "../geometry/Field.js";
+// import { Vector } from "../geometry/Vector.js";
+// import { Camera } from "./Camera.js";
+// export class ProjectionPlane {
+//     #tL : Vector;
+//     #bL : Vector;
+//     #tR : Vector;
+//     #bR : Vector;
+//     constructor(topLeft : Vector,bottomLeft : Vector,topRight : Vector,bottomRight : Vector) {
+//         this.#tL = topLeft;
+//         this.#bL = bottomLeft;
+//         this.#tR = topRight;
+//         this.#bR = bottomRight;
+//     }
 
-    static generateProjectionPlaneFromCamera(camera : Camera){
-        // aspect ratio is a number that is equivalent to height/width of the Projection Box/Plane
-        let pointsOfProjectionPlane = new Field([])
-        let centerPointOfPlane = Vector.add(Vector.scalarMult(camera.viewVector,focalDistance),camera.position);
-        let verticalUnitVector = Vector.upVector();
-        let lateralUnitVector = Vector.unitVector(Vector.crossProduct(camera.viewVector, verticalUnitVector));
-        let lateralVector = Vector.scalarMult(lateralUnitVector,focalDistance/Math.tan(90-(fovAngle/2)));
-        let verticalVector = Vector.scalarMult(verticalUnitVector, lateralVector.magnitude() * aspectRatio);
-        let left = Vector.add(centerPointOfPlane,lateralVector); 
-        let right = Vector.sub(centerPointOfPlane,lateralVector);
-        return new this(Vector.add(left,verticalVector),Vector.sub(left,verticalVector),Vector.add(right,verticalVector),Vector.sub(right,verticalVector));
+//     static generateProjectionPlaneFromCamera(camera : Camera){
+//         // aspect ratio is a number that is equivalent to height/width of the Projection Box/Plane
+//         let pointsOfProjectionPlane = new Field([])
+//         let centerPointOfPlane = Vector.add(Vector.scalarMult(camera.viewVector,focalDistance),camera.position);
+//         let verticalUnitVector = Vector.upVector();
+//         let lateralUnitVector = Vector.unitVector(Vector.crossProduct(camera.viewVector, verticalUnitVector));
+//         let lateralVector = Vector.scalarMult(lateralUnitVector,focalDistance/Math.tan(90-(fovAngle/2)));
+//         let verticalVector = Vector.scalarMult(verticalUnitVector, lateralVector.magnitude() * aspectRatio);
+//         let left = Vector.add(centerPointOfPlane,lateralVector); 
+//         let right = Vector.sub(centerPointOfPlane,lateralVector);
+//         return new this(Vector.add(left,verticalVector),Vector.sub(left,verticalVector),Vector.add(right,verticalVector),Vector.sub(right,verticalVector));
         
-    }
-    projectPointOntoPlane(){}
-    projectFieldOntoPlane(field){
+//     }
+//     projectPointOntoPlane(){}
+//     projectFieldOntoPlane(field){
         
-    }
-}
+//     }
+// }

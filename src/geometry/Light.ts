@@ -1,5 +1,5 @@
-import { ColorHandler } from "../libs/ColorHandler/src/ColorHandler.js"
-import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
+
+import { ColorHandler } from "colorhandler";
 import { Vector } from "./Vector.js";
 export class Light {
     #color : ColorHandler;
@@ -15,12 +15,12 @@ export class Light {
     }
     
     calculateObservedColor(color : ColorHandler){
-        let light = UsefulFunction.multiplyArray(this.#color.color,this.#brightness);
-        let normalizedLight = UsefulFunction.divideArray(light,255);
-        let normalizedColor = UsefulFunction.divideArray(color.color,255);
-        let observedColor = UsefulFunction.elementWiseMultiplication(normalizedColor,normalizedLight);
-        observedColor = UsefulFunction.multiplyArray(observedColor,255);
-        return new ColorHandler(observedColor[0],observedColor[1],observedColor[2]);
+        let light = this.#color.multiplyByNumber(this.#brightness);
+        let normalizedLight = light.multiplyByNumber(1/255);
+        let normalizedColor = color.multiplyByNumber(1/255);
+        let observedColor = normalizedColor.elementWiseMultiplication(normalizedLight);
+        observedColor = observedColor.multiplyByNumber(255);
+        return observedColor;
     }
     
     

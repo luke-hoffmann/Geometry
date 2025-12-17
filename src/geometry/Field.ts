@@ -50,9 +50,18 @@ export class Field {
         }
         return trianglesContainingIndices;
     }
+    getTriangleIndicesWithPointInUpspace(triangles : Triangle[],point : number) : number[]{
+        let trianglesContainingIndices = [];
+        let triangle;
+        for (let i =0; i < triangles.length;i++) {
+            triangle = triangles[i]
+            if (!triangle.doesUpspaceContain(this,point)) continue;
+            trianglesContainingIndices.push(i);
+        }
+        return trianglesContainingIndices;
+    }
 
-
-    getTrianglesUpspace(triangles : Triangle[], indices : number[]) : number[] {
+    getTrianglesUpspaces(triangles : Triangle[], indices : number[]) : number[] {
         
         let upspace= [];
         for (const triangle of triangles) {
@@ -84,12 +93,12 @@ export class Field {
         return distanceAveragesToAllTriangles;
     }
     // bad one
-    getFarthestPointFromTriangles( triangles : Triangle[], pointIndices : number[]){
+    getFarthestPointFromTriangles( triangles : Triangle[], pointIndices : number[]) : number{
         let farthestPoints = this.getFarthestPointsFromTriangles(triangles,pointIndices);
         let distanceAveragesToAllTriangles = this.getAverageDistanceBetweenPointsAndTriangles(triangles,farthestPoints);
         
         let indexOfPoint = UsefulFunction.getIndexOfArrayMax(distanceAveragesToAllTriangles);
-        if (indexOfPoint == undefined) return false;
+        if (indexOfPoint == undefined) throw Error("Bad error");
         return farthestPoints[indexOfPoint];
     }
 

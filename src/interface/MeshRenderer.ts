@@ -1,6 +1,6 @@
-import type { Mesh } from "../geometry/index.js";
+import type { Mesh } from "../geometry/Mesh.js";
 import type { Camera } from "../camera/Camera.js";
-import type { Light } from "../geometry/index.js";
+import type { Light } from "../geometry/Light.js";
 import type { RenderParameters } from "./RenderParameters.js";
 import { Vector } from "../geometry/Vector.js"
 export class MeshRenderer {
@@ -14,10 +14,10 @@ export class MeshRenderer {
         this.lights = lights;
         this.renderParameters = renderParameters;
     }   
-    backFaceCulling() {
+    backFaceCulling(mesh : Mesh) {
         let viewVector = new Vector(0,0,1);
         let visibleTriangles = [];
-        let backFaceCulledMesh = this.mesh.copy();
+        let backFaceCulledMesh = mesh.copy();
         let cameraFacingTriangles = [];
 
         let normalVectors = backFaceCulledMesh.calculateTriangleNormalVectors();

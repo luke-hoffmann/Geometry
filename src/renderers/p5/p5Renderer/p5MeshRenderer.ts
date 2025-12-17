@@ -5,7 +5,7 @@ import { Vector } from "../../../geometry/Vector.js";
 import { Field } from "../../../geometry/Field.js";
 import { Triangle } from "../../../geometry/Triangle.js";
 import { Line } from "../../../geometry/Line.js";
-import { Light } from "../../../geometry/Light.js";
+import type { Light } from "../../../geometry/Light.js";
 import { RenderParameters } from "../../../interface/RenderParameters.js";
 import type p5 from "p5";
 import { NormalVector } from "../../../geometry/NormalVector.js";
@@ -18,21 +18,9 @@ export class p5MeshRenderer extends MeshRenderer  {
         this.#p5 = p;
         this.#graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
     }
-    /*
-
-    doBackFaceCulling: true,
-            doOutline: true,
-            doFill: true,
-            doVertices: false,
-            doNormalVectors: false,
-            doShadingWithLighting: true,
-            lineWidth: 1,
-            pointRadius: 3
-
-            */
     preWork() {
         this.#graphicsBuffer.clear();
-        this.#graphicsBuffer.background(200);
+        this.#graphicsBuffer.background(140);
     }
     postWork(){
         this.#p5.image(this.#graphicsBuffer,0,0);
@@ -42,22 +30,23 @@ export class p5MeshRenderer extends MeshRenderer  {
      * 
      * 
     **/
+    
     graph (){
         this.preWork()
 
-
-
+        //this.camera.log();
         let mesh = this.mesh.copy();
         mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh)
+        console.log(mesh.getVertex(0));
         if (this.renderParameters.doBackFaceCulling) {
-            mesh = this.backFaceCulling();
+            mesh = this.backFaceCulling(mesh);
         }
-        mesh= this.applyProjection();
+        mesh= this.applyProjection(mesh);
         
-        mesh = this.meshToCanvas();
-        
-        this.graphVertices();
-        this.graphTriangles(this.#p5.color(0));
+        mesh = this.meshToCanvas(mesh);
+
+        this.graphVertices(mesh);
+        this.graphTriangles(mesh,this.#p5.color(0));
 
         
         this.postWork();
@@ -89,9 +78,9 @@ export class p5MeshRenderer extends MeshRenderer  {
         return lines;
     }
     
-    applyProjection() : Mesh{
+    applyProjection(mesh : Mesh) : Mesh{
     
-        let newMesh = this.mesh.copy();
+        let newMesh = mesh.copy();
         let projectedArray = [];
         for (let i =0 ; i < newMesh.numPoints(); i++) {
             let pV;
@@ -115,23 +104,23 @@ export class p5MeshRenderer extends MeshRenderer  {
         }
         return canvasLines;
     }
-    meshToCanvas() : Mesh{
-        
+    meshToCanvas(mesh : Mesh) : Mesh{
+        let newMesh = mesh.copy();
         let canvasArray = [];
-        for (let i =0; i < this.mesh.numPoints(); i++) {
-            canvasArray.push(this.calculateCanvasPos(this.mesh.getVertex(i)));
+        for (let i =0; i < newMesh.numPoints(); i++) {
+            canvasArray.push(this.calculateCanvasPos(mesh.getVertex(i)));
         }
 
-        let mesh = this.mesh.copy();
         mesh.vertices = new Field(canvasArray);
         return mesh;
     }
     calculateCanvasPos(meshPos : Vector) {
         return Vector.add(new Vector(this.#graphicsBuffer.width/2,this.#graphicsBuffer.height/2,0),meshPos);
     }
-    graphVertices() {
-        for (let i =0; i < this.mesh.numPoints(); i++) {
-            this.graphVertex(this.mesh.getVertex(i),this.renderParameters.pointRadius);
+    graphVertices(mesh : Mesh)  : void{
+        for (let i =0; i < mesh.numPoints(); i++) {
+            if (i==0) console.log(mesh.getVertex(0));
+            this.graphVertex(mesh.getVertex(i),this.renderParameters.pointRadius);
         }
         
     }
@@ -144,28 +133,28 @@ export class p5MeshRenderer extends MeshRenderer  {
     graphVisibleVertex(vertex : Vector,size : number){
         if (this.camera.isVertexVisible(vertex)) this.graphVertex(vertex,size);
     }
-    graphVisibleVertices(size : number) {
+    graphVisibleVertices(mesh : Mesh,size : number) {
         for (let i =0; i < this.mesh.numPoints(); i++) {
-            this.graphVisibleVertex(this.mesh.getVertex(i),size);
+            this.graphVisibleVertex(mesh.getVertex(i),size);
         }
     }
 
 
-    graphTriangle(triangle : Triangle){
+    graphTriangle(mesh : Mesh,triangle : Triangle){
 
-        let p1 = this.mesh.getVertex(triangle.getVerticeRef(0));
-        let p2 = this.mesh.getVertex(triangle.getVerticeRef(1));
-        let p3 = this.mesh.getVertex(triangle.getVerticeRef(2));
+        let p1 = mesh.getVertex(triangle.getVerticeRef(0));
+        let p2 = mesh.getVertex(triangle.getVerticeRef(1));
+        let p3 = mesh.getVertex(triangle.getVerticeRef(2));
         
         this.#graphicsBuffer.strokeJoin(this.#p5.ROUND);
         this.#graphicsBuffer.noFill();
         this.#graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
     }
-    graphTriangles(color : p5.Color){
+    graphTriangles(mesh : Mesh,color : p5.Color){
         this.#graphicsBuffer.stroke(color);
-        for (let i = 0 ;i < this.mesh.numTriangles(); i++) {
+        for (let i = 0 ;i < mesh.numTriangles(); i++) {
             
-            this.graphTriangle(this.mesh.getTriangle(i));
+            this.graphTriangle(mesh,mesh.getTriangle(i));
 
             continue;
             
@@ -185,6 +174,10 @@ export class p5MeshRenderer extends MeshRenderer  {
     graphBetweenTwoPoints(p1 : Vector,p2 : Vector,color : p5.Color) : void {
         this.#graphicsBuffer.stroke(color);
         this.#graphicsBuffer.line(p1.x,p1.y,p2.x,p2.y);
+    }
+
+    copy() {
+        //return new p5MeshRenderer(this.mesh.copy,this.)
     }
 }
 

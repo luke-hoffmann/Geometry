@@ -1,1 +1,0 @@
-{"version":3,"file":"Plane.js","sourceRoot":"","sources":["../../src/geometry/Plane.ts"],"names":[],"mappings":"AAEA,MAAM,OAAO,KAAK;IAId,YAAY,EAAW,EAAC,EAAW,EAAC,EAAW;QAC3C,IAAI,CAAC,EAAE,GAAG,EAAE,CAAC;QACb,IAAI,CAAC,EAAE,GAAG,EAAE,CAAC;QACb,IAAI,CAAC,EAAE,GAAG,EAAE,CAAC;IACjB,CAAC;CACJ"}

@@ -1,6 +1,5 @@
-import { UsefulFunction } from "../libs/UsefulFunction/src/UsefulFunction.js";
+
 import { Vector } from "./Vector.js";
-import { Line } from "./Line.js";
 import { Field } from "./Field.js";
 import { Triangle } from "./Triangle.js";
 import { NormalVector } from "./NormalVector.js";

@@ -1,4 +1,4 @@
-import { Vector } from "../geometry";
+import { Vector } from "../geometry/Vector.js";
 export class CameraMover {
     private acceleration : Vector;
     constructor(acceleration: Vector) {

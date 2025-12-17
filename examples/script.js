@@ -1,43 +1,30 @@
-import { p5MeshRenderer } from "../dist/renderers/p5/p5Renderer/p5Meshrenderer.js";
-import { Field } from "../dist/geometry/Field.js";
-import { Camera } from "../dist/camera/Camera.js";
-import { Vector } from "../dist/geometry/Vector.js";
-import { RenderParameters } from "../dist/interface/RenderParameters.js";
-import { p5CameraMover } from "../dist/renderers/p5/p5Renderer/p5CameraMover.js";
-import { PhysicsBody } from "../dist/geometry/PhysicsBody.js";
-import {MeshGenerator} from "../dist/geometry/MeshGenerator.js"
-let field = new Field([]);
+let field = new geometry.Field([]);
 field.generateRandomPointsInSphere(200,200)
-let mesh = MeshGenerator.generateConvexMesh(field,100);
-
+let mesh = geometry.MeshGenerator.generateConvexMesh(field,10)
 let renderer;
-let camera = new Camera(new PhysicsBody(new Vector(0,0,0)),new Vector(0,0,1),90,400,0); 
+let camera = new geometry.Camera(new geometry.PhysicsBody(new geometry.Vector(0,0,0)),new geometry.Vector(0,0,1),90,400,0);
+let cameraMover = new geometry.p5CameraMover(0.1);
+let screenSize = new geometry.Vector(800,400);
+let i =0;
 
-let cameraMover = new p5CameraMover(0.1);
-let screenSize = new Vector(800,400);
+const s = ( sketch ) => {
 
-const sketch = (p) => {
-  p.setup = () => { /* init */ };
-  p.draw = () => { /* loop */ };
-};
+  let x = 100;
+  let y = 100;
 
-const s = new p5(sketch);
-function setup(){
-    renderer = new p5MeshRenderer(mesh,screenSize,camera,[], new RenderParameters({
+  sketch.setup = () => {
+    renderer = new geometry.p5MeshRenderer(mesh,screenSize,camera,[], new geometry.p5RenderParameters({
         doVertices: true,
         isPerspective:true,
         doBackFaceCulling:true
-    }),s);
-}
-let i =0;
-function draw() {
+    }),sketch);
+  };
 
+  sketch.draw = () => {
     renderer.graph();
-    renderer.camera = cameraMover.rotateCameraAroundPointOnXZPlane(renderer.camera,new Vector(0,0,0),500,0.01);
-    if (i==2 ) noLoop();
-    //i++;
-}
+    renderer.camera = cameraMover.rotateCameraAroundPointOnXZPlane(renderer.camera,new geometry.Vector(0,0,0),500,0.01);
+  };
+};
 
+let myp5 = new p5(s);
 
-window.setup = setup;
-window.draw = draw;
