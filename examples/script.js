@@ -1,6 +1,6 @@
 let field = new geometry.Field([]);
 field.generateRandomPointsInSphere(200,200)
-let mesh = geometry.MeshGenerator.generateConvexMesh(field,10)
+let mesh = geometry.MeshGenerator.generateConvexMesh(field,310)
 let renderer;
 let camera = new geometry.Camera(new geometry.PhysicsBody(new geometry.Vector(0,0,0)),new geometry.Vector(0,0,1),90,400,0);
 let cameraMover = new geometry.p5CameraMover(0.1);
@@ -16,7 +16,8 @@ const s = ( sketch ) => {
     renderer = new geometry.p5MeshRenderer(mesh,screenSize,camera,[], new geometry.p5RenderParameters({
         doVertices: true,
         isPerspective:true,
-        doBackFaceCulling:true
+        doBackFaceCulling:true,
+        pointRadius: 3
     }),sketch);
   };
 

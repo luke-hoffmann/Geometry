@@ -113,6 +113,7 @@ declare class Light {
 
 declare class MeshGenerator {
     private static convexHullIterativeProcess;
+    static addTrianglesToTrianglesArray(trianglesArray: Triangle[], triangles: Triangle[]): Triangle[];
     static generateConvexMesh(field: Field, iterationNumber: number): Mesh;
 }
 

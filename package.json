@@ -5,17 +5,24 @@
   "types": "dist/index.d.ts",
   "type": "module",
   "tsup": {
-    "entry": ["src/index.ts"],
+    "entry": [
+      "src/index.ts"
+    ],
     "splitting": false,
     "clean": true,
     "minify": true,
     "dts": true,
-    "format": ["iife"],
-    "globalName" : "geometry",
-    "platform" : "browser",
-    "external" : ["usefulfunction", "colorhandler", "p5"],
-    "treeshake" : true
-    
+    "format": [
+      "iife"
+    ],
+    "globalName": "geometry",
+    "platform": "browser",
+    "external": [
+      "usefulfunction",
+      "colorhandler",
+      "p5"
+    ],
+    "treeshake": true
   },
   "scripts": {
     "build": "tsup"
@@ -27,12 +34,14 @@
   "author": "Luke Hoffmann",
   "license": "ISC",
   "homepage": "https://github.com/luke-hoffmann/Geometry#readme",
+  "dependencies": {
+    "usefulfunction": "github:luke-hoffmann/usefulfunction"
+  },
   "devDependencies": {
     "@types/p5": "^1.7.7",
     "colorhandler": "github:luke-hoffmann/colorhandler",
     "p5": "^2.1.1",
     "tsup": "^8.5.1",
-    "typescript": "^5.9.3",
-    "usefulfunction": "github:luke-hoffmann/usefulfunction"
+    "typescript": "^5.9.3"
   }
 }

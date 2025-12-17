@@ -37,9 +37,8 @@ export class p5MeshRenderer extends MeshRenderer  {
         //this.camera.log();
         let mesh = this.mesh.copy();
         mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh)
-        console.log(mesh.getVertex(0));
         if (this.renderParameters.doBackFaceCulling) {
-            mesh = this.backFaceCulling(mesh);
+            //mesh = this.backFaceCulling(mesh);
         }
         mesh= this.applyProjection(mesh);
         
@@ -118,9 +117,9 @@ export class p5MeshRenderer extends MeshRenderer  {
         return Vector.add(new Vector(this.#graphicsBuffer.width/2,this.#graphicsBuffer.height/2,0),meshPos);
     }
     graphVertices(mesh : Mesh)  : void{
+        
         for (let i =0; i < mesh.numPoints(); i++) {
-            if (i==0) console.log(mesh.getVertex(0));
-            this.graphVertex(mesh.getVertex(i),this.renderParameters.pointRadius);
+            this.graphVertex(mesh.getVertex(i),3);
         }
         
     }

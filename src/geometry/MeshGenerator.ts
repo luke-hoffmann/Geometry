@@ -8,8 +8,9 @@ export class MeshGenerator {
     private static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
         triangles = [...triangles]
         let upSpaceIndices = field.getTrianglesUpspaces(triangles,graphIndices);
+        console.log("UPSPACE INDICES", upSpaceIndices);
+        if (upSpaceIndices.length == 0 ) throw Error("STOP");
         let farthestPoint = upSpaceIndices[0];
-
         if (upSpaceIndices.length == 1 ) {
             farthestPoint = upSpaceIndices[0];
         } else if(upSpaceIndices.length==0) {
@@ -31,17 +32,28 @@ export class MeshGenerator {
         let newTriangleMap = new Map();
          
         Triangle.addPointsFromTrianglesToMap(newTriangleMap,trianglesWithPointInUpspace);
-        let boundaryPoints = UsefulFunction.getNodesOnOutsideOfCounterClockwiseGraph(newTriangleMap,1000);
-
+        let boundaryPoints = UsefulFunction.getNodesOnOutsideOfCounterClockwiseGraph(newTriangleMap,100000);
+        console.log(" line 36 boundary points" ,boundaryPoints);
         let newTriangles = Triangle.createPyramidFromBoundaryPoints(boundaryPoints,farthestPoint);
         
         
         triangles = UsefulFunction.removeIndicesFromArray(triangles,triangleIndicesWithPointInUpspace);
-        UsefulFunction.addElementsToArray(triangles,newTriangles);
-        
+        console.log("OLD TRIANGLES", triangles)
+        triangles = MeshGenerator.addTrianglesToTrianglesArray(triangles,newTriangles);
+        console.log("NEW TRIANGLES", triangles)
         return triangles;
     }
+    static addTrianglesToTrianglesArray(trianglesArray : Triangle[],triangles : Triangle[]) : Triangle[]{
+        let newArray  = [];
+        trianglesArray.forEach(element => {
+            newArray.push(element.copy());
+        });
 
+        for (const triangle of triangles) { 
+            newArray.push(triangle);
+        }
+        return newArray;
+    }
 
     static generateConvexMesh(field : Field,iterationNumber : number) {
         let unusedField = field;
