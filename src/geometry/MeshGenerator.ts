@@ -6,10 +6,8 @@ import { Mesh } from "./Mesh.js";
 
 export class MeshGenerator {
     private static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
-        triangles = [...triangles]
+        triangles = [...triangles] // could be a source of large memory usage
         let upSpaceIndices = field.getTrianglesUpspaces(triangles,graphIndices);
-        console.log("UPSPACE INDICES", upSpaceIndices);
-        if (upSpaceIndices.length == 0 ) throw Error("STOP");
         let farthestPoint = upSpaceIndices[0];
         if (upSpaceIndices.length == 1 ) {
             farthestPoint = upSpaceIndices[0];
@@ -30,17 +28,12 @@ export class MeshGenerator {
        
 
         let newTriangleMap = new Map();
-         
         Triangle.addPointsFromTrianglesToMap(newTriangleMap,trianglesWithPointInUpspace);
         let boundaryPoints = UsefulFunction.getNodesOnOutsideOfCounterClockwiseGraph(newTriangleMap,100000);
-        console.log(" line 36 boundary points" ,boundaryPoints);
         let newTriangles = Triangle.createPyramidFromBoundaryPoints(boundaryPoints,farthestPoint);
         
-        
         triangles = UsefulFunction.removeIndicesFromArray(triangles,triangleIndicesWithPointInUpspace);
-        console.log("OLD TRIANGLES", triangles)
         triangles = MeshGenerator.addTrianglesToTrianglesArray(triangles,newTriangles);
-        console.log("NEW TRIANGLES", triangles)
         return triangles;
     }
     static addTrianglesToTrianglesArray(trianglesArray : Triangle[],triangles : Triangle[]) : Triangle[]{
@@ -61,7 +54,6 @@ export class MeshGenerator {
         let triangles = undefined;
         triangles = [field.calculateLargestTriangleFromField()];
         triangles.push(triangles[0].flipNormal());
-        
             
         let graphIndices = UsefulFunction.arrayOfIndices(field.numPoints());
         triangles = this.convexHullIterativeProcess(field,triangles,graphIndices);

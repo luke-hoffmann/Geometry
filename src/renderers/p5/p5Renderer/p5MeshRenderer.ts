@@ -34,18 +34,16 @@ export class p5MeshRenderer extends MeshRenderer  {
     graph (){
         this.preWork()
 
-        //this.camera.log();
         let mesh = this.mesh.copy();
+
         mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh)
-        if (this.renderParameters.doBackFaceCulling) {
-            //mesh = this.backFaceCulling(mesh);
-        }
-        mesh= this.applyProjection(mesh);
+        if (this.renderParameters.doBackFaceCulling) mesh = this.backFaceCulling(mesh);
         
+        mesh= this.applyProjection(mesh);
         mesh = this.meshToCanvas(mesh);
 
-        this.graphVertices(mesh);
-        this.graphTriangles(mesh,this.#p5.color(0));
+        if (this.renderParameters.doVertices) this.graphVertices(mesh);
+        if (this.renderParameters.doTriangles) this.graphTriangles(mesh,this.#p5.color(0));
 
         
         this.postWork();
@@ -141,9 +139,9 @@ export class p5MeshRenderer extends MeshRenderer  {
 
     graphTriangle(mesh : Mesh,triangle : Triangle){
 
-        let p1 = mesh.getVertex(triangle.getVerticeRef(0));
-        let p2 = mesh.getVertex(triangle.getVerticeRef(1));
-        let p3 = mesh.getVertex(triangle.getVerticeRef(2));
+        let p1 = mesh.getVertex(triangle.getVerticeReference(0));
+        let p2 = mesh.getVertex(triangle.getVerticeReference(1));
+        let p3 = mesh.getVertex(triangle.getVerticeReference(2));
         
         this.#graphicsBuffer.strokeJoin(this.#p5.ROUND);
         this.#graphicsBuffer.noFill();

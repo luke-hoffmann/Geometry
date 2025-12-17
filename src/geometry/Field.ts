@@ -31,7 +31,7 @@ export class Field {
         let indicesAbovePlane = []
         for (const point of indices) {
             // need to replace to instead see if the point lies on the plane or not.
-            if (point == triangle.getVerticeRef(0) || point == triangle.getVerticeRef(1) || point ==triangle.getVerticeRef(2) ) continue;
+            if (point == triangle.getVerticeReference(0) || point == triangle.getVerticeReference(1) || point ==triangle.getVerticeReference(2) ) continue;
 
             if (!triangle.doesUpspaceContain(this,point)) continue;
             indicesAbovePlane.push(point)
@@ -138,11 +138,13 @@ export class Field {
     calculateLargestTriangleFromField() : Triangle{
         
         let point1Index = this.lowestVectorInField()
-
         let point2Index = this.getFarthestVectorFromVector(point1Index);
+
         let line = new Line(this.array[point1Index],this.array[point2Index]);
         let point3Index = this.calculateFarthestPoint(line);
+
         let triangle = new Triangle([point1Index,point2Index,point3Index]);
+        
         return triangle;
 
     }

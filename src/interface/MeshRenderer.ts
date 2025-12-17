@@ -27,7 +27,7 @@ export class MeshRenderer {
         for (let i =0; i < this.mesh.numTriangles() ; i++) {
             let isTriangleVisible;
             if (this.renderParameters.isPerspective)  {
-                isTriangleVisible = this.mesh.getVertex(this.mesh.getTriangle(i).getVerticeRef(0)).isDotProductLEThanX(normalVectors[i].direction,0);
+                isTriangleVisible = this.mesh.getVertex(this.mesh.getTriangle(i).getVerticeReference(0)).isDotProductLEThanX(normalVectors[i].direction,0);
             } else {
                 isTriangleVisible = viewVector.isDotProductLEThanX(normalVectors[i].direction,0);
             }

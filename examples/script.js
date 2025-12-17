@@ -21,9 +21,28 @@ const s = ( sketch ) => {
     }),sketch);
   };
 
+  //this.#doBackFaceCulling = doBackFaceCulling;
+  //this.#doOutline = doOutline;
+  //this.#doFill = doFill;
+  //this.#doVertices = doVertices;
+  //this.#doTriangles = doTriangles;
+  //this.#doNormalVectors = doNormalVectors;
+  //this.#doShadingWithLighting = doShadingWithLighting;
+  //this.#lineWidth = lineWidth;
+  //this.#pointRadius = pointRadius;
+  //this.#isPerspective = isPerspective;
+
   sketch.draw = () => {
     renderer.graph();
     renderer.camera = cameraMover.rotateCameraAroundPointOnXZPlane(renderer.camera,new geometry.Vector(0,0,0),500,0.01);
+    //mesh = 
+    //mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh)
+        
+    //mesh= this.applyProjection(mesh);
+        
+    //mesh = this.meshToCanvas(mesh);
+
+    //this.graphVertices(mesh);
   };
 };
 

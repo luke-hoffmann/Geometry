@@ -33,9 +33,9 @@ declare class Vector {
 }
 
 declare class Triangle {
-    private verticeReferences;
+    #private;
     constructor(verticeReferences: number[]);
-    getVerticeRef(x: number): number;
+    logReferences(): void;
     doesUpspaceContain(field: Field, point: number): boolean;
     computeCentroid(field: Field): Vector;
     static isDotProductLEThanX(v1: Vector, v2: Vector, x: number): boolean;
@@ -43,6 +43,7 @@ declare class Triangle {
     distanceTo(field: Field, v: Vector): number;
     getFarthestPoint(field: Field, pointIndices: number[]): number;
     flipNormal(): Triangle;
+    getVerticeReference(i: number): number;
     static addPointsFromTrianglesToMap(map: Map<number, number[]>, triangles: Triangle[]): void;
     static createPyramidFromBoundaryPoints(boundaryIndices: number[], point: number): Triangle[];
     copy(): Triangle;
@@ -158,11 +159,12 @@ declare class p5CameraMover extends CameraMover {
 
 declare class RenderParameters {
     #private;
-    constructor(doBackFaceCulling: boolean, doOutline: boolean, doFill: boolean, doVertices: boolean, doNormalVectors: boolean, doShadingWithLighting: boolean, lineWidth: number, pointRadius: number, isPerspective: boolean);
+    constructor(doBackFaceCulling: boolean, doOutline: boolean, doFill: boolean, doVertices: boolean, doTriangles: boolean, doNormalVectors: boolean, doShadingWithLighting: boolean, lineWidth: number, pointRadius: number, isPerspective: boolean);
     get doBackFaceCulling(): boolean;
     get doOutline(): boolean;
     get doFill(): boolean;
     get doVertices(): boolean;
+    get doTriangles(): boolean;
     get doNormalVectors(): boolean;
     get doShadingWithLighting(): boolean;
     get lineWidth(): number;
