@@ -23,7 +23,7 @@ export class Mesh {
     
     
     calculateTriangleNormalVector(triangle : Triangle) : NormalVector {
-        if (!(triangle instanceof Triangle)) throw Error ("triange is not an instance of Triangle")
+        if (!(triangle instanceof Triangle)) throw Error ("triangle is not an instance of Triangle")
         let centerOfTriangle = triangle.computeCentroid(this.#vertices);
         let normalVector = triangle.computeNormal(this.#vertices)
         return new NormalVector(centerOfTriangle,normalVector);
@@ -36,7 +36,26 @@ export class Mesh {
         }
         return normalVectors;
     }
-    
+    mapTrianglesToNormalVectors( normalVectors : NormalVector[]) : Map<string,NormalVector> {
+        if (this.numTriangles !== normalVectors.length) throw Error("number of triangles does not equal number of normal vectors");
+
+        let map = new Map();
+        for (let i =0 ; i < this.numTriangles; i++) {
+            
+            map.set(this.getTriangle(i).getDistinctIdentifier(),normalVectors[i]);
+        }
+        return map;
+
+    }
+    findTrianglesNormalVectorsFromMap(map : Map<string,NormalVector>) : NormalVector[]{
+        let normalVectors = [];
+        for (let i =0 ; i < this.numTriangles; i++) {
+            const distinct = this.getTriangle(i).getDistinctIdentifier();
+            if (!map.has(distinct)) continue;
+            normalVectors.push(map.get(distinct)!);
+        }
+        return normalVectors;
+    }
     copy(){
         
         let newTriangles = [];
@@ -48,10 +67,10 @@ export class Mesh {
         return new Mesh(this.#vertices.copy(),newTriangles);
     }
 
-    numPoints() : number{
-        return this.#vertices.numPoints();
+    get numPoints() : number{
+        return this.#vertices.numPoints;
     }
-    numTriangles() : number {
+    get numTriangles() : number {
         return this.#triangles.length;
     }
     getVertex(index : number) : Vector{

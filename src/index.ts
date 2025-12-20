@@ -7,7 +7,7 @@ export * from "./geometry/PhysicsBody.js";
 
 export * from "./camera/Camera.js";
 
-
-export * from "./renderers/p5/p5Renderer/p5CameraMover.js";
-export * from "./renderers/p5/p5Renderer/p5MeshRenderer.js";
-export * from "./renderers/p5/p5Renderer/p5RenderParameters.js";
+export * from "./interface/Scene.js";
+export * from "./renderers/p5Renderer/p5CameraMover.js";
+export * from "./renderers/p5Renderer/p5Renderer.js";
+export * from "./renderers/p5Renderer/p5RenderParameters.js";

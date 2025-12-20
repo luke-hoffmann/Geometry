@@ -15,6 +15,7 @@
     "format": [
       "iife"
     ],
+    "target": "es2022",
     "globalName": "geometry",
     "platform": "browser",
     "external": [

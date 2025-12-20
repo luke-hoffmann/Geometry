@@ -7,14 +7,14 @@ import { Mesh } from "./Mesh.js";
 export class MeshGenerator {
     private static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
         triangles = [...triangles] // could be a source of large memory usage
-        let upSpaceIndices = field.getTrianglesUpspaces(triangles,graphIndices);
+        let upSpaceIndices = field.getTrianglesUpspaces_Fast(triangles,graphIndices);
         let farthestPoint = upSpaceIndices[0];
         if (upSpaceIndices.length == 1 ) {
             farthestPoint = upSpaceIndices[0];
         } else if(upSpaceIndices.length==0) {
             return [];
         } else {
-            farthestPoint = field.getFarthestPointFromTriangles(triangles,upSpaceIndices);
+            farthestPoint = field.getFarthestPointFromTriangles_Fast(triangles,upSpaceIndices);
         }
         
         
@@ -55,7 +55,7 @@ export class MeshGenerator {
         triangles = [field.calculateLargestTriangleFromField()];
         triangles.push(triangles[0].flipNormal());
             
-        let graphIndices = UsefulFunction.arrayOfIndices(field.numPoints());
+        let graphIndices = UsefulFunction.arrayOfIndices(field.numPoints);
         triangles = this.convexHullIterativeProcess(field,triangles,graphIndices);
         for (let i =0 ; i < iterationNumber;i++) {
             const result = this.convexHullIterativeProcess(field,triangles,graphIndices);

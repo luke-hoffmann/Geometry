@@ -36,7 +36,7 @@ export class Camera {
     shiftMeshIntoCameraSpace(mesh : Mesh) : Mesh {
         let newPoints = [];
         let newMesh = mesh.copy();
-        for (let i =0; i < mesh.numPoints(); i++) {
+        for (let i =0; i < mesh.numPoints; i++) {
             newPoints.push(Vector.sub(mesh.getVertex(i),this.#physicsBody.position));
         }
         newMesh.vertices = new Field(newPoints);
@@ -45,7 +45,7 @@ export class Camera {
     projectMeshOntoCameraAxis(mesh : Mesh) : Mesh{
         let newPoints = [];
         let newMesh = mesh.copy();
-        for (let i =0; i < mesh.numPoints(); i++) {
+        for (let i =0; i < mesh.numPoints; i++) {
             let item = mesh.getVertex(i);
             let x = Vector.dotProduct(item,this.#right);
             let y = Vector.dotProduct(item,this.#up);
@@ -57,7 +57,7 @@ export class Camera {
     }
     rejectNegativeZValuesList(field : Field) : boolean[]{
         let list = [];
-        for (let i =0 ; i < field.numPoints(); i++) {
+        for (let i =0 ; i < field.numPoints; i++) {
             list.push(this.isVertexVisible(field.getVertex(i)));
         }
         return list;

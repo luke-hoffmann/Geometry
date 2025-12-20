@@ -23,7 +23,9 @@ export class Light {
         return observedColor;
     }
     
-    
+    copy() {
+        return new Light(this.#color.copy(),this.#position.copy(),this.#brightness);
+    }
 }
 
 

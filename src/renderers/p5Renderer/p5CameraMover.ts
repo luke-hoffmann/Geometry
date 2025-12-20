@@ -1,6 +1,6 @@
-import { CameraMover } from "../../../interface/CameraMover.js";
-import { Vector } from "../../../geometry/Vector.js";
-import { Camera } from "../../../camera/Camera.js";
+import { CameraMover } from "../../interface/CameraMover.js";
+import { Vector } from "../../geometry/Vector.js";
+import { Camera } from "../../camera/Camera.js";
 export class p5CameraMover extends CameraMover {
     private currentTheta : number;
     constructor(acceleration: Vector) {

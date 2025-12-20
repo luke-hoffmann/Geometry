@@ -55,7 +55,7 @@ export class Triangle {
     }
 
     getFarthestPoint(field : Field,pointIndices : number[]): number {
-        if (!(pointIndices.length > 0)) throw Error("pointIndices must contain at least one entry")
+        if (!(pointIndices.length > 0)) throw Error("pointIndices must contain at least one entry");
         let farthestPoint = pointIndices[0];
         let farthestDistance = 0;
         for (const point of pointIndices) {
@@ -114,6 +114,9 @@ export class Triangle {
         return new Triangle(newTriangleReferences);
     }
 
+    getDistinctIdentifier() : string{
+        return (this.#verticeReferences[0].toString() + this.#verticeReferences[1].toString() + this.#verticeReferences[2].toString())
+    }
 
 
     

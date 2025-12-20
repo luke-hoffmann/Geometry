@@ -71,6 +71,38 @@ export class Field {
         upspace = UsefulFunction.combineArrays(upspace);
         return UsefulFunction.noDuplicates(upspace);
     }
+
+    getTrianglesUpspaces_Fast(triangles : Triangle[], indices : number[]) : number[] {
+        
+        let upspace= [];
+        for (const triangle of triangles) {
+            let indicesAbovePlane = []
+            for (const point of indices) {
+                // need to replace to instead see if the point lies on the plane or not.
+                if (point == triangle.getVerticeReference(0) || point == triangle.getVerticeReference(1) || point ==triangle.getVerticeReference(2) ) continue;
+                let p1 = this.getVertex(point);
+                let p2 = this.getVertex(triangle.getVerticeReference(0));
+                let PA_x = p1.x - p2.x;
+                let PA_y = p1.y - p2.y;
+                let PA_z = p1.z - p2.z;
+                let normal = triangle.computeNormal(this);
+                let dotProduct = (PA_x * normal.x) + (PA_y * normal.y) + (PA_z * normal.z);
+                const epsilon = 1e-5;
+                let doesUpspaceContain = false;
+                if (Math.abs(dotProduct)< epsilon) doesUpspaceContain =  false;
+                if (dotProduct < 0) doesUpspaceContain = false;
+                doesUpspaceContain = true;
+
+                if (!triangle.doesUpspaceContain(this,point)) continue;
+                indicesAbovePlane.push(point)
+
+            }
+            upspace.push(indicesAbovePlane);
+        }
+
+        upspace = UsefulFunction.combineArrays(upspace);
+        return UsefulFunction.noDuplicates(upspace);
+    }
     
     getPointsAtIndices(field : Field,indices : number[]) : Vector[] {
         let points = [];
@@ -101,13 +133,32 @@ export class Field {
         if (indexOfPoint == undefined) throw Error("Bad error");
         return farthestPoints[indexOfPoint];
     }
+    getFarthestPointFromTriangles_Fast(triangles : Triangle[], pointIndices : number[]) : number{
+        let farthestPoint = pointIndices[0];
+        let farthestDistance = -Infinity;
+        for (const point of pointIndices) {
+            let sumOfSquaredDistances = 0;
+            const v = this.getVertex(point);
+            for (const triangle of triangles) {
+                const normal = triangle.computeNormal(this);
 
+                const reference = this.getVertex(triangle.getVerticeReference(0));
+                const d = -(normal.x * reference.x + normal.y * reference.y + normal.z * reference.z);
+                
+                sumOfSquaredDistances += (normal.x*v.x + normal.y*v.y + normal.z*v.z + d)/ (((normal.x**2) + (normal.y**2) + (normal.z**2)));
+            }
+            if (sumOfSquaredDistances >farthestDistance) {
+                farthestDistance = sumOfSquaredDistances;
+                farthestPoint = point;
+            }
+        }
+        return farthestPoint;
+    }
     getFarthestPointsFromTriangles(triangles : Triangle[],pointIndices : number[]){
         
         let farthestPoints = [];
         let farthestPoint;
         for (const triangle of triangles) {
-            
             farthestPoints.push(triangle.getFarthestPoint(this,pointIndices));
         }
         return farthestPoints;
@@ -224,7 +275,7 @@ export class Field {
 
         return new Field(copiedPoints);
     }
-    numPoints() : number{
+    get numPoints() : number{
         return this.array.length;
     }
     
