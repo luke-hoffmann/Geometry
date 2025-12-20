@@ -9,6 +9,9 @@ export class Light {
     constructor (color : ColorHandler,position : Vector,brightness : number){
         // brightness should be between 0 and 1;
         // r, g, b should be between 0 and 255;
+        if (color == undefined) throw Error("Color is not defined");
+        if (position == undefined) throw Error ("Position is not defined");
+        if (brightness == undefined) throw Error("Brightness is not defined");
         this.#color=color;
         this.#brightness = brightness;
         this.#position = position;
@@ -22,9 +25,17 @@ export class Light {
         observedColor = observedColor.multiplyByNumber(255);
         return observedColor;
     }
-    
+    get position () : Vector{
+        return this.#position.copy();
+    }
+    get color() : ColorHandler {
+        return this.#color.copy();
+    }
     copy() {
         return new Light(this.#color.copy(),this.#position.copy(),this.#brightness);
+    }
+    set position(pos : Vector) {
+        this.#position = pos;
     }
 }
 

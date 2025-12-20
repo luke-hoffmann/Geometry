@@ -22,6 +22,7 @@ export class Triangle {
         return true;
     }
     computeCentroid(field : Field) : Vector{
+
         let p1 = field.getVertex(this.#verticeReferences[0]);
         let p2 = field.getVertex(this.#verticeReferences[1]);
         let p3 = field.getVertex(this.#verticeReferences[2]);
@@ -29,7 +30,6 @@ export class Triangle {
         // centroid is 0.33 from the line, .66 from the point
         return Vector.lerpVector(p4,p3,0.33333);
         
-    
     }
     static isDotProductLEThanX(v1 : Vector,v2 : Vector,x : number) : boolean{
         throw Error ("function has been moved to the vector class.")

@@ -3,6 +3,7 @@ import { Vector } from "./Vector.js";
 import { Field } from "./Field.js";
 import { Triangle } from "./Triangle.js";
 import { NormalVector } from "./NormalVector.js";
+import { ColorHandler } from "colorhandler";
 export class Mesh {
     #vertices : Field;
     #triangles : Triangle[];
@@ -47,6 +48,18 @@ export class Mesh {
         return map;
 
     }
+
+    mapTrianglesToColors( colors: ColorHandler[]) : Map<string,ColorHandler> {
+        if (this.numTriangles !== colors.length) throw Error("number of triangles does not equal number of normal vectors");
+
+        let map = new Map();
+        for (let i =0 ; i < this.numTriangles; i++) {
+            
+            map.set(this.getTriangle(i).getDistinctIdentifier(),colors[i]);
+        }
+        return map;
+
+    }
     findTrianglesNormalVectorsFromMap(map : Map<string,NormalVector>) : NormalVector[]{
         let normalVectors = [];
         for (let i =0 ; i < this.numTriangles; i++) {
@@ -55,6 +68,16 @@ export class Mesh {
             normalVectors.push(map.get(distinct)!);
         }
         return normalVectors;
+    }
+    findTrianglesColorFromMap( map : Map<string,ColorHandler>) : ColorHandler[] {
+        let colors = [];
+        for (let i =0 ; i < this.numTriangles; i++) {
+            const distinct = this.getTriangle(i).getDistinctIdentifier();
+            if (!map.has(distinct)) continue;
+            colors.push(map.get(distinct)!);
+        }
+        return colors;
+
     }
     copy(){
         
@@ -66,7 +89,9 @@ export class Mesh {
 
         return new Mesh(this.#vertices.copy(),newTriangles);
     }
-
+    get vertices() {
+        return this.#vertices.copy();
+    }
     get numPoints() : number{
         return this.#vertices.numPoints;
     }
@@ -90,4 +115,5 @@ export class Mesh {
         // also need to check that each element in triangle is an instance of triangle
         this.#triangles = triangles;
     }
+
 }

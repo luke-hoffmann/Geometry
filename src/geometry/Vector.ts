@@ -22,6 +22,10 @@ export class Vector {
     static zero() : Vector{
         return new this(0,0,0);
     }
+    set z(n :number){
+        if (!Number.isFinite(n)) throw Error("n is not finite");
+        this.#z = n;
+    }
     static isVectorEqual(v1 : Vector,v2 : Vector) : boolean{
         if (!(v1 instanceof Vector)) {throw Error("v1 must be a vector");}
         if (!(v2 instanceof Vector)) {throw Error("v2 must be a vector");}

@@ -18,7 +18,7 @@ export class Camera {
         this.#aspectRatio = aspectRatio;
         //this.projectionPlane = ProjectionPlane.generateProjectionPlaneFromCamera(this,fovAngle,focalDistance,aspectRatio);
         this.#up = new Vector(0,1,0);
-        this.#right = Vector.unitVector(Vector.crossProduct(this.#up,viewVector));
+        this.#right = Vector.unitVector(Vector.crossProduct(viewVector,this.#up));
     }
     get focalDistance() {
         return this.#focalDistance;
@@ -36,12 +36,16 @@ export class Camera {
         let fieldArray = [];
         for (let i =0 ; i< mesh.numPoints; i++) {
             let p = mesh.getVertex(i);
-            p = this.shiftWorldPointIntoCameraSpace(p);
-            p = this.projectWorldPointOntoCameraAxis(p);
+            p = this.putCameraAtCenterOfPointCoordinateSystem(p);
             fieldArray.push(p);
         }
         newMesh.vertices = new Field(fieldArray);
         return newMesh;
+    }
+    putCameraAtCenterOfPointCoordinateSystem(point : Vector) : Vector {
+        point = this.shiftWorldPointIntoCameraSpace(point);
+        point = this.projectWorldPointOntoCameraAxis(point);
+        return point;
     }
     private shiftWorldPointIntoCameraSpace(point : Vector) : Vector {
         return Vector.sub(point,this.#physicsBody.position);
@@ -78,7 +82,7 @@ export class Camera {
     set viewVector (v : Vector) {
         this.#viewVector = v;
         this.#up = new Vector(0,1,0);
-        this.#right = Vector.unitVector(Vector.crossProduct(this.#up,v));
+        this.#right = Vector.unitVector(Vector.crossProduct(v,this.#up));
         this.#up = Vector.unitVector(Vector.crossProduct(v, this.#right));
     }
     pointAtPoint(point : Vector) : void{

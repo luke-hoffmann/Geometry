@@ -8,6 +8,7 @@ declare class Vector {
     get y(): number;
     get z(): number;
     static zero(): Vector;
+    set z(n: number);
     static isVectorEqual(v1: Vector, v2: Vector): boolean;
     static unitVector(v: Vector): Vector;
     static upVector(): Vector;
@@ -101,8 +102,11 @@ declare class Mesh {
     calculateTriangleNormalVector(triangle: Triangle): NormalVector;
     calculateTriangleNormalVectors(): NormalVector[];
     mapTrianglesToNormalVectors(normalVectors: NormalVector[]): Map<string, NormalVector>;
+    mapTrianglesToColors(colors: ColorHandler[]): Map<string, ColorHandler>;
     findTrianglesNormalVectorsFromMap(map: Map<string, NormalVector>): NormalVector[];
+    findTrianglesColorFromMap(map: Map<string, ColorHandler>): ColorHandler[];
     copy(): Mesh;
+    get vertices(): Field;
     get numPoints(): number;
     get numTriangles(): number;
     getVertex(index: number): Vector;
@@ -115,7 +119,10 @@ declare class Light {
     #private;
     constructor(color: ColorHandler, position: Vector, brightness: number);
     calculateObservedColor(color: ColorHandler): ColorHandler;
+    get position(): Vector;
+    get color(): ColorHandler;
     copy(): Light;
+    set position(pos: Vector);
 }
 
 declare class MeshGenerator {
@@ -153,6 +160,7 @@ declare class Camera {
     setPosition(position: Vector): void;
     get position(): Vector;
     putCameraAtCenterOfMeshCoordinateSystem(mesh: Mesh): Mesh;
+    putCameraAtCenterOfPointCoordinateSystem(point: Vector): Vector;
     private shiftWorldPointIntoCameraSpace;
     private projectWorldPointOntoCameraAxis;
     rejectNegativeZValuesList(field: Field): boolean[];
@@ -233,9 +241,14 @@ declare abstract class Renderer {
     protected abstract meshToCanvas(mesh: Mesh): Mesh;
     protected abstract graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     protected abstract graphVertices(mesh: Mesh): void;
-    protected abstract graphTriangles(mesh: Mesh): void;
+    protected abstract graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
     protected abstract postWork(): void;
+    protected abstract pointToCanvas(point: Vector): Vector;
+    protected abstract graphLight(light: Light): void;
     graph(): void;
+    private getColorOfTriangle;
+    protected getColorsOfTriangles(mesh: Mesh, color: ColorHandler): ColorHandler[];
+    private finalLightPosition;
     private graphEntity;
     protected backFaceCulling_Normal(mesh: Mesh): Mesh;
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
@@ -245,6 +258,7 @@ declare abstract class Renderer {
     private perspectiveProjectNormalVectorIntoLine;
     protected projectNormalVectorsIntoLines(normalVectors: NormalVector[], length: number): Line[];
     protected applyProjection(mesh: Mesh): Mesh;
+    private projectIndividualPoint;
 }
 
 declare class p5Renderer extends Renderer {
@@ -253,18 +267,21 @@ declare class p5Renderer extends Renderer {
     protected preWork(): void;
     protected postWork(): void;
     protected meshToCanvas(mesh: Mesh): Mesh;
+    protected pointToCanvas(point: Vector): Vector;
     private calculateCanvasPos;
     protected graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     private linesToCanvas;
     protected graphVertices(mesh: Mesh): void;
+    protected graphLight(light: Light): void;
     private graphVertex;
     private graphVisibleVertex;
     protected graphVisibleVertices(mesh: Mesh, size: number): void;
     private graphTriangle;
-    protected graphTriangles(mesh: Mesh): void;
+    protected graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
     private graphLines;
     private graphLine;
     private graphBetweenTwoPoints;
+    private convertColorHandlerToP5;
     copy(): void;
 }
 

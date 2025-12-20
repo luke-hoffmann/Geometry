@@ -18,7 +18,7 @@ export class CameraMover {
     }
     rotateCameraAroundPointAtYAbove(camera : Camera, point : Vector, radius : number, yAbove: number,deltaTheta : number) : Camera{
         let newCam = camera.copy();
-        newCam = this.rotateCameraAroundPointOnXZPlane(camera,Vector.add(point, new Vector(0,-yAbove,0)),radius,deltaTheta);
+        newCam = this.rotateCameraAroundPointOnXZPlane(camera,Vector.add(point, new Vector(0,yAbove,0)),radius,deltaTheta);
         newCam.pointAtPoint(point);
         return newCam
     }

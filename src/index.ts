@@ -11,5 +11,5 @@ export * from "./camera/Camera.js";
 
 export * from "./interface/Scene.js";
 export * from "./interface/CameraMover.js";
-export * from "./renderers/p5Renderer/p5Renderer.js";
+export * from "./renderers/p5Renderer.js";
 export * from "./interface/RenderParameters.js";
