@@ -27,33 +27,33 @@ export class Camera {
         if (!(position instanceof Vector)) throw Error("position is not an instance of Vector");
         this.#physicsBody.position = position;
     }
+
+    get position() {
+        return this.#physicsBody.position;
+    }
     putCameraAtCenterOfMeshCoordinateSystem(mesh : Mesh) : Mesh{
         let newMesh = mesh.copy();
-        newMesh = this.shiftMeshIntoCameraSpace(newMesh);
-        newMesh = this.projectMeshOntoCameraAxis(newMesh);
+        let fieldArray = [];
+        for (let i =0 ; i< mesh.numPoints; i++) {
+            let p = mesh.getVertex(i);
+            p = this.shiftWorldPointIntoCameraSpace(p);
+            p = this.projectWorldPointOntoCameraAxis(p);
+            fieldArray.push(p);
+        }
+        newMesh.vertices = new Field(fieldArray);
         return newMesh;
     }
-    shiftMeshIntoCameraSpace(mesh : Mesh) : Mesh {
-        let newPoints = [];
-        let newMesh = mesh.copy();
-        for (let i =0; i < mesh.numPoints; i++) {
-            newPoints.push(Vector.sub(mesh.getVertex(i),this.#physicsBody.position));
-        }
-        newMesh.vertices = new Field(newPoints);
-        return newMesh;
+    private shiftWorldPointIntoCameraSpace(point : Vector) : Vector {
+        return Vector.sub(point,this.#physicsBody.position);
     }
-    projectMeshOntoCameraAxis(mesh : Mesh) : Mesh{
-        let newPoints = [];
-        let newMesh = mesh.copy();
-        for (let i =0; i < mesh.numPoints; i++) {
-            let item = mesh.getVertex(i);
-            let x = Vector.dotProduct(item,this.#right);
-            let y = Vector.dotProduct(item,this.#up);
-            let z = Vector.dotProduct(item,this.#viewVector);
-            newPoints.push(new Vector(x,y,z));
-        }
-        newMesh.vertices = new Field(newPoints);
-        return newMesh;
+    private projectWorldPointOntoCameraAxis(point : Vector) : Vector{
+        
+        
+        let x = Vector.dotProduct(point,this.#right);
+        let y = Vector.dotProduct(point,this.#up);
+        let z = Vector.dotProduct(point,this.#viewVector);
+        
+        return new Vector(x,y,z);
     }
     rejectNegativeZValuesList(field : Field) : boolean[]{
         let list = [];
@@ -75,12 +75,18 @@ export class Camera {
             this.#aspectRatio
         );
     }
+    set viewVector (v : Vector) {
+        this.#viewVector = v;
+        this.#up = new Vector(0,1,0);
+        this.#right = Vector.unitVector(Vector.crossProduct(this.#up,v));
+        this.#up = Vector.unitVector(Vector.crossProduct(v, this.#right));
+    }
     pointAtPoint(point : Vector) : void{
-        if (!(point instanceof Vector)) throw Error("point is not an instance of Vector")
-        this.#viewVector = Vector.unitVector(Vector.sub(point,this.#physicsBody.position));
+        if (!(point instanceof Vector)) throw Error("point is not an instance of Vector");
+        this.viewVector = Vector.unitVector(Vector.sub(point,this.#physicsBody.position));
     }
     log(){
-        console.log("start camer log")
+        console.log("start camera log")
         console.log(this.#physicsBody.position);
         console.log(this.#viewVector);
         console.log("end camera log");

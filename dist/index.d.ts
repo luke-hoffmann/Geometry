@@ -137,41 +137,49 @@ declare class PhysicsBody {
     copy(): PhysicsBody;
 }
 
+declare class Entity {
+    #private;
+    constructor(mesh: Mesh, physicsBody: PhysicsBody);
+    copy(): Entity;
+    get mesh(): Mesh;
+    get physicsBody(): PhysicsBody;
+    get worldSpaceMesh(): Mesh;
+}
+
 declare class Camera {
     #private;
     constructor(physicsBody: PhysicsBody, viewVector: Vector, fovAngle: number, focalDistance: number, aspectRatio: number);
     get focalDistance(): number;
     setPosition(position: Vector): void;
+    get position(): Vector;
     putCameraAtCenterOfMeshCoordinateSystem(mesh: Mesh): Mesh;
-    shiftMeshIntoCameraSpace(mesh: Mesh): Mesh;
-    projectMeshOntoCameraAxis(mesh: Mesh): Mesh;
+    private shiftWorldPointIntoCameraSpace;
+    private projectWorldPointOntoCameraAxis;
     rejectNegativeZValuesList(field: Field): boolean[];
     isVertexVisible(vertex: Vector): boolean;
     copy(): Camera;
+    set viewVector(v: Vector);
     pointAtPoint(point: Vector): void;
     log(): void;
 }
 
 declare class Scene {
     #private;
-    constructor(meshes: Mesh[], lights: Light[]);
+    constructor(entities: Entity[], lights: Light[]);
     getLight(i: number): Light;
-    getMesh(i: number): Mesh;
+    getEntity(i: number): Entity;
     copy(): Scene;
-    get numMeshes(): number;
+    get numEntities(): number;
     get numLights(): number;
-    set meshes(meshes: Mesh[]);
+    set meshes(meshes: Entity[]);
 }
 
 declare class CameraMover {
     private acceleration;
-    constructor(acceleration: Vector);
-}
-
-declare class p5CameraMover extends CameraMover {
     private currentTheta;
     constructor(acceleration: Vector);
     rotateCameraAroundPointOnXZPlane(camera: Camera, point: Vector, radius: number, deltaTheta: number): Camera;
+    rotateCameraAroundPointAtYAbove(camera: Camera, point: Vector, radius: number, yAbove: number, deltaTheta: number): Camera;
 }
 
 declare class RenderParameters {
@@ -228,7 +236,7 @@ declare abstract class Renderer {
     protected abstract graphTriangles(mesh: Mesh): void;
     protected abstract postWork(): void;
     graph(): void;
-    private graphMesh;
+    private graphEntity;
     protected backFaceCulling_Normal(mesh: Mesh): Mesh;
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
     private orthographicProjectIndividualVector;
@@ -239,7 +247,7 @@ declare abstract class Renderer {
     protected applyProjection(mesh: Mesh): Mesh;
 }
 
-declare class p5MeshRenderer extends Renderer {
+declare class p5Renderer extends Renderer {
     #private;
     constructor(scene: Scene, screenSize: Vector, camera: Camera, renderParameters: RenderParameters, p: p5);
     protected preWork(): void;
@@ -260,7 +268,4 @@ declare class p5MeshRenderer extends Renderer {
     copy(): void;
 }
 
-declare class p5RenderParameters extends RenderParameters {
-}
-
-export { Camera, Field, Light, Mesh, MeshGenerator, PhysicsBody, Scene, Vector, p5CameraMover, p5MeshRenderer, p5RenderParameters };
+export { Camera, CameraMover, Entity, Field, Light, Mesh, MeshGenerator, PhysicsBody, RenderParameters, Scene, Vector, p5Renderer };

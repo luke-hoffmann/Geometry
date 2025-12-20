@@ -33,8 +33,10 @@ export abstract class Renderer {
         
 
         entity = entity.copy();
+        let mesh = entity.worldSpaceMesh;
 
-        mesh = this.camera.putCameraAtCenterOfEntityCoordinateSystem(mesh);
+
+        mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
 
         if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
         let normalVectors;
