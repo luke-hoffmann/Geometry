@@ -47,23 +47,16 @@ export abstract class Renderer {
     
     
     graph () : void {
-        this.preWork()
-        for (let i =0 ; i < this.scene.numEntities; i++) {
-            this.graphEntity(this.scene.getEntity(i));
+        this.preWork();
+        let sceneItems = this.getSceneInZOrder();
+        for (const sceneItem of sceneItems) {
+            if (sceneItem.type== "entity") {
+                this.graphEntity(this.scene.getEntity(sceneItem.ref));
+            }
+            if (sceneItem.type == "light") {
+                this.graphLight(this.scene.getLight(sceneItem.ref));
+            }
         }
-        
-        for (let i =0 ; i < this.scene.numLights; i++) {
-            this.graphLight(this.scene.getLight(i));
-        }
-        // let sceneItems = this.getSceneInZOrder();
-        // for (const sceneItem of sceneItems) {
-        //     if (sceneItem.type== "entity") {
-        //         this.graphEntity(this.scene.getEntity(sceneItem.ref));
-        //     }
-        //     if (sceneItem.type == "light") {
-        //         this.graphLight(this.scene.getLight(sceneItem.ref));
-        //     }
-        // }
         this.postWork();
     }
 
@@ -115,11 +108,12 @@ export abstract class Renderer {
     }
     private graphEntity (entity : Entity) : void{
         
-        let mesh = this.getCameraSpaceMesh(entity);
+        
+        let mesh = entity.worldSpaceMesh;
         let triangleColors = this.getColorsOfTriangles(mesh,entity.triangleColors);
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
-        
+        mesh = this.getCameraSpaceMesh(entity);
         if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
         
         mesh= this.applyProjection(mesh);
