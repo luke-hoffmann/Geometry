@@ -238,16 +238,13 @@ declare abstract class Renderer {
     protected abstract pointToCanvas(point: Vector): Vector;
     protected abstract graphLight(light: Light): void;
     setSceneLightPos(pos: Vector, i: number): void;
-    private graphLights;
-    private graphEntities;
+    private getSceneInZOrder;
     graph(): void;
     private getColorOfTriangle;
     protected getColorsOfTriangles(mesh: Mesh, colors: ColorHandler[]): ColorHandler[];
-    private finalLightPosition;
+    protected finalLightPosition(light: Light): Light;
     private getCameraSpaceMesh;
     private graphEntity;
-    private calculateGraphableMesh;
-    private graphMesh;
     protected backFaceCulling_Normal(mesh: Mesh): Mesh;
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
     private orthographicProjectIndividualVector;

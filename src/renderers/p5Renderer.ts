@@ -67,6 +67,7 @@ export class p5Renderer extends Renderer  {
         
     }
     protected graphLight(light : Light) : void{
+        light = this.finalLightPosition(light);
         this.graphVertex_noStroke(light.position, light.color.multiplyByNumber(light.brightness), 30);
     }
     private graphVertex_noStroke(vertex : Vector, color : ColorHandler, size : number) : void {

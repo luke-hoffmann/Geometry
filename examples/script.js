@@ -1,5 +1,5 @@
 let pos = new geometry.PhysicsBody(new geometry.Vector(0,0,0));
-let entity = geometry.Entity.randomConvexEntityWithColors(700,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120));
+let entity = geometry.Entity.randomConvexEntityWithColors(700,100, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120));
 pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
 let entity2 = geometry.Entity.randomConvexEntityWithColors(250,200, pos,new colorhandler.ColorHandler(100,50,140),new colorhandler.ColorHandler(60,100,120));
 

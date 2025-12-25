@@ -32,24 +32,31 @@ export abstract class Renderer {
     setSceneLightPos(pos : Vector, i : number) : void {
         this.scene.setLightPos(pos, i);
     }
-    private graphLights(){
-        for (let i =0; i < this.scene.numLights; i++) {
-            let l = this.scene.getLight(i);
-            l = this.finalLightPosition(l);
-            if (l.position.z < 0) continue;
-            this.graphLight(l);
+    
+    private getSceneInZOrder(){
+        let elements : {z : number, type : "entity" | "light", ref : number}[]= [];
+        for (let i = 0; i < this.scene.numEntities; i++) {
+            elements.push({type: "entity" , ref: i, z: this.getCameraSpaceMesh(this.scene.getEntity(i)).calculateAverageZ()});
         }
-    }
-    private graphEntities() : void{
-
-        for (let i =0; i < this.scene.numEntities; i++) {
-            this.graphEntity(this.scene.getEntity(i));
+        for (let i = 0 ; i < this.scene.numLights; i++) {
+            elements.push ({type: "light", ref : i, z : this.finalLightPosition(this.scene.getLight(i)).position.z})
         }
+        elements.sort((a,b) => b.z-a.z);
+        return elements.filter(e => e.z >=0);
     }
+    
+    
     graph () : void {
         this.preWork()
-        this.graphLights();
-        this.graphEntities();
+        let sceneItems = this.getSceneInZOrder();
+        for (const sceneItem of sceneItems) {
+            if (sceneItem.type== "entity") {
+                this.graphEntity(this.scene.getEntity(sceneItem.ref));
+            }
+            if (sceneItem.type == "light") {
+                this.graphLight(this.scene.getLight(sceneItem.ref));
+            }
+        }
         this.postWork();
     }
 
@@ -83,7 +90,7 @@ export abstract class Renderer {
         return outColors;
 
     }
-    private finalLightPosition(light : Light) : Light {
+    protected finalLightPosition(light : Light) : Light {
         let pos = this.camera.putCameraAtCenterOfPointCoordinateSystem(light.position);
         pos = this.projectIndividualPoint(pos);
         pos = this.pointToCanvas(pos);
