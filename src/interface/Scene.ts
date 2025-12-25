@@ -1,3 +1,4 @@
+import type { Vector } from "../geometry/Vector.js";
 import { Entity } from "../geometry/Entity.js";
 import { Light } from "../geometry/Light.js";
 
@@ -26,7 +27,9 @@ export class Scene {
     get numLights() : number {
         return this.#lights.length;
     }
-
+    setLightPos(pos :Vector, i :number) : void {
+        this.#lights[i].position = pos;
+    }
     set meshes (meshes : Entity[]) {
         if (!Array.isArray(meshes)) throw Error ("meshes is not an array");
         this.meshes = meshes;

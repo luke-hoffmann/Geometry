@@ -17,10 +17,19 @@ export class PrimitiveObject {
             [-sideLength / 2, sideLength / 2, -sideLength / 2],
             [sideLength / 2, sideLength / 2, sideLength / 2]
         ];
-        let fieldOfPoints = Field.generateFieldFromMatrixOfPoints(pointsMatrix)
+        let fieldOfPoints = this.generateFieldFromMatrixOfPoints(pointsMatrix);
 
         fieldOfPoints = fieldOfPoints.moveEntireField(centeredAt);
 
         return MeshGenerator.generateConvexMesh(fieldOfPoints,8);
+    }
+
+
+    static generateFieldFromMatrixOfPoints(matrix : number[][]) : Field{
+        let newField = []
+        for (const row of matrix) {
+            newField.push(new Vector(row[0],row[1],row[2]));
+        }   
+        return new Field(newField);
     }
 }

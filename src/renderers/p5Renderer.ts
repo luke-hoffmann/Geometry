@@ -8,7 +8,7 @@ import { Line } from "../geometry/Line.js";
 import { RenderParameters } from "../interface/RenderParameters.js";
 import type p5 from "p5";
 import { Scene } from "../interface/Scene.js";
-import { NormalVector } from "../geometry/NormalVector.js";
+
 import { ColorHandler } from "colorhandler";
 import { Light } from "../geometry/Light.js";
 export class p5Renderer extends Renderer  {
@@ -22,7 +22,7 @@ export class p5Renderer extends Renderer  {
     }
     protected preWork() {
         this.#graphicsBuffer.clear();
-        this.#graphicsBuffer.background(140);
+        this.#graphicsBuffer.background(0);
     }
     protected postWork(){
         this.#p5.image(this.#graphicsBuffer,0,0);
@@ -46,11 +46,7 @@ export class p5Renderer extends Renderer  {
     }
     
 
-    protected graphNormalVectors(mesh : Mesh, normalVectors : NormalVector[],length : number) : void{
-        const normalLines = this.projectNormalVectorsIntoLines(normalVectors,length);
-        const canvasLines = this.linesToCanvas(normalLines);
-        this.graphLines(canvasLines , this.#p5.color(0));
-    }
+    
 
 
 
@@ -71,21 +67,19 @@ export class p5Renderer extends Renderer  {
         
     }
     protected graphLight(light : Light) : void{
-        this.graphVertex(light.position, light.color, 30);
+        this.graphVertex_noStroke(light.position, light.color.multiplyByNumber(light.brightness), 30);
+    }
+    private graphVertex_noStroke(vertex : Vector, color : ColorHandler, size : number) : void {
+        this.#graphicsBuffer.noStroke();
+        this.#graphicsBuffer.fill(this.convertColorHandlerToP5(color));
+        this.graphVertex(vertex,color,size);
     }
     private graphVertex(vertex : Vector,color : ColorHandler, size : number){
-        this.#graphicsBuffer.stroke(0);
-        this.#graphicsBuffer.fill(this.convertColorHandlerToP5(color));
+        
         this.#graphicsBuffer.circle(vertex.x,vertex.y,size);
     }
-    private graphVisibleVertex(vertex : Vector,size : number){
-        if (this.camera.isVertexVisible(vertex)) this.graphVertex(vertex,new ColorHandler(0,0,0),size);
-    }
-    protected graphVisibleVertices(mesh : Mesh,size : number) {
-        for (let i =0; i < mesh.numPoints; i++) {
-            this.graphVisibleVertex(mesh.getVertex(i),size);
-        }
-    }
+    
+    
 
 
     private graphTriangle(mesh : Mesh,triangle : Triangle){
@@ -95,11 +89,11 @@ export class p5Renderer extends Renderer  {
         let p3 = mesh.getVertex(triangle.getVerticeReference(2));
         
         this.#graphicsBuffer.strokeJoin(this.#p5.ROUND);
-        
+        this.#graphicsBuffer.stroke(this.#p5.color(0));
         this.#graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
     }
     protected graphTriangles(mesh : Mesh, triangleColors : ColorHandler[]){
-        this.#graphicsBuffer.stroke(this.#p5.color(0));
+        //this.#graphicsBuffer.stroke(this.#p5.color(0));
         for (let i = 0 ;i < mesh.numTriangles; i++) {
             const triangle = mesh.getTriangle(i);
             

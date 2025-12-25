@@ -22,63 +22,50 @@ export class Mesh {
     }
     
     
-    
-    calculateTriangleNormalVector(triangle : Triangle) : NormalVector {
-        if (!(triangle instanceof Triangle)) throw Error ("triangle is not an instance of Triangle")
-        let centerOfTriangle = triangle.computeCentroid(this.#vertices);
-        let normalVector = triangle.computeNormal(this.#vertices)
-        return new NormalVector(centerOfTriangle,normalVector);
+    calculateAverageZ(){
+        let averageZ = 0;
+        for (let i =0; i < this.#vertices.numPoints;i++) {
+            averageZ += this.#vertices.getVertex(i).z;
+        }
+        return averageZ/this.#vertices.numPoints;
     }
-    calculateTriangleNormalVectors() : NormalVector[]{
-        let field = this.#vertices; 
+    
+    calculateTrianglesNormalVectors() : NormalVector[]{
         let normalVectors = []; 
         for (const triangle of this.#triangles) {
-            normalVectors.push(this.calculateTriangleNormalVector(triangle));
+            normalVectors.push(triangle.calculateTriangleNormalVector(this.#vertices));
         }
         return normalVectors;
     }
-    mapTrianglesToNormalVectors( normalVectors : NormalVector[]) : Map<string,NormalVector> {
-        if (this.numTriangles !== normalVectors.length) throw Error("number of triangles does not equal number of normal vectors");
+    
+    mapTrianglesToAnyObject<T>(objects: T[]): Map<string, T> {
+        if (this.numTriangles !== objects.length) {
+            throw new Error("number of triangles does not equal number of objects");
+        }
 
-        let map = new Map();
-        for (let i =0 ; i < this.numTriangles; i++) {
-            
-            map.set(this.getTriangle(i).getDistinctIdentifier(),normalVectors[i]);
+        const map = new Map<string, T>();
+        for (let i = 0; i < this.numTriangles; i++) {
+            map.set(this.getTriangle(i).getDistinctIdentifier(), objects[i]);
         }
         return map;
-
     }
-
-    mapTrianglesToColors( colors: ColorHandler[]) : Map<string,ColorHandler> {
-        if (this.numTriangles !== colors.length) throw Error("number of triangles does not equal number of normal vectors");
-
-        let map = new Map();
-        for (let i =0 ; i < this.numTriangles; i++) {
-            
-            map.set(this.getTriangle(i).getDistinctIdentifier(),colors[i]);
+    
+    
+    findAnyObjectFromMap<T>(map: Map<string, T>): T[] {
+        const result: T[] = [];
+        for (let i = 0; i < this.numTriangles; i++) {
+            const id = this.getTriangle(i).getDistinctIdentifier();
+            const value = map.get(id);
+            if (value !== undefined) {
+                result.push(value);
+            }
         }
-        return map;
+    
+        return result;
+    }
 
-    }
-    findTrianglesNormalVectorsFromMap(map : Map<string,NormalVector>) : NormalVector[]{
-        let normalVectors = [];
-        for (let i =0 ; i < this.numTriangles; i++) {
-            const distinct = this.getTriangle(i).getDistinctIdentifier();
-            if (!map.has(distinct)) continue;
-            normalVectors.push(map.get(distinct)!);
-        }
-        return normalVectors;
-    }
-    findTrianglesColorFromMap( map : Map<string,ColorHandler>) : ColorHandler[] {
-        let colors = [];
-        for (let i =0 ; i < this.numTriangles; i++) {
-            const distinct = this.getTriangle(i).getDistinctIdentifier();
-            if (!map.has(distinct)) continue;
-            colors.push(map.get(distinct)!);
-        }
-        return colors;
+    
 
-    }
     copy(){
         
         let newTriangles = [];

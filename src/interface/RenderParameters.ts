@@ -3,53 +3,45 @@ export class RenderParameters {
   #doOutline: boolean;
   #doFill: boolean;
   #doVertices: boolean;
-  #doNormalVectors: boolean;
   #doShadingWithLighting: boolean;
   #lineWidth: number;
   #pointRadius: number;
   #isPerspective: boolean;
   #doTriangles: boolean;
   #isWindingOrderBackFaceCulling: boolean;
-  #normalVectorLength : number;
   constructor({
     doBackFaceCulling = true,
     doOutline = true,
     doFill = true,
     doVertices = false,
-    doNormalVectors = false,
     doShadingWithLighting = true,
     lineWidth = 1,
     pointRadius = 3,
     isPerspective = true,
     doTriangles = true,
     isWindingOrderBackFaceCulling = true,
-    normalVectorLength = 25
   }: Partial<{
     doBackFaceCulling: boolean;
     doOutline: boolean;
     doFill: boolean;
     doVertices: boolean;
-    doNormalVectors: boolean;
     doShadingWithLighting: boolean;
     lineWidth: number;
     pointRadius: number;
     isPerspective: boolean;
     doTriangles: boolean;
     isWindingOrderBackFaceCulling: boolean;
-    normalVectorLength : number;
   }> = {}) {
     this.#doBackFaceCulling = doBackFaceCulling;
     this.#doOutline = doOutline;
     this.#doFill = doFill;
     this.#doVertices = doVertices;
-    this.#doNormalVectors = doNormalVectors;
     this.#doShadingWithLighting = doShadingWithLighting;
     this.#lineWidth = lineWidth;
     this.#pointRadius = pointRadius;
     this.#isPerspective = isPerspective;
     this.#doTriangles = doTriangles;
     this.#isWindingOrderBackFaceCulling = isWindingOrderBackFaceCulling;
-    this.#normalVectorLength = normalVectorLength;
   }
 
   // getters
@@ -57,14 +49,12 @@ export class RenderParameters {
   get doOutline() { return this.#doOutline; }
   get doFill() { return this.#doFill; }
   get doVertices() { return this.#doVertices; }
-  get doNormalVectors() { return this.#doNormalVectors; }
   get doShadingWithLighting() { return this.#doShadingWithLighting; }
   get lineWidth() { return this.#lineWidth; }
   get pointRadius() { return this.#pointRadius; }
   get isPerspective() { return this.#isPerspective; }
   get doTriangles() { return this.#doTriangles; }
   get isWindingOrderBackFaceCulling() { return this.#isWindingOrderBackFaceCulling; }
-  get normalVectorLength() {return this.#normalVectorLength;}
   // setters (safe)
   set doBackFaceCulling(v: boolean) {
     if (typeof v !== "boolean") throw new TypeError("doBackFaceCulling must be boolean");
@@ -86,10 +76,6 @@ export class RenderParameters {
     this.#doVertices = v;
   }
 
-  set doNormalVectors(v: boolean) {
-    if (typeof v !== "boolean") throw new TypeError("doNormalVectors must be boolean");
-    this.#doNormalVectors = v;
-  }
 
   set doShadingWithLighting(v: boolean) {
     if (typeof v !== "boolean") throw new TypeError("doShadingWithLighting must be boolean");
@@ -127,10 +113,4 @@ export class RenderParameters {
     this.#isWindingOrderBackFaceCulling = v;
   }
 
-  set normalVectorLength (n : number) {
-    if (typeof n !== "number" || !Number.isFinite(n) || n <= 0) {
-      throw new TypeError("normalVectorLength must be a positive finite number");
-    }
-    this.#normalVectorLength = n;
-  }
 }

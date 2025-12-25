@@ -1,6 +1,7 @@
 import { Vector } from "./Vector.js";
 import { UsefulFunction } from "usefulfunction";
 import { Field } from "./Field.js";
+import { NormalVector } from "./NormalVector.js";
 export class Triangle {
     #verticeReferences : number[];
     constructor (verticeReferences : number[]) {
@@ -117,7 +118,11 @@ export class Triangle {
     getDistinctIdentifier() : string{
         return (this.#verticeReferences[0].toString() + this.#verticeReferences[1].toString() + this.#verticeReferences[2].toString())
     }
-
+    calculateTriangleNormalVector(field : Field) : NormalVector {
+        let centerOfTriangle = this.computeCentroid(field);
+        let normalVector = this.computeNormal(field)
+        return new NormalVector(centerOfTriangle,normalVector);
+    }
 
     
 }

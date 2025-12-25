@@ -20,9 +20,10 @@ export class Line {
     }
     
     distanceToPoint(v : Vector) : number{
-       const BA = Vector.sub(v,this.#p1);
-       const BC = Vector.sub(this.#p2,this.#p1);
-       return Vector.magnitude(Vector.crossProduct(BA,BC)) / Vector.magnitude(BC)
+        // math from the internet
+        const BA = Vector.sub(v,this.#p1);
+        const BC = Vector.sub(this.#p2,this.#p1);
+        return Vector.magnitude(Vector.crossProduct(BA,BC)) / Vector.magnitude(BC)
     }
     
 }

@@ -31,6 +31,9 @@ export class Light {
     get color() : ColorHandler {
         return this.#color.copy();
     }
+    get brightness() : number {
+        return this.#brightness;
+    }
     copy() {
         return new Light(this.#color.copy(),this.#position.copy(),this.#brightness);
     }

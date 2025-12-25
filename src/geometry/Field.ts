@@ -14,20 +14,14 @@ export class Field {
     getVertex(index : number) : Vector {
         return this.array[index];
     }
-    static generateFieldFromMatrixOfPoints(matrix : number[][]) : Field{
-        let newField = new Field([]);
-        for (const row of matrix) {
-            newField.array.push(new Vector(row[0],row[1],row[2]));
-        }   
-        return newField;
-    }
+    
     generateRandomPointsInSphere(radius : number,n : number){
         this.array = [];
         for (let i =0; i < n; i++) {
             this.array.push(Vector.generateVectorInSphere(radius));
         }
     }
-    getTriangleUpspace(triangle : Triangle,indices : number[]) : number[] {
+    getTrianglesUpspace(triangle : Triangle,indices : number[]) : number[] {
         let indicesAbovePlane = []
         for (const point of indices) {
             // need to replace to instead see if the point lies on the plane or not.
@@ -60,12 +54,12 @@ export class Field {
         }
         return trianglesContainingIndices;
     }
-
+    
     getTrianglesUpspaces(triangles : Triangle[], indices : number[]) : number[] {
         
         let upspace= [];
         for (const triangle of triangles) {
-            upspace.push(this.getTriangleUpspace(triangle,indices));
+            upspace.push(this.getTrianglesUpspace(triangle,indices));
         }
 
         upspace = UsefulFunction.combineArrays(upspace);
@@ -124,7 +118,7 @@ export class Field {
         }
         return distanceAveragesToAllTriangles;
     }
-    // bad one
+
     getFarthestPointFromTriangles( triangles : Triangle[], pointIndices : number[]) : number{
         let farthestPoints = this.getFarthestPointsFromTriangles(triangles,pointIndices);
         let distanceAveragesToAllTriangles = this.getAverageDistanceBetweenPointsAndTriangles(triangles,farthestPoints);
@@ -233,33 +227,8 @@ export class Field {
         return indexOfLowestCoordinate
     }
 
-    findVectorWithLowestZ(): number{
-        let val = Infinity;
-        let index = -1;
-        for (let i =0 ; i < this.array.length;i++) {
-            let v = this.array[i];
-            if (v.z  < val) {
-                val = v.z;
-                index = i;
-            }
-        }
-        if (index == -1) throw Error("no vector found!");
-        return index;
-
-    }
-    findVectorWithHighestZ(): number{
-        let val = -Infinity;
-        let index = -1;
-        for (let i =0 ; i < this.array.length;i++) {
-            let v = this.array[i];
-            if (v.z  > val) {
-                val = v.z;
-                index = i;
-            }
-        }
-        if (index == -1) throw Error("no vector found!");
-        return index;
-    }
+    
+    
     moveEntireField(moveQuantity : Vector) : Field{
         let newField = []
         for (let i =0 ; i< this.array.length;i++) {

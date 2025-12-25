@@ -17,16 +17,11 @@ export class MeshGenerator {
             farthestPoint = field.getFarthestPointFromTriangles_Fast(triangles,upSpaceIndices);
         }
         
-        
-        if (farthestPoint === undefined) {
-            throw Error("LOOK AT THIS CODE LINE IDK - 12/10/2025 - when i took on the task of converting it all to TS");
-            //return false;
-        }
 
         let triangleIndicesWithPointInUpspace = field.getTriangleIndicesWithPointInUpspace(triangles,farthestPoint);
         let trianglesWithPointInUpspace = field.getTrianglesWithPointInUpspace(triangles,farthestPoint);
        
-
+        
         let newTriangleMap = new Map();
         Triangle.addPointsFromTrianglesToMap(newTriangleMap,trianglesWithPointInUpspace);
         let boundaryPoints = UsefulFunction.getNodesOnOutsideOfCounterClockwiseGraph(newTriangleMap,100000);
@@ -67,5 +62,11 @@ export class MeshGenerator {
         
         return new Mesh(field,triangles);
         
+    }
+    static generateRandomConvexMesh(radius : number, numberOfPoints : number) {
+        let field = new Field([]);
+        field.generateRandomPointsInSphere(radius,numberOfPoints);
+        return this.generateConvexMesh(field,310);
+
     }
 }

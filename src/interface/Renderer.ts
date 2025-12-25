@@ -1,6 +1,6 @@
 import type { Mesh } from "../geometry/Mesh.js";
 import type { Camera } from "../camera/Camera.js";
-import type { NormalVector } from "../geometry/NormalVector.js";
+
 import { Light } from "../geometry/Light.js";
 import { Field } from "../geometry/Field.js";
 import { Line } from "../geometry/Line.js";
@@ -21,26 +21,39 @@ export abstract class Renderer {
     }  
     protected abstract preWork() : void;
     protected abstract meshToCanvas(mesh : Mesh) : Mesh;
-    protected abstract graphNormalVectors(mesh : Mesh,normalVectors : NormalVector[],length: number) : void;
+    
     protected abstract graphVertices(mesh : Mesh) : void;
     protected abstract graphTriangles (mesh : Mesh, triangleColors : ColorHandler[]) : void;
     protected abstract postWork() : void;
     protected abstract pointToCanvas(point : Vector) : Vector;
     protected abstract graphLight(light : Light) : void;
 
-    graph () : void {
-        this.preWork()
+
+    setSceneLightPos(pos : Vector, i : number) : void {
+        this.scene.setLightPos(pos, i);
+    }
+    private graphLights(){
         for (let i =0; i < this.scene.numLights; i++) {
             let l = this.scene.getLight(i);
             l = this.finalLightPosition(l);
             if (l.position.z < 0) continue;
             this.graphLight(l);
         }
+    }
+    private graphEntities() : void{
+
         for (let i =0; i < this.scene.numEntities; i++) {
             this.graphEntity(this.scene.getEntity(i));
         }
+    }
+    graph () : void {
+        this.preWork()
+        this.graphLights();
+        this.graphEntities();
         this.postWork();
     }
+
+
     private getColorOfTriangle(mesh : Mesh, triangle : Triangle, color : ColorHandler) : ColorHandler {
        
         let centerOfTriangle = triangle.computeCentroid(mesh.vertices);
@@ -58,15 +71,16 @@ export abstract class Renderer {
         return ColorHandler.sumAndClamp(colorArray);
     }
 
-    protected getColorsOfTriangles(mesh : Mesh, color : ColorHandler) : ColorHandler[] {
-        let colors = [];
+    protected getColorsOfTriangles(mesh : Mesh, colors : ColorHandler[]) : ColorHandler[] {
+        let outColors = [];
         for (let i = 0 ;i < mesh.numTriangles; i++) {
             const triangle = mesh.getTriangle(i);
             // need to calculate color of triangle before projection.
-            const col = (this.getColorOfTriangle(mesh,triangle, color));
-            colors.push(col);
+            const col = (this.getColorOfTriangle(mesh,triangle, colors[i]));
+            outColors.push(col);
         }
-        return colors;
+
+        return outColors;
 
     }
     private finalLightPosition(light : Light) : Light {
@@ -78,44 +92,68 @@ export abstract class Renderer {
         
         return l;
     }
-    private graphEntity(entity : Entity) : void{
-        
-
+    private getCameraSpaceMesh(entity : Entity) : Mesh {
         entity = entity.copy();
         let mesh = entity.worldSpaceMesh;
-
-        let triangleColors = this.getColorsOfTriangles(mesh,new ColorHandler(255,255,255));
-        let colorMap = mesh.mapTrianglesToColors(triangleColors);
-        mesh = this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
         
+        return this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
+
+    }
+    private graphEntity (entity : Entity) : void{
+        
+        let mesh = this.getCameraSpaceMesh(entity);
+        let cameraSpaceMesh = mesh;
+        let triangleColors = this.getColorsOfTriangles(mesh,entity.triangleColors);
+
+        let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
         
         if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
-        let normalVectors;
         
-        if (!this.renParam.isPerspective) normalVectors = mesh.calculateTriangleNormalVectors();
         mesh= this.applyProjection(mesh);
-        if (this.renParam.isPerspective) normalVectors = mesh.calculateTriangleNormalVectors();
-        
-        
         if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
-            const map = mesh.mapTrianglesToNormalVectors(normalVectors!);
             mesh = this.backFaceCulling_WindingOrder(mesh);
-            normalVectors = mesh.findTrianglesNormalVectorsFromMap(map);
         }
-
-        let colors = mesh.findTrianglesColorFromMap(colorMap);
-        if (this.renParam.doNormalVectors) this.graphNormalVectors(mesh, normalVectors!,this.renParam.normalVectorLength);
+        let colors = mesh.findAnyObjectFromMap(colorMap);
         
-
         mesh = this.meshToCanvas(mesh);
         
-
         if (this.renParam.doVertices) this.graphVertices(mesh);
         if (this.renParam.doTriangles) this.graphTriangles(mesh,colors);
         
         
-        
     }
+    /*
+    private calculateGraphableMesh(entity : Entity ) : [Mesh, Mesh,ColorHandler[]]{
+        let mesh = this.getCameraSpaceMesh(entity);
+        let cameraSpaceMesh = mesh;
+        let triangleColors = this.getColorsOfTriangles(mesh,entity.triangleColors);
+
+        let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
+        
+        if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
+        
+        mesh= this.applyProjection(mesh);
+        if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
+            mesh = this.backFaceCulling_WindingOrder(mesh);
+        }
+
+
+        let colors = mesh.findAnyObjectFromMap(colorMap);
+        
+        mesh = this.meshToCanvas(mesh);
+        
+
+        return [mesh, cameraSpaceMesh,colors];
+    }
+    private graphMesh(mesh : Mesh, colors : ColorHandler[]) : void{
+        
+        
+        
+        if (this.renParam.doVertices) this.graphVertices(mesh);
+        if (this.renParam.doTriangles) this.graphTriangles(mesh,colors);
+        
+        
+    }   */
 
     protected backFaceCulling_Normal(mesh : Mesh) : Mesh{
         let viewVector = new Vector(0,0,1);
@@ -123,7 +161,7 @@ export abstract class Renderer {
         let backFaceCulledMesh = mesh.copy();
         let cameraFacingTriangles = [];
 
-        let normalVectors = backFaceCulledMesh.calculateTriangleNormalVectors();
+        let normalVectors = backFaceCulledMesh.calculateTrianglesNormalVectors();
         
         for (let i =0; i < mesh.numTriangles ; i++) {
             let isTriangleVisible;
@@ -174,24 +212,9 @@ export abstract class Renderer {
         let z = vector.z;
         return new Vector(x,y,z);
     }
-    private orthographicProjectNormalVectorIntoLine(normalVector : NormalVector,length : number) : Line{
-        let p1 = this.orthographicProjectIndividualVector(normalVector.position);
-        let p2 = this.orthographicProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction,length),normalVector.position));
-        return new Line(p1,p2);
-    } 
-    private perspectiveProjectNormalVectorIntoLine(normalVector : NormalVector,length : number) : Line{
-        let p1 = this.perspectiveProjectIndividualVector(normalVector.position);
-        let p2 = this.perspectiveProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction,length),normalVector.position));
-        return new Line(p1,p2);
-    } 
-    protected projectNormalVectorsIntoLines(normalVectors : NormalVector[],length : number) : Line[]{
-        let lines = [];
-        for (const v of normalVectors) {
-            if (this.renParam.isPerspective) lines.push(this.perspectiveProjectNormalVectorIntoLine(v,length));
-            if (!this.renParam.isPerspective) lines.push(this.orthographicProjectNormalVectorIntoLine(v,length));
-        }
-        return lines;
-    }
+    
+    
+    
     
     protected applyProjection(mesh : Mesh) : Mesh{
     

@@ -33,6 +33,15 @@ declare class Vector {
     copy(): Vector;
 }
 
+declare class NormalVector {
+    #private;
+    constructor(position: Vector, direction: Vector);
+    worldPositionOfDirection(): Vector;
+    copy(): NormalVector;
+    get position(): Vector;
+    get direction(): Vector;
+}
+
 declare class Triangle {
     #private;
     constructor(verticeReferences: number[]);
@@ -49,6 +58,7 @@ declare class Triangle {
     static createPyramidFromBoundaryPoints(boundaryIndices: number[], point: number): Triangle[];
     copy(): Triangle;
     getDistinctIdentifier(): string;
+    calculateTriangleNormalVector(field: Field): NormalVector;
 }
 
 declare class Line {
@@ -64,9 +74,8 @@ declare class Field {
     private array;
     constructor(array: Vector[]);
     getVertex(index: number): Vector;
-    static generateFieldFromMatrixOfPoints(matrix: number[][]): Field;
     generateRandomPointsInSphere(radius: number, n: number): void;
-    getTriangleUpspace(triangle: Triangle, indices: number[]): number[];
+    getTrianglesUpspace(triangle: Triangle, indices: number[]): number[];
     getTrianglesWithPointInUpspace(triangles: Triangle[], point: number): Triangle[];
     getTriangleIndicesWithPointInUpspace(triangles: Triangle[], point: number): number[];
     getTrianglesUpspaces(triangles: Triangle[], indices: number[]): number[];
@@ -80,31 +89,18 @@ declare class Field {
     calculateLargestTriangleFromField(): Triangle;
     calculateFarthestPoint(line: Line): number;
     lowestVectorInField(): number;
-    findVectorWithLowestZ(): number;
-    findVectorWithHighestZ(): number;
     moveEntireField(moveQuantity: Vector): Field;
     copy(): Field;
     get numPoints(): number;
 }
 
-declare class NormalVector {
-    #private;
-    constructor(position: Vector, direction: Vector);
-    worldPositionOfDirection(): Vector;
-    copy(): NormalVector;
-    get position(): Vector;
-    get direction(): Vector;
-}
-
 declare class Mesh {
     #private;
     constructor(vertices: Field, triangles: Triangle[]);
-    calculateTriangleNormalVector(triangle: Triangle): NormalVector;
-    calculateTriangleNormalVectors(): NormalVector[];
-    mapTrianglesToNormalVectors(normalVectors: NormalVector[]): Map<string, NormalVector>;
-    mapTrianglesToColors(colors: ColorHandler[]): Map<string, ColorHandler>;
-    findTrianglesNormalVectorsFromMap(map: Map<string, NormalVector>): NormalVector[];
-    findTrianglesColorFromMap(map: Map<string, ColorHandler>): ColorHandler[];
+    calculateAverageZ(): number;
+    calculateTrianglesNormalVectors(): NormalVector[];
+    mapTrianglesToAnyObject<T>(objects: T[]): Map<string, T>;
+    findAnyObjectFromMap<T>(map: Map<string, T>): T[];
     copy(): Mesh;
     get vertices(): Field;
     get numPoints(): number;
@@ -121,6 +117,7 @@ declare class Light {
     calculateObservedColor(color: ColorHandler): ColorHandler;
     get position(): Vector;
     get color(): ColorHandler;
+    get brightness(): number;
     copy(): Light;
     set position(pos: Vector);
 }
@@ -129,6 +126,7 @@ declare class MeshGenerator {
     private static convexHullIterativeProcess;
     static addTrianglesToTrianglesArray(trianglesArray: Triangle[], triangles: Triangle[]): Triangle[];
     static generateConvexMesh(field: Field, iterationNumber: number): Mesh;
+    static generateRandomConvexMesh(radius: number, numberOfPoints: number): Mesh;
 }
 
 declare class PhysicsBody {
@@ -146,8 +144,11 @@ declare class PhysicsBody {
 
 declare class Entity {
     #private;
-    constructor(mesh: Mesh, physicsBody: PhysicsBody);
+    constructor(mesh: Mesh, physicsBody: PhysicsBody, triangleColors: ColorHandler[]);
+    static randomConvexEntityWithColors(radius: number, n: number, physicsBody: PhysicsBody, c1: ColorHandler, c2: ColorHandler): Entity;
     copy(): Entity;
+    getTriangleColor(i: number): ColorHandler;
+    get triangleColors(): ColorHandler[];
     get mesh(): Mesh;
     get physicsBody(): PhysicsBody;
     get worldSpaceMesh(): Mesh;
@@ -157,18 +158,15 @@ declare class Camera {
     #private;
     constructor(physicsBody: PhysicsBody, viewVector: Vector, fovAngle: number, focalDistance: number, aspectRatio: number);
     get focalDistance(): number;
-    setPosition(position: Vector): void;
     get position(): Vector;
+    set position(position: Vector);
+    set viewVector(v: Vector);
     putCameraAtCenterOfMeshCoordinateSystem(mesh: Mesh): Mesh;
     putCameraAtCenterOfPointCoordinateSystem(point: Vector): Vector;
     private shiftWorldPointIntoCameraSpace;
     private projectWorldPointOntoCameraAxis;
-    rejectNegativeZValuesList(field: Field): boolean[];
-    isVertexVisible(vertex: Vector): boolean;
     copy(): Camera;
-    set viewVector(v: Vector);
     pointAtPoint(point: Vector): void;
-    log(): void;
 }
 
 declare class Scene {
@@ -179,6 +177,7 @@ declare class Scene {
     copy(): Scene;
     get numEntities(): number;
     get numLights(): number;
+    setLightPos(pos: Vector, i: number): void;
     set meshes(meshes: Entity[]);
 }
 
@@ -192,44 +191,38 @@ declare class CameraMover {
 
 declare class RenderParameters {
     #private;
-    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doNormalVectors, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, normalVectorLength }?: Partial<{
+    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, }?: Partial<{
         doBackFaceCulling: boolean;
         doOutline: boolean;
         doFill: boolean;
         doVertices: boolean;
-        doNormalVectors: boolean;
         doShadingWithLighting: boolean;
         lineWidth: number;
         pointRadius: number;
         isPerspective: boolean;
         doTriangles: boolean;
         isWindingOrderBackFaceCulling: boolean;
-        normalVectorLength: number;
     }>);
     get doBackFaceCulling(): boolean;
     get doOutline(): boolean;
     get doFill(): boolean;
     get doVertices(): boolean;
-    get doNormalVectors(): boolean;
     get doShadingWithLighting(): boolean;
     get lineWidth(): number;
     get pointRadius(): number;
     get isPerspective(): boolean;
     get doTriangles(): boolean;
     get isWindingOrderBackFaceCulling(): boolean;
-    get normalVectorLength(): number;
     set doBackFaceCulling(v: boolean);
     set doOutline(v: boolean);
     set doFill(v: boolean);
     set doVertices(v: boolean);
-    set doNormalVectors(v: boolean);
     set doShadingWithLighting(v: boolean);
     set lineWidth(v: number);
     set pointRadius(v: number);
     set isPerspective(v: boolean);
     set doTriangles(v: boolean);
     set isWindingOrderBackFaceCulling(v: boolean);
-    set normalVectorLength(n: number);
 }
 
 declare abstract class Renderer {
@@ -239,24 +232,26 @@ declare abstract class Renderer {
     constructor(scene: Scene, camera: Camera, renderParameters: RenderParameters);
     protected abstract preWork(): void;
     protected abstract meshToCanvas(mesh: Mesh): Mesh;
-    protected abstract graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     protected abstract graphVertices(mesh: Mesh): void;
     protected abstract graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
     protected abstract postWork(): void;
     protected abstract pointToCanvas(point: Vector): Vector;
     protected abstract graphLight(light: Light): void;
+    setSceneLightPos(pos: Vector, i: number): void;
+    private graphLights;
+    private graphEntities;
     graph(): void;
     private getColorOfTriangle;
-    protected getColorsOfTriangles(mesh: Mesh, color: ColorHandler): ColorHandler[];
+    protected getColorsOfTriangles(mesh: Mesh, colors: ColorHandler[]): ColorHandler[];
     private finalLightPosition;
+    private getCameraSpaceMesh;
     private graphEntity;
+    private calculateGraphableMesh;
+    private graphMesh;
     protected backFaceCulling_Normal(mesh: Mesh): Mesh;
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
     private orthographicProjectIndividualVector;
     private perspectiveProjectIndividualVector;
-    private orthographicProjectNormalVectorIntoLine;
-    private perspectiveProjectNormalVectorIntoLine;
-    protected projectNormalVectorsIntoLines(normalVectors: NormalVector[], length: number): Line[];
     protected applyProjection(mesh: Mesh): Mesh;
     private projectIndividualPoint;
 }
@@ -269,13 +264,11 @@ declare class p5Renderer extends Renderer {
     protected meshToCanvas(mesh: Mesh): Mesh;
     protected pointToCanvas(point: Vector): Vector;
     private calculateCanvasPos;
-    protected graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     private linesToCanvas;
     protected graphVertices(mesh: Mesh): void;
     protected graphLight(light: Light): void;
+    private graphVertex_noStroke;
     private graphVertex;
-    private graphVisibleVertex;
-    protected graphVisibleVertices(mesh: Mesh, size: number): void;
     private graphTriangle;
     protected graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
     private graphLines;

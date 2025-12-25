@@ -36,11 +36,11 @@
   "license": "ISC",
   "homepage": "https://github.com/luke-hoffmann/Geometry#readme",
   "dependencies": {
+    "colorhandler": "github:luke-hoffmann/colorhandler",
     "usefulfunction": "github:luke-hoffmann/usefulfunction"
   },
   "devDependencies": {
     "@types/p5": "^1.7.7",
-    "colorhandler": "github:luke-hoffmann/colorhandler",
     "p5": "^2.1.1",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
