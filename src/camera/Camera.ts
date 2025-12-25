@@ -34,6 +34,7 @@ export class Camera {
     set viewVector (v : Vector) {
         this.#viewVector = v;
         this.#up = new Vector(0,1,0);
+        if (v.equals(Vector.upVector()) || v.equals(Vector.downVector())) this.#up = new Vector(1,0,0);
         this.#right = Vector.unitVector(Vector.crossProduct(v,this.#up));
         this.#up = Vector.unitVector(Vector.crossProduct(v, this.#right));
     }
@@ -83,6 +84,7 @@ export class Camera {
     pointAtPoint(point : Vector) : void{
         if (!(point instanceof Vector)) throw Error("point is not an instance of Vector");
         this.viewVector = Vector.unitVector(Vector.sub(point,this.#physicsBody.position));
+        
     }
     
 }

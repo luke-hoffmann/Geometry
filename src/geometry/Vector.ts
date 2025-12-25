@@ -39,7 +39,10 @@ export class Vector {
         return new this(v.x/mag,v.y/mag,v.z/mag);
     }
     static upVector() : Vector{
-        return new this(0,0,1);
+        return new this(0,1,0);
+    }
+    static downVector() : Vector{
+        return new this(0,-1,0);
     }
     static generateVectorInSphere(mag : number) : Vector {
         
@@ -55,6 +58,9 @@ export class Vector {
         }
         return new Vector(x*mag,y*mag,z*mag);
     
+    }
+    equals (v : this) : boolean{
+        return (v.x == this.#x && v.y == this.#y && v.z == this.#z);
     }
     
 

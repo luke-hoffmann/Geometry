@@ -1,19 +1,18 @@
 let pos = new geometry.PhysicsBody(new geometry.Vector(0,0,0));
-let entity = geometry.Entity.randomConvexEntityWithColors(700,100, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120));
-pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
-let entity2 = geometry.Entity.randomConvexEntityWithColors(250,200, pos,new colorhandler.ColorHandler(100,50,140),new colorhandler.ColorHandler(60,100,120));
+let entity = geometry.Entity.randomConvexEntityWithColors(700,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120));
 
-let lights = [new geometry.Light(new colorhandler.ColorHandler(255,255,255),new geometry.Vector(0,10000,0),.6)];
-lights.push(new geometry.Light(new colorhandler.ColorHandler(255,255,255),new geometry.Vector(0,0,100000),.6));
-lights.push(new geometry.Light(new colorhandler.ColorHandler(255,255,255),new geometry.Vector(10000,0,0),.6));
+let lights = [new geometry.Light(new colorhandler.ColorHandler(255,0,0),new geometry.Vector(0,0,-1000),.6)];
+//lights.push(new geometry.Light(new colorhandler.ColorHandler(0,255,0),new geometry.Vector(0,0,1000),.6));
+//lights.push(new geometry.Light(new colorhandler.ColorHandler(0,0,255),new geometry.Vector(1000,0,0),.6));
 let renderer;
-let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-2000))
+let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,1000))
 let camera = new geometry.Camera(cameraPB,new geometry.Vector(0,0,1),90,400,0);
-
+camera.pointAtPoint(new geometry.Vector(0,0,0));
 let cameraMover = new geometry.CameraMover(0.1);
+
 let screenSize = new geometry.Vector(1400,800);
 let i =0;
-let scene = new geometry.Scene([entity,entity2],lights);
+let scene = new geometry.Scene([entity],lights);
 const s = ( sketch ) => {
 
 
@@ -33,12 +32,12 @@ const s = ( sketch ) => {
 
 
   sketch.draw = () => {
-    i+=0.1;
+    i+=0.005;
     renderer.graph();
     const radius = 2000;
-    
-
-    renderer.camera = cameraMover.rotateCameraAroundPointAtYAbove(renderer.camera,new geometry.Vector(1000,0,0),radius,0,0.01);
+    pos = new geometry.Vector( 0,Math.sin(i)*1000, Math.cos(i)*1000);
+    renderer.setSceneLightPos(pos,0);
+    renderer.camera = cameraMover.rotateCameraAroundPointAtYAbove(renderer.camera,new geometry.Vector(0,0,0),radius,1500,0.01);
   };
 };
 

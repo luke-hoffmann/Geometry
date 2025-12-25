@@ -12,7 +12,9 @@ declare class Vector {
     static isVectorEqual(v1: Vector, v2: Vector): boolean;
     static unitVector(v: Vector): Vector;
     static upVector(): Vector;
+    static downVector(): Vector;
     static generateVectorInSphere(mag: number): Vector;
+    equals(v: this): boolean;
     static magnitude(v: Vector): number;
     magnitude(): number;
     static distanceBetweenVectors(v1: Vector, v2: Vector): number;

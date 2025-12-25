@@ -48,15 +48,22 @@ export abstract class Renderer {
     
     graph () : void {
         this.preWork()
-        let sceneItems = this.getSceneInZOrder();
-        for (const sceneItem of sceneItems) {
-            if (sceneItem.type== "entity") {
-                this.graphEntity(this.scene.getEntity(sceneItem.ref));
-            }
-            if (sceneItem.type == "light") {
-                this.graphLight(this.scene.getLight(sceneItem.ref));
-            }
+        for (let i =0 ; i < this.scene.numEntities; i++) {
+            this.graphEntity(this.scene.getEntity(i));
         }
+        
+        for (let i =0 ; i < this.scene.numLights; i++) {
+            this.graphLight(this.scene.getLight(i));
+        }
+        // let sceneItems = this.getSceneInZOrder();
+        // for (const sceneItem of sceneItems) {
+        //     if (sceneItem.type== "entity") {
+        //         this.graphEntity(this.scene.getEntity(sceneItem.ref));
+        //     }
+        //     if (sceneItem.type == "light") {
+        //         this.graphLight(this.scene.getLight(sceneItem.ref));
+        //     }
+        // }
         this.postWork();
     }
 
@@ -109,7 +116,6 @@ export abstract class Renderer {
     private graphEntity (entity : Entity) : void{
         
         let mesh = this.getCameraSpaceMesh(entity);
-        let cameraSpaceMesh = mesh;
         let triangleColors = this.getColorsOfTriangles(mesh,entity.triangleColors);
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
@@ -129,39 +135,7 @@ export abstract class Renderer {
         
         
     }
-    /*
-    private calculateGraphableMesh(entity : Entity ) : [Mesh, Mesh,ColorHandler[]]{
-        let mesh = this.getCameraSpaceMesh(entity);
-        let cameraSpaceMesh = mesh;
-        let triangleColors = this.getColorsOfTriangles(mesh,entity.triangleColors);
-
-        let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
-        
-        if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
-        
-        mesh= this.applyProjection(mesh);
-        if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
-            mesh = this.backFaceCulling_WindingOrder(mesh);
-        }
-
-
-        let colors = mesh.findAnyObjectFromMap(colorMap);
-        
-        mesh = this.meshToCanvas(mesh);
-        
-
-        return [mesh, cameraSpaceMesh,colors];
-    }
-    private graphMesh(mesh : Mesh, colors : ColorHandler[]) : void{
-        
-        
-        
-        if (this.renParam.doVertices) this.graphVertices(mesh);
-        if (this.renParam.doTriangles) this.graphTriangles(mesh,colors);
-        
-        
-    }   */
-
+    
     protected backFaceCulling_Normal(mesh : Mesh) : Mesh{
         let viewVector = new Vector(0,0,1);
         let visibleTriangles = [];
