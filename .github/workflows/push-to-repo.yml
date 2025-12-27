@@ -1,0 +1,32 @@
+name: Push to GitHub Pages Repo
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # optional build step
+      # output must land in ./dist
+
+      - uses: actions/checkout@v4
+        with:
+          repository: luke-hoffmann/luke-hoffmann.github.io
+          token: ${{ secrets.REPO_B_TOKEN }}
+          path: repo-b
+
+      - run: |
+          rm -rf repo-b/*
+          cp -r dist/* repo-b/
+
+      - run: |
+          cd repo-b
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Update from source repo" || exit 0
+          git push

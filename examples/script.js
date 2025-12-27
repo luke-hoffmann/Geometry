@@ -36,12 +36,12 @@ const s = ( sketch ) => {
     i+=0.005;
     renderer.graph();
     const radius = 2000;
-    pos = new geometry.Vector( 0,Math.sin(i)*1000, Math.cos(i)*1000);
-    renderer.setSceneLightPos(pos,0);
-    pos = new geometry.Vector( Math.sin(i)*1000,0, Math.cos(i)*1000);
-    renderer.setSceneLightPos(pos,1);
-    pos = new geometry.Vector( Math.sin(i)*1000, Math.cos(i)*1000,0);
-    renderer.setSceneLightPos(pos,2);
+    // pos = new geometry.Vector( 0,Math.sin(i)*1000, Math.cos(i)*1000);
+    // renderer.setSceneLightPos(pos,0);
+    // pos = new geometry.Vector( Math.sin(i)*1000,0, Math.cos(i)*1000);
+    // renderer.setSceneLightPos(pos,1);
+    // pos = new geometry.Vector( Math.sin(i)*1000, Math.cos(i)*1000,0);
+    // renderer.setSceneLightPos(pos,2);
     renderer.camera = cameraMover.rotateCameraAroundPointAtYAbove(renderer.camera,new geometry.Vector(1000,0,0),radius,1500,0.01);
   };
 };
