@@ -8,8 +8,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-        test -n "${{ secrets.REPO_B_TOKEN }}" && echo "token present"
+      
       - uses: actions/checkout@v4
 
       # example: file generated in Repo A
@@ -18,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: luke-hoffmann/luke-hoffmann.github.io
-          token: ${{ secrets.REPO_B_TOKEN }}
+          token: ${{ secrets.LUKE_HOFFMANN_GEOMETRY_SRC_KEY }}
           path: repo-b
 
       - name: Copy file into Repo B
