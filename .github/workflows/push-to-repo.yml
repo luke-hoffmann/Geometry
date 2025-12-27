@@ -8,6 +8,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - run: |
+        test -n "${{ secrets.REPO_B_TOKEN }}" && echo "token present"
       - uses: actions/checkout@v4
 
       # example: file generated in Repo A
