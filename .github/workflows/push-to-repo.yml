@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           mkdir -p site/geometry
-          cp dist/index.global.js site/geometry/index.global.js
+          cp dist/index.global.js site/assets/js/lib/geometry/index.global.js
 
       - run: |
           cd site
