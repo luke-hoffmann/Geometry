@@ -18,12 +18,12 @@ jobs:
 
       - run: |
           mkdir -p site/geometry
-          cp dist/index.global.js geometrymin.global.js
+          cp dist/index.global.js site/geometry/index.global.js
 
       - run: |
           cd site
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add dist/index.global.js
-          git commit -m "Update geometry data" || exit 0
+          git add geometry/index.global.js
+          git commit -m "Update geometry build" || exit 0
           git push
