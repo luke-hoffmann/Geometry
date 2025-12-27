@@ -1,4 +1,4 @@
-name: Push to GitHub Pages Repo
+name: Push file to site repo
 
 on:
   push:
@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # optional build step
-      # output must land in ./dist
+      # example: file generated in Repo A
+      # ./output/file.json
 
       - uses: actions/checkout@v4
         with:
@@ -19,14 +19,16 @@ jobs:
           token: ${{ secrets.REPO_B_TOKEN }}
           path: repo-b
 
-      - run: |
-          rm -rf repo-b/*
-          cp -r dist/* repo-b/
+      - name: Copy file into Repo B
+        run: |
+          mkdir -p repo-b/data
+          cp output/file.json repo-b/data/file.json
 
-      - run: |
+      - name: Commit and push
+        run: |
           cd repo-b
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "Update from source repo" || exit 0
+          git add data/file.json
+          git commit -m "Update data from Repo A" || exit 0
           git push
