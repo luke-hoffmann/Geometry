@@ -24,6 +24,6 @@ jobs:
           cd site
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add geometry/dist/index.global.js
+          git add dist/index.global.js
           git commit -m "Update geometry data" || exit 0
           git push
