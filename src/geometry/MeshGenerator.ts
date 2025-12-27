@@ -31,7 +31,7 @@ export class MeshGenerator {
         triangles = MeshGenerator.addTrianglesToTrianglesArray(triangles,newTriangles);
         return triangles;
     }
-    static addTrianglesToTrianglesArray(trianglesArray : Triangle[],triangles : Triangle[]) : Triangle[]{
+    private static addTrianglesToTrianglesArray(trianglesArray : Triangle[],triangles : Triangle[]) : Triangle[]{
         let newArray  = [];
         trianglesArray.forEach(element => {
             newArray.push(element.copy());

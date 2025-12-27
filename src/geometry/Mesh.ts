@@ -3,7 +3,7 @@ import { Vector } from "./Vector.js";
 import { Field } from "./Field.js";
 import { Triangle } from "./Triangle.js";
 import { NormalVector } from "./NormalVector.js";
-import { ColorHandler } from "colorhandler";
+
 export class Mesh {
     #vertices : Field;
     #triangles : Triangle[];

@@ -1,9 +1,8 @@
 
-export * from "./geometry/Mesh.js";
 export * from "./geometry/Light.js";
 export * from "./geometry/Vector.js";
 export * from "./geometry/MeshGenerator.js";
-export * from "./geometry/Field.js";
+
 export * from "./geometry/PhysicsBody.js";
 export * from "./geometry/Entity.js"
 

@@ -98,14 +98,7 @@ export class Field {
         return UsefulFunction.noDuplicates(upspace);
     }
     
-    getPointsAtIndices(field : Field,indices : number[]) : Vector[] {
-        let points = [];
-        for (const index of indices) {
-            points.push(field.array[index]);
-        }
-        return points;
-    }    
-    getAverageDistanceBetweenPointsAndTriangles(triangles : Triangle[],pointIndices : number[]) {
+    private getAverageDistanceBetweenPointsAndTriangles(triangles : Triangle[],pointIndices : number[]) {
         let distanceAveragesToAllTriangles = [];
         for (const point of pointIndices) {
             
@@ -148,7 +141,7 @@ export class Field {
         }
         return farthestPoint;
     }
-    getFarthestPointsFromTriangles(triangles : Triangle[],pointIndices : number[]){
+    private getFarthestPointsFromTriangles(triangles : Triangle[],pointIndices : number[]){
         
         let farthestPoints = [];
         let farthestPoint;
@@ -162,7 +155,7 @@ export class Field {
 
 
 
-    getFarthestVectorFromVector(index : number) : number{
+    private getFarthestVectorFromVector(index : number) : number{
         let greatestDistance = 0;
         let farthestDistancePoint = undefined
         let farthestDistancePointIndex = -1
@@ -194,7 +187,7 @@ export class Field {
 
     }
 
-    calculateFarthestPoint(line : Line) : number{
+    private calculateFarthestPoint(line : Line) : number{
         let farthestDistance = 0;
         let farthestPoint = undefined
         let farthestPointIndex = -1;
@@ -213,7 +206,7 @@ export class Field {
         return farthestPointIndex;
     }
     
-    lowestVectorInField() : number{
+    private lowestVectorInField() : number{
         if (this.array.length == 0) throw Error ("array length is 0");
         let lowestCoordinate = this.array[0];
         let indexOfLowestCoordinate = 0;

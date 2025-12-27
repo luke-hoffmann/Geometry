@@ -89,13 +89,6 @@ export class Vector {
     static lerpVector(v1 : Vector,v2 : Vector,t : number) : Vector{
         return new this(this.lerp(v1.x,v2.x,t),this.lerp(v1.y,v2.y,t),this.lerp(v1.z,v2.z,t));
     }
-    
-    static normalize(v : Vector) : Vector{
-        throw Error ("depreciated : use Vector.unitVector(v) instead");
-        let mag = Math.sqrt( (v.x **2) + (v.y **2) + (v.z **2));
-        
-        return new this(v.x/mag,v.y/mag,v.z/mag);
-    }
 
     
     static crossProduct(v1 : Vector,v2 : Vector) : Vector{
@@ -118,24 +111,7 @@ export class Vector {
     static scalarMult(v : Vector,c : number) : Vector{
         return new this(v.x*c,v.y*c,v.z * c);
     }
-    static rotateVector(v : Vector,xRotate : number,yRotate : number,zRotate : number) : Vector{
-        v = this.rotateAroundX(v,xRotate);
-        v = this.rotateAroundY(v,yRotate);
-        v = this.rotateAroundZ(v,zRotate);
-        return v;
-    }
-    static rotateAroundX(v : Vector,theta : number) : Vector{
-        return new this(v.x, (v.y*Math.cos(theta))-(v.z*Math.sin(theta)), (v.y*Math.sin(theta))+ (v.z* Math.cos(theta)));
-    }
-    static rotateAroundY(v : Vector,theta : number) : Vector{
-        return new this((v.x*Math.cos(theta))+(v.z*Math.sin(theta)),v.y,(-v.x*Math.sin(theta))+(v.z*Math.cos(theta)));
-    }
-    static rotateAroundZ(v : Vector,theta : number) : Vector{
-        return new this((v.x*Math.cos(theta))-(v.y*Math.sin(theta)), (v.x*Math.sin(theta))+(v.y*Math.cos(theta)),v.z);
-    }
-    static rotate2DVector(v: Vector,theta : number) : Vector{
-        return new this((v.x*Math.cos(theta)) -(v.y* Math.sin(theta)),(v.x*Math.sin(theta))+(v.y*Math.cos(theta)),0);
-    }
+    
     isDotProductLEThanX(vector : Vector,x : number) : boolean{
         let dotProduct = Vector.dotProduct(this,vector);
         return (dotProduct <= x);

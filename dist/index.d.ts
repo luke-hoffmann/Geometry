@@ -20,19 +20,24 @@ declare class Vector {
     static distanceBetweenVectors(v1: Vector, v2: Vector): number;
     static lerp(p1: number, p2: number, t: number): number;
     static lerpVector(v1: Vector, v2: Vector, t: number): Vector;
-    static normalize(v: Vector): Vector;
     static crossProduct(v1: Vector, v2: Vector): Vector;
     static dotProduct(v1: Vector, v2: Vector): number;
     static sub(v1: Vector, v2: Vector): Vector;
     static add(v1: Vector, v2: Vector): Vector;
     static scalarMult(v: Vector, c: number): Vector;
-    static rotateVector(v: Vector, xRotate: number, yRotate: number, zRotate: number): Vector;
-    static rotateAroundX(v: Vector, theta: number): Vector;
-    static rotateAroundY(v: Vector, theta: number): Vector;
-    static rotateAroundZ(v: Vector, theta: number): Vector;
-    static rotate2DVector(v: Vector, theta: number): Vector;
     isDotProductLEThanX(vector: Vector, x: number): boolean;
     copy(): Vector;
+}
+
+declare class Light {
+    #private;
+    constructor(color: ColorHandler, position: Vector, brightness: number);
+    calculateObservedColor(color: ColorHandler): ColorHandler;
+    get position(): Vector;
+    get color(): ColorHandler;
+    get brightness(): number;
+    copy(): Light;
+    set position(pos: Vector);
 }
 
 declare class NormalVector {
@@ -63,15 +68,6 @@ declare class Triangle {
     calculateTriangleNormalVector(field: Field): NormalVector;
 }
 
-declare class Line {
-    #private;
-    constructor(p1: Vector, p2: Vector);
-    get p1(): Vector;
-    get p2(): Vector;
-    isEqual(line: this): boolean;
-    distanceToPoint(v: Vector): number;
-}
-
 declare class Field {
     private array;
     constructor(array: Vector[]);
@@ -82,15 +78,14 @@ declare class Field {
     getTriangleIndicesWithPointInUpspace(triangles: Triangle[], point: number): number[];
     getTrianglesUpspaces(triangles: Triangle[], indices: number[]): number[];
     getTrianglesUpspaces_Fast(triangles: Triangle[], indices: number[]): number[];
-    getPointsAtIndices(field: Field, indices: number[]): Vector[];
-    getAverageDistanceBetweenPointsAndTriangles(triangles: Triangle[], pointIndices: number[]): number[];
+    private getAverageDistanceBetweenPointsAndTriangles;
     getFarthestPointFromTriangles(triangles: Triangle[], pointIndices: number[]): number;
     getFarthestPointFromTriangles_Fast(triangles: Triangle[], pointIndices: number[]): number;
-    getFarthestPointsFromTriangles(triangles: Triangle[], pointIndices: number[]): number[];
-    getFarthestVectorFromVector(index: number): number;
+    private getFarthestPointsFromTriangles;
+    private getFarthestVectorFromVector;
     calculateLargestTriangleFromField(): Triangle;
-    calculateFarthestPoint(line: Line): number;
-    lowestVectorInField(): number;
+    private calculateFarthestPoint;
+    private lowestVectorInField;
     moveEntireField(moveQuantity: Vector): Field;
     copy(): Field;
     get numPoints(): number;
@@ -113,20 +108,9 @@ declare class Mesh {
     set triangles(triangles: Triangle[]);
 }
 
-declare class Light {
-    #private;
-    constructor(color: ColorHandler, position: Vector, brightness: number);
-    calculateObservedColor(color: ColorHandler): ColorHandler;
-    get position(): Vector;
-    get color(): ColorHandler;
-    get brightness(): number;
-    copy(): Light;
-    set position(pos: Vector);
-}
-
 declare class MeshGenerator {
     private static convexHullIterativeProcess;
-    static addTrianglesToTrianglesArray(trianglesArray: Triangle[], triangles: Triangle[]): Triangle[];
+    private static addTrianglesToTrianglesArray;
     static generateConvexMesh(field: Field, iterationNumber: number): Mesh;
     static generateRandomConvexMesh(radius: number, numberOfPoints: number): Mesh;
 }
@@ -149,10 +133,7 @@ declare class Entity {
     constructor(mesh: Mesh, physicsBody: PhysicsBody, triangleColors: ColorHandler[]);
     static randomConvexEntityWithColors(radius: number, n: number, physicsBody: PhysicsBody, c1: ColorHandler, c2: ColorHandler): Entity;
     copy(): Entity;
-    getTriangleColor(i: number): ColorHandler;
     get triangleColors(): ColorHandler[];
-    get mesh(): Mesh;
-    get physicsBody(): PhysicsBody;
     get worldSpaceMesh(): Mesh;
 }
 
@@ -277,4 +258,4 @@ declare class p5Renderer extends Renderer {
     copy(): void;
 }
 
-export { Camera, CameraMover, Entity, Field, Light, Mesh, MeshGenerator, PhysicsBody, RenderParameters, Scene, Vector, p5Renderer };
+export { Camera, CameraMover, Entity, Light, MeshGenerator, PhysicsBody, RenderParameters, Scene, Vector, p5Renderer };
