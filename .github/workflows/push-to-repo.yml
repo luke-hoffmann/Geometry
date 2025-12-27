@@ -18,7 +18,7 @@ jobs:
 
       - run: |
           mkdir -p site/geometry
-          cp output/data.json site/geometry/data.json
+          cp dist/index.global.js geometrymin.global.js
 
       - run: |
           cd site
