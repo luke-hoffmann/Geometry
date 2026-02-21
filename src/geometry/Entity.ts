@@ -18,9 +18,9 @@ export class Entity {
     static randomConvexEntityWithColors(radius : number, n : number, physicsBody : PhysicsBody, c1 : ColorHandler, c2 :ColorHandler) : Entity {
         let mesh = MeshGenerator.generateRandomConvexMesh(radius,n);
         let colors = ColorHandler.randomColorsBetween(mesh.numTriangles,c1,c2);
-        return new Entity(mesh,physicsBody,colors);
+        return new this(mesh,physicsBody,colors);
     }
-    copy () {
+    copy () : Entity{
         let newColors = [];
         for (const color of this.#triangleColors) {
             newColors.push(color.copy());

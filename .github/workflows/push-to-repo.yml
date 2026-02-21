@@ -20,7 +20,7 @@ jobs:
           mkdir -p site/geometry
           cp dist/index.global.js site/assets/js/lib/geometry/index.global.js
 
-      - run: |
+      - run: |  
           cd site
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"

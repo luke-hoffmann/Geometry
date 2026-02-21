@@ -68,16 +68,23 @@ export class Mesh {
 
     copy(){
         
+        
+        let newTriangles = this.copyTriangles();
+
+        return new Mesh(this.#vertices.copy(),newTriangles);
+    }
+    private copyTriangles() {
         let newTriangles = [];
         for (const triangle of this.#triangles) {
             newTriangles.push (triangle.copy());
         }
-        
-
-        return new Mesh(this.#vertices.copy(),newTriangles);
+        return newTriangles;
     }
     get vertices() {
         return this.#vertices.copy();
+    }
+    get triangles() {
+        return this.copyTriangles();
     }
     get numPoints() : number{
         return this.#vertices.numPoints;

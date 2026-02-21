@@ -237,6 +237,14 @@ export class Field {
 
         return new Field(copiedPoints);
     }
+    addVertex(v: Vector) : Field {
+        let copiedPoints = [];
+        for (const vertex of this.array) {
+            copiedPoints.push(new Vector(vertex.x,vertex.y,vertex.z));
+        }
+        copiedPoints.push(v);
+        return new Field(copiedPoints);
+    }
     get numPoints() : number{
         return this.array.length;
     }

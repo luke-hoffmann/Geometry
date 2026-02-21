@@ -88,6 +88,7 @@ declare class Field {
     private lowestVectorInField;
     moveEntireField(moveQuantity: Vector): Field;
     copy(): Field;
+    addVertex(v: Vector): Field;
     get numPoints(): number;
 }
 
@@ -99,7 +100,9 @@ declare class Mesh {
     mapTrianglesToAnyObject<T>(objects: T[]): Map<string, T>;
     findAnyObjectFromMap<T>(map: Map<string, T>): T[];
     copy(): Mesh;
+    private copyTriangles;
     get vertices(): Field;
+    get triangles(): Triangle[];
     get numPoints(): number;
     get numTriangles(): number;
     getVertex(index: number): Vector;
@@ -228,6 +231,13 @@ declare abstract class Renderer {
     protected finalLightPosition(light: Light): Light;
     private getCameraSpaceMesh;
     private graphEntity;
+    private isAnyMeshPointBehindCamera;
+    private generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles;
+    private generateNewMeshWithAppropriateColorsWithNewVisibleTriangleFromOneTriangleWithTwoHiddenVertices;
+    private generateNewMeshWithAppropriateColorsWithTwoNewVisibleTrianglesFromOneTriangleWithHiddenVertex;
+    private findPointBetweenTwoPointsAtZeroZ;
+    private whichPointsInMap;
+    private getHiddenPoints;
     protected backFaceCulling_Normal(mesh: Mesh): Mesh;
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
     private orthographicProjectIndividualVector;

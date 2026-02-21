@@ -1,4 +1,4 @@
-import type { Mesh } from "../geometry/Mesh.js";
+import { Mesh } from "../geometry/Mesh.js";
 import type { Camera } from "../camera/Camera.js";
 
 import { Light } from "../geometry/Light.js";
@@ -114,9 +114,14 @@ export abstract class Renderer {
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
         mesh = this.getCameraSpaceMesh(entity);
+        
         if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
         
         mesh= this.applyProjection(mesh);
+        if (this.isAnyMeshPointBehindCamera(mesh)) {
+            return;
+        }
+        //mesh = this.generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles(mesh,colorMap);
         if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
             mesh = this.backFaceCulling_WindingOrder(mesh);
         }
@@ -129,7 +134,170 @@ export abstract class Renderer {
         
         
     }
+    private isAnyMeshPointBehindCamera(mesh : Mesh) {
+        for (let i =0; i < mesh.numPoints; i++) {
+            let v = mesh.getVertex(i);
+            if (v.z === -Infinity) {
+                return true;
+            }
+        }
+        return false;
+    }
+    private generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles(mesh : Mesh, colorMap : Map<string,ColorHandler>) : Mesh {
+        let visibleTriangles = [];
+        let newMesh = mesh.copy();
+        let hiddenPointsMap = new Map<Vector,Boolean>() ;
+        let hiddenPoints = this.getHiddenPoints(newMesh);
+        for (let i =0; i < hiddenPoints.length; i++) {
+            hiddenPointsMap.set(hiddenPoints[i], true);
+        }
+
+        let twoPointsHiddenTriangles = [];
+        let onePointHiddenTriangles = [];
+        for (let i =0; i < newMesh.numTriangles; i++) {
+            const triangle = mesh.getTriangle(i);
+            let whichPointsInMap = this.whichPointsInMap(newMesh,triangle,hiddenPointsMap);
+            let numHiddenPoints = whichPointsInMap.length;
+            if (numHiddenPoints === 3 ) continue;
+            else if( numHiddenPoints === 1) {
+                onePointHiddenTriangles.push({triangle : triangle, vector : whichPointsInMap[0]});
+            }
+            else if (numHiddenPoints === 2) {
+                twoPointsHiddenTriangles.push({ triangle: triangle, vectors: whichPointsInMap});
+            } else if (numHiddenPoints === 0) {
+                visibleTriangles.push(triangle);
+            }
+            visibleTriangles.push(triangle);
+        }
+        newMesh.triangles = visibleTriangles;
+        for (let i =0; i < twoPointsHiddenTriangles.length;i++) {
+            const data = this.generateNewMeshWithAppropriateColorsWithNewVisibleTriangleFromOneTriangleWithTwoHiddenVertices(twoPointsHiddenTriangles[i].triangle,twoPointsHiddenTriangles[i].vectors,newMesh,colorMap);
+            newMesh = data.mesh;
+            colorMap = data.colorMap;
+        }
+        for (let i =0; i < onePointHiddenTriangles.length;i++) {
+            const data = this.generateNewMeshWithAppropriateColorsWithTwoNewVisibleTrianglesFromOneTriangleWithHiddenVertex(onePointHiddenTriangles[i].triangle,onePointHiddenTriangles[i].vector,newMesh,colorMap);
+            newMesh = data.mesh;
+            colorMap = data.colorMap;
+        }
+        return newMesh;
+    }
+    private generateNewMeshWithAppropriateColorsWithNewVisibleTriangleFromOneTriangleWithTwoHiddenVertices(triangle : Triangle,hiddenVertices : Vector[], mesh: Mesh,colorMap : Map<string,ColorHandler>) : {mesh : Mesh, colorMap : Map<string, ColorHandler>} {
+        if (hiddenVertices.length !== 2) {
+            throw Error("hiddenVertices.length !== 2");
+        }
+        let visibleVerticeRef = -Infinity; // could be fatal flaw.
+        for (let i =0; i < 3; i++) {
+            let vertRef = triangle.getVerticeReference(i)
+            let v = mesh.getVertex(vertRef);
+            for (let i =0; i < hiddenVertices.length; i++) {
+                if (hiddenVertices[i].equals(v)) continue;
+                visibleVerticeRef = vertRef;
+            }
+        }
+        if (visibleVerticeRef === -Infinity) {
+            throw Error("Fatal error, malformed inputs likely the case");
+        }
+        
+        let p1 = this.findPointBetweenTwoPointsAtZeroZ(hiddenVertices[0],mesh.getVertex(visibleVerticeRef));
+        let p2 = this.findPointBetweenTwoPointsAtZeroZ(hiddenVertices[1],mesh.getVertex(visibleVerticeRef));
+
+        let newVertices = mesh.vertices;
+
+        newVertices.addVertex(p1);
+        let p1Ref = newVertices.numPoints-1;
+
+        newVertices.addVertex(p2);
+        let p2Ref = newVertices.numPoints-1;
+        
+        let newTriangle = new Triangle([p1Ref,p2Ref,visibleVerticeRef]);
+        let triangles = mesh.triangles;
+        triangles.push(newTriangle);
+        let newTriangleDistinct = newTriangle.getDistinctIdentifier();
+        let color = colorMap.get(triangle.getDistinctIdentifier());
+        if (color != undefined) {
+            colorMap.set(newTriangleDistinct,color);
+        } else {
+            colorMap.set(newTriangleDistinct,new ColorHandler(255,255,255)); // hacky solution
+        }
+        
+        return {mesh: new Mesh(mesh.vertices,triangles), colorMap : colorMap};
+        // remember to flip the normal to match the original triangle
+    }
+    private generateNewMeshWithAppropriateColorsWithTwoNewVisibleTrianglesFromOneTriangleWithHiddenVertex(triangle : Triangle, hiddenVertex : Vector, mesh : Mesh, colorMap : Map<string,ColorHandler>) : {mesh:Mesh, colorMap : Map<string,ColorHandler>} {
+        let visibleVerticesReferences = [];
+        console.log("start-------\n")
+        console.log(hiddenVertex)
+        for (let i =0; i < 3; i++) {
+            let vertRef = triangle.getVerticeReference(i)
+            let v = mesh.getVertex(vertRef);
+            console.log(v);
+            if (hiddenVertex.equals(v)) continue;
+            visibleVerticesReferences.push(vertRef);
+        } 
+        if (visibleVerticesReferences.length !== 2) {
+            throw Error(" fatal error, visible vertice references.length !== 2");
+        }
+        let p1 = this.findPointBetweenTwoPointsAtZeroZ(hiddenVertex,mesh.getVertex(visibleVerticesReferences[0]));
+        let p2 = this.findPointBetweenTwoPointsAtZeroZ(hiddenVertex,mesh.getVertex(visibleVerticesReferences[1]));
+
+        let newVertices = mesh.vertices;
+
+        newVertices.addVertex(p1);
+        let p1Ref = newVertices.numPoints-1;
+
+        newVertices.addVertex(p2);
+        let p2Ref = newVertices.numPoints-1;
+        
+        let newTriangle = new Triangle([p1Ref,p2Ref,visibleVerticesReferences[0]]);
+        let triangles = mesh.triangles;
+        triangles.push(newTriangle)
+        let newTriangleDistinct = newTriangle.getDistinctIdentifier();
+        let color = colorMap.get(triangle.getDistinctIdentifier());
+        if (color != undefined) {
+            colorMap.set(newTriangleDistinct,color);
+        } else {
+            colorMap.set(newTriangleDistinct,new ColorHandler(255,255,255)); // hacky solution
+        }
+        newTriangle = new Triangle([p2Ref,visibleVerticesReferences[1],visibleVerticesReferences[0]]);
+        triangles.push(newTriangle);
+        newTriangleDistinct = newTriangle.getDistinctIdentifier();
+        color = colorMap.get(triangle.getDistinctIdentifier());
+        if (color != undefined) {
+            colorMap.set(newTriangleDistinct,color);
+        } else {
+            colorMap.set(newTriangleDistinct,new ColorHandler(255,255,255)); // hacky solution
+        }
+        return {mesh: new Mesh(mesh.vertices,triangles), colorMap: colorMap};
+        // remember to flip the normal to match the original triangle
+    }
+    private findPointBetweenTwoPointsAtZeroZ(v1 : Vector, v2: Vector) : Vector {
+        let x = v1.x + (v2.x- v1.x) * ((-v1.z)/(v2.z-v1.z));
+        let y = v1.y + (v2.y- v1.y) * ((-v1.z)/(v2.z-v1.z));
+        let z = 0;
+        return new Vector(x,y,z);
+    }
     
+    private whichPointsInMap(mesh : Mesh, triangle : Triangle, map : Map<Vector,Boolean>) : Vector[]{
+        let points = [];
+        for (let i =0; i < 3; i++) {
+            const triangleVerticeReference = triangle.getVerticeReference(i);
+            let v =mesh.getVertex(triangleVerticeReference)
+            if(map.has(v)) points.push(v);
+        }
+        return points;
+    }
+    
+    private getHiddenPoints(mesh: Mesh) : Vector[] {
+        let hiddenPoints = [];
+        for (let i =0; i < mesh.numPoints; i++) {
+            let v = mesh.getVertex(i);
+            if (v.z === -Infinity) {
+                hiddenPoints.push(v);
+            }
+        }
+        return hiddenPoints;
+    }
     protected backFaceCulling_Normal(mesh : Mesh) : Mesh{
         let viewVector = new Vector(0,0,1);
         let visibleTriangles = [];
@@ -177,14 +345,22 @@ export abstract class Renderer {
 
 
     private orthographicProjectIndividualVector(vector : Vector): Vector {
+        let z= this.camera.focalDistance;
+         if (vector.z < 0 ) {
+            z = -Infinity;
+        }
         return new Vector(vector.x,vector.y,this.camera.focalDistance);
     }
     private perspectiveProjectIndividualVector(vector : Vector) : Vector{
+        
         const ratio = this.camera.focalDistance/vector.z;
         let x = vector.x * ratio;
         let y= vector.y * ratio;
             
         let z = vector.z;
+        if (vector.z < 0 ) {
+            z = -Infinity;
+        }
         return new Vector(x,y,z);
     }
     
@@ -199,7 +375,7 @@ export abstract class Renderer {
             let pV;
             const v = newMesh.getVertex(i);
             pV = this.projectIndividualPoint(v);
-
+            
             projectedArray.push(pV);
         }
         let projectedField = new Field(projectedArray);
