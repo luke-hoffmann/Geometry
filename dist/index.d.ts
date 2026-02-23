@@ -138,6 +138,7 @@ declare class Entity {
     copy(): Entity;
     get triangleColors(): ColorHandler[];
     get worldSpaceMesh(): Mesh;
+    get physicsBody(): PhysicsBody;
 }
 
 declare class Camera {

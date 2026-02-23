@@ -44,4 +44,7 @@ export class Entity {
         newMesh.vertices = field;
         return newMesh;
     }
+    get physicsBody () {
+        return this.#pB.copy();
+    }
 }

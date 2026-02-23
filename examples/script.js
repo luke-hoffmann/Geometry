@@ -17,8 +17,6 @@ let screenSize = new geometry.Vector(1400,800);
 let i =0;
 let scene = new geometry.Scene([entity],lights);
 const s = ( sketch ) => {
-
-
   sketch.setup = () => {
     renderer = new geometry.p5Renderer(scene,screenSize,camera, new geometry.RenderParameters({
       doVertices: false,
