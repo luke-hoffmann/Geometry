@@ -5,7 +5,7 @@ let entity2 = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colo
 
 
 let lights = [new geometry.Light(new colorhandler.ColorHandler(0,0,255),new geometry.Vector(0,0,-1000),.8)];
-lights.push(new geometry.Light(new colorhandler.ColorHandler(0,255,0),new geometry.Vector(0,0,1000),.4));
+lights.push(new geometry.Light(new colorhandler.ColorHandler(0,255,0),new geometry.Vector(0,0,1000),1));
 lights.push(new geometry.Light(new colorhandler.ColorHandler(255,2,0),new geometry.Vector(0,1000,0),.4));
 let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,1000))
@@ -15,7 +15,7 @@ let cameraMover = new geometry.CameraMover(0.1);
 
 let screenSize = new geometry.Vector(1400,800);
 let i =0;
-let scene = new geometry.Scene([entity, entity2],lights);
+let scene = new geometry.Scene([entity],lights);
 const s = ( sketch ) => {
 
 
@@ -38,7 +38,7 @@ const s = ( sketch ) => {
     i+=0.005;
     renderer.graph();
     const radius = 1000;
-    renderer.camera = cameraMover.rotateCameraAroundPointAtYAbove(renderer.camera,new geometry.Vector(1000,0,0),radius,100,0.01);
+    renderer.camera = cameraMover.rotateCameraAroundPointAtYAbove(renderer.camera,new geometry.Vector(0,0,0),radius,1000,0.01);
   };
 };
 

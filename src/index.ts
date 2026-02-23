@@ -12,3 +12,9 @@ export * from "./interface/Scene.js";
 export * from "./interface/CameraMover.js";
 export * from "./renderers/p5Renderer.js";
 export * from "./interface/RenderParameters.js";
+
+export type {Field} from "./geometry/Field.js";
+export type {Line} from "./geometry/Line.js";
+export type {Mesh} from "./geometry/Mesh.js";
+export type {NormalVector} from "./geometry/NormalVector.js";
+export type {PhysicsBody} from "./geometry/PhysicsBody.js";
