@@ -268,4 +268,13 @@ declare class p5Renderer extends Renderer {
     copy(): void;
 }
 
-export { Camera, CameraMover, Entity, Light, MeshGenerator, PhysicsBody, RenderParameters, Scene, Vector, p5Renderer };
+declare class Line {
+    #private;
+    constructor(p1: Vector, p2: Vector);
+    get p1(): Vector;
+    get p2(): Vector;
+    isEqual(line: this): boolean;
+    distanceToPoint(v: Vector): number;
+}
+
+export { Camera, CameraMover, Entity, Field, Light, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, RenderParameters, Scene, Vector, p5Renderer };

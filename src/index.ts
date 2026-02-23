@@ -1,20 +1,20 @@
 
-export * from "./geometry/Light.js";
-export * from "./geometry/Vector.js";
-export * from "./geometry/MeshGenerator.js";
+export * from "./geometry/Light";
+export * from "./geometry/Vector";
+export * from "./geometry/MeshGenerator";
 
-export * from "./geometry/PhysicsBody.js";
-export * from "./geometry/Entity.js"
+export * from "./geometry/PhysicsBody";
+export * from "./geometry/Entity"
 
-export * from "./camera/Camera.js";
+export * from "./camera/Camera";
 
-export * from "./interface/Scene.js";
-export * from "./interface/CameraMover.js";
-export * from "./renderers/p5Renderer.js";
-export * from "./interface/RenderParameters.js";
+export * from "./interface/Scene";
+export * from "./interface/CameraMover";
+export * from "./renderers/p5Renderer";
+export * from "./interface/RenderParameters";
 
-export type {Field} from "./geometry/Field.js";
-export type {Line} from "./geometry/Line.js";
-export type {Mesh} from "./geometry/Mesh.js";
-export type {NormalVector} from "./geometry/NormalVector.js";
-export type {PhysicsBody} from "./geometry/PhysicsBody.js";
+export type {Field} from "./geometry/Field";
+export type {Line} from "./geometry/Line";
+export type {Mesh} from "./geometry/Mesh";
+export type {NormalVector} from "./geometry/NormalVector";
+export type {PhysicsBody} from "./geometry/PhysicsBody";

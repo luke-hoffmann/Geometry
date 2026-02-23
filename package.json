@@ -13,7 +13,7 @@
     "minify": true,
     "dts": true,
     "format": [
-      "iife"
+      "iife", "esm"
     ],
     "target": "es2022",
     "globalName": "geometry",
