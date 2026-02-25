@@ -108,9 +108,14 @@ export abstract class Renderer {
     }
     private graphEntity (entity : Entity) : void{
         
+        let mesh = entity.mesh
+        let triangleColors = entity.triangleColors;
+        if (!entity.isIndifferentToLight) {
+            triangleColors = this.getColorsOfTriangles(mesh,triangleColors);
+        }
+        mesh = entity.worldSpaceMesh;
         
-        let mesh = entity.worldSpaceMesh;
-        let triangleColors = this.getColorsOfTriangles(mesh,entity.triangleColors);
+        
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
         mesh = this.getCameraSpaceMesh(entity);

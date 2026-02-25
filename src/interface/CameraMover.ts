@@ -3,6 +3,7 @@ import { Camera } from "../camera/Camera.js";
 export class CameraMover {
     private acceleration : Vector;
     private currentTheta : number;
+    
     constructor (acceleration: Vector) {
         this.currentTheta = 0;
         this.acceleration = acceleration;
@@ -22,4 +23,5 @@ export class CameraMover {
         newCam.pointAtPoint(point);
         return newCam
     }
+    
 }

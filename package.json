@@ -25,6 +25,7 @@
     ],
     "treeshake": true
   },
+
   "scripts": {
     "build": "tsup"
   },

@@ -104,9 +104,18 @@ export class Vector {
     static sub (v1 : Vector,v2 : Vector) : Vector{
         return new this(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z);
     }
-    static add(v1 : Vector,v2 : Vector) : Vector{
-        return new this(v1.x+v2.x,v1.y+v2.y,v1.z+v2.z);
+    static add(...vectors: Vector[]) : Vector {
+        let x =0;
+        let y = 0;
+        let z = 0;
+        for (const v of vectors) {
+            x+= v.x;
+            y+= v.y;
+            z+= v.z;
+        }
+        return new Vector(x,y,z);
     }
+    
     
     static scalarMult(v : Vector,c : number) : Vector{
         return new this(v.x*c,v.y*c,v.z * c);

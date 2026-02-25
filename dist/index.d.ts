@@ -23,7 +23,7 @@ declare class Vector {
     static crossProduct(v1: Vector, v2: Vector): Vector;
     static dotProduct(v1: Vector, v2: Vector): number;
     static sub(v1: Vector, v2: Vector): Vector;
-    static add(v1: Vector, v2: Vector): Vector;
+    static add(...vectors: Vector[]): Vector;
     static scalarMult(v: Vector, c: number): Vector;
     isDotProductLEThanX(vector: Vector, x: number): boolean;
     copy(): Vector;
@@ -133,12 +133,14 @@ declare class PhysicsBody {
 
 declare class Entity {
     #private;
-    constructor(mesh: Mesh, physicsBody: PhysicsBody, triangleColors: ColorHandler[]);
-    static randomConvexEntityWithColors(radius: number, n: number, physicsBody: PhysicsBody, c1: ColorHandler, c2: ColorHandler): Entity;
+    constructor(mesh: Mesh, physicsBody: PhysicsBody, triangleColors: ColorHandler[], isIndifferentToLight: boolean);
+    static randomConvexEntityWithColors(radius: number, n: number, physicsBody: PhysicsBody, c1: ColorHandler, c2: ColorHandler, isIndifferentToLight: boolean): Entity;
     copy(): Entity;
     get triangleColors(): ColorHandler[];
     get worldSpaceMesh(): Mesh;
     get physicsBody(): PhysicsBody;
+    get mesh(): Mesh;
+    get isIndifferentToLight(): boolean;
 }
 
 declare class Camera {
@@ -174,6 +176,15 @@ declare class CameraMover {
     constructor(acceleration: Vector);
     rotateCameraAroundPointOnXZPlane(camera: Camera, point: Vector, radius: number, deltaTheta: number): Camera;
     rotateCameraAroundPointAtYAbove(camera: Camera, point: Vector, radius: number, yAbove: number, deltaTheta: number): Camera;
+}
+
+declare class CameraSpotTracker {
+    #private;
+    constructor(trackSpot: Vector, radius: number, horizontalTheta: number, verticalTheta: number);
+    update(camera: Camera): Camera;
+    changeRadius(deltaRadius: number): void;
+    mouseInputRotate(pmouseX: number, pmouseY: number, mouseX: number, mouseY: number): void;
+    get radius(): number;
 }
 
 declare class RenderParameters {
@@ -278,4 +289,4 @@ declare class Line {
     distanceToPoint(v: Vector): number;
 }
 
-export { Camera, CameraMover, Entity, Field, Light, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, RenderParameters, Scene, Vector, p5Renderer };
+export { Camera, CameraMover, CameraSpotTracker, Entity, Field, Light, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, RenderParameters, Renderer, Scene, Vector, p5Renderer };

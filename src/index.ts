@@ -10,6 +10,8 @@ export * from "./camera/Camera";
 
 export * from "./interface/Scene";
 export * from "./interface/CameraMover";
+export * from "./interface/CameraSpotTracker";
+export * from "./interface/Renderer";
 export * from "./renderers/p5Renderer";
 export * from "./interface/RenderParameters";
 
