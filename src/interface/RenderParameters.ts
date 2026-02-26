@@ -9,6 +9,8 @@ export class RenderParameters {
   #isPerspective: boolean;
   #doTriangles: boolean;
   #isWindingOrderBackFaceCulling: boolean;
+  #doNormalVectors : boolean;
+  #normalVectorLength : number;
   constructor({
     doBackFaceCulling = true,
     doOutline = true,
@@ -20,6 +22,8 @@ export class RenderParameters {
     isPerspective = true,
     doTriangles = true,
     isWindingOrderBackFaceCulling = true,
+    doNormalVectors = false,
+    normalVectorLength = 30
   }: Partial<{
     doBackFaceCulling: boolean;
     doOutline: boolean;
@@ -31,6 +35,8 @@ export class RenderParameters {
     isPerspective: boolean;
     doTriangles: boolean;
     isWindingOrderBackFaceCulling: boolean;
+    doNormalVectors : boolean;
+    normalVectorLength : number;
   }> = {}) {
     this.#doBackFaceCulling = doBackFaceCulling;
     this.#doOutline = doOutline;
@@ -42,6 +48,8 @@ export class RenderParameters {
     this.#isPerspective = isPerspective;
     this.#doTriangles = doTriangles;
     this.#isWindingOrderBackFaceCulling = isWindingOrderBackFaceCulling;
+    this.#doNormalVectors = doNormalVectors;
+    this.#normalVectorLength = normalVectorLength;
   }
 
   // getters
@@ -55,6 +63,8 @@ export class RenderParameters {
   get isPerspective() { return this.#isPerspective; }
   get doTriangles() { return this.#doTriangles; }
   get isWindingOrderBackFaceCulling() { return this.#isWindingOrderBackFaceCulling; }
+  get doNormalVectors() { return this.#doNormalVectors;}
+  get normalVectorLength() {return this.#normalVectorLength};
   // setters (safe)
   set doBackFaceCulling(v: boolean) {
     if (typeof v !== "boolean") throw new TypeError("doBackFaceCulling must be boolean");
@@ -112,5 +122,16 @@ export class RenderParameters {
     }
     this.#isWindingOrderBackFaceCulling = v;
   }
-
+  set doNormalVectors(v: boolean) {
+    if (typeof v !== "boolean") {
+      throw new TypeError("doNormalVectors must be boolean");
+    }
+    this.#doNormalVectors = v;
+  }
+  set normalVectorLength(v: number) {
+    if (typeof v !== "number" || !Number.isFinite(v) || v <= 0) {
+      throw new TypeError("normalVectorLength must be a positive finite number");
+    }
+    this.#normalVectorLength = v;
+  }
 }

@@ -29,7 +29,7 @@ const s = ( sketch ) => {
       doBackFaceCulling:true,
       pointRadius: 3,
       isWindingOrderBackFaceCulling: true,
-      doNormalVectors: false,
+      doNormalVectors: true,
       normalVectorLength: 40
     }),sketch);
 

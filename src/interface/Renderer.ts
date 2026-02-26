@@ -1,6 +1,6 @@
 import { Mesh } from "../geometry/Mesh.js";
 import type { Camera } from "../camera/Camera.js";
-
+import { NormalVector } from "../geometry/NormalVector.js";
 import { Light } from "../geometry/light/Light.js";
 import { Field } from "../geometry/Field.js";
 import { TriangleInput } from "../geometry/light/Light.js";
@@ -22,7 +22,7 @@ export abstract class Renderer {
     }  
     protected abstract preWork() : void;
     protected abstract meshToCanvas(mesh : Mesh) : Mesh;
-    
+    protected abstract graphNormalVectors(mesh : Mesh, normalVectors : NormalVector[],length : number) : void;
     protected abstract graphVertices(mesh : Mesh) : void;
     protected abstract graphTriangles (mesh : Mesh, triangleColors : ColorHandler[]) : void;
     protected abstract postWork() : void;
@@ -124,22 +124,29 @@ export abstract class Renderer {
         mesh = this.getCameraSpaceMesh(entity);
         
         if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
-        
+        let normalVectors;
+        normalVectors = mesh.calculateTrianglesNormalVectors();
         mesh= this.applyProjection(mesh);
         if (this.isAnyMeshPointBehindCamera(mesh)) {
             return;
         }
+        
+        
         //mesh = this.generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles(mesh,colorMap);
         if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
+            const map = mesh.mapTrianglesToAnyObject(normalVectors!);
             mesh = this.backFaceCulling_WindingOrder(mesh);
+            normalVectors = mesh.findAnyObjectFromMap(map);
         }
         let colors = mesh.findAnyObjectFromMap(colorMap);
+        let normalVectorsMesh = mesh;
+        
         
         mesh = this.meshToCanvas(mesh);
         
         if (this.renParam.doVertices) this.graphVertices(mesh);
         if (this.renParam.doTriangles) this.graphTriangles(mesh,colors);
-        
+        if (this.renParam.doNormalVectors) this.graphNormalVectors(normalVectorsMesh, normalVectors!,this.renParam.normalVectorLength);
         
     }
     private isAnyMeshPointBehindCamera(mesh : Mesh) {
@@ -372,7 +379,26 @@ export abstract class Renderer {
         return new Vector(x,y,z);
     }
     
-    
+    private orthographicProjectNormalVectorIntoLine(normalVector : NormalVector,length : number) : Line{
+        let p1 = this.orthographicProjectIndividualVector(normalVector.position);
+        let p2 = this.orthographicProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction,length),normalVector.position));
+        return new Line(p1,p2);
+    } 
+    private perspectiveProjectNormalVectorIntoLine(normalVector : NormalVector,length : number) : Line{
+        let p1 = this.perspectiveProjectIndividualVector(normalVector.position);
+        let p2 = this.perspectiveProjectIndividualVector(Vector.add(Vector.scalarMult(normalVector.direction,length),normalVector.position));
+        return new Line(p1,p2);
+    } 
+    protected projectNormalVectorsIntoLines(normalVectors : NormalVector[],length : number) : Line[]{
+        let lines = [];
+        for (const v of normalVectors) {
+            let line = this.renParam.isPerspective ? this.perspectiveProjectNormalVectorIntoLine(v,length) : this.orthographicProjectNormalVectorIntoLine(v,length);
+            if (line.p1.z == -Infinity) continue;
+            if (line.p2.z == -Infinity) continue;
+            lines.push(line);
+        }
+        return lines;
+    }
     
     
     protected applyProjection(mesh : Mesh) : Mesh{

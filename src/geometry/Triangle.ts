@@ -119,6 +119,7 @@ export class Triangle {
         return (this.#verticeReferences[0].toString() + this.#verticeReferences[1].toString() + this.#verticeReferences[2].toString())
     }
     calculateTriangleNormalVector(field : Field) : NormalVector {
+        console.log(field)
         let centerOfTriangle = this.computeCentroid(field);
         let normalVector = this.computeNormal(field)
         return new NormalVector(centerOfTriangle,normalVector);

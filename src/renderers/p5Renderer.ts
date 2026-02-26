@@ -8,7 +8,7 @@ import { Line } from "../geometry/Line.js";
 import { RenderParameters } from "../interface/RenderParameters.js";
 import type p5 from "p5";
 import { Scene } from "../interface/Scene.js";
-
+import { NormalVector } from "../geometry/NormalVector.js";
 import { ColorHandler } from "colorhandler";
 import { Light, Positionable } from "../geometry/light/Light.js";
 export class p5Renderer extends Renderer  {
@@ -132,9 +132,15 @@ export class p5Renderer extends Renderer  {
     private convertColorHandlerToP5(color : ColorHandler) : p5.Color {
         return this.#p5.color(color.red,color.green,color.blue);
     }
-
+    protected graphNormalVectors(mesh : Mesh, normalVectors : NormalVector[],length : number) : void{
+        const normalLines = this.projectNormalVectorsIntoLines(normalVectors,length);
+        const canvasLines = this.linesToCanvas(normalLines);
+        console.log(canvasLines);
+        this.graphLines(canvasLines , this.#p5.color(255));
+    }
     copy() {
         //return new p5MeshRenderer(this.mesh.copy,this.)
     }
 }
+
 
