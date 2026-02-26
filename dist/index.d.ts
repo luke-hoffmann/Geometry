@@ -29,15 +29,39 @@ declare class Vector {
     copy(): Vector;
 }
 
-declare class Light {
+type TriangleInput = {
+    triangleNormalVector: Vector;
+    trianglePosition: Vector;
+    triangleColor: ColorHandler;
+};
+type Positionable = {
+    position: Vector;
+};
+declare abstract class Light {
     #private;
-    constructor(color: ColorHandler, position: Vector, brightness: number);
+    constructor(color: ColorHandler, brightness: number);
     calculateObservedColor(color: ColorHandler): ColorHandler;
-    get position(): Vector;
     get color(): ColorHandler;
     get brightness(): number;
-    copy(): Light;
-    set position(pos: Vector);
+    abstract copy(): this;
+    abstract calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
+    static hasPosition(light: Light): light is Light & Positionable;
+}
+
+declare class PointLight extends Light {
+    #private;
+    constructor(color: ColorHandler, brightness: number, position: Vector);
+    copy(): this;
+    calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
+    get position(): Vector;
+    set position(position: Vector);
+}
+
+declare class DirectionalLight extends Light {
+    #private;
+    constructor(color: ColorHandler, brightness: number, directionOfLight: Vector);
+    copy(): this;
+    calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
 }
 
 declare class NormalVector {
@@ -240,7 +264,7 @@ declare abstract class Renderer {
     graph(): void;
     private getColorOfTriangle;
     protected getColorsOfTriangles(mesh: Mesh, colors: ColorHandler[]): ColorHandler[];
-    protected finalLightPosition(light: Light): Light;
+    protected finalLightPosition<L extends Light & Positionable>(light: L): Vector;
     private getCameraSpaceMesh;
     private graphEntity;
     private isAnyMeshPointBehindCamera;
@@ -268,7 +292,7 @@ declare class p5Renderer extends Renderer {
     private calculateCanvasPos;
     private linesToCanvas;
     protected graphVertices(mesh: Mesh): void;
-    protected graphLight(light: Light): void;
+    protected graphLight<L extends Light & Positionable>(light: L): void;
     private graphVertex_noStroke;
     private graphVertex;
     private graphTriangle;
@@ -289,4 +313,4 @@ declare class Line {
     distanceToPoint(v: Vector): number;
 }
 
-export { Camera, CameraMover, CameraSpotTracker, Entity, Field, Light, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, RenderParameters, Renderer, Scene, Vector, p5Renderer };
+export { Camera, CameraMover, CameraSpotTracker, DirectionalLight, Entity, Field, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, PointLight, RenderParameters, Renderer, Scene, Vector, p5Renderer };

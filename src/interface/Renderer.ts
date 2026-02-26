@@ -1,15 +1,16 @@
 import { Mesh } from "../geometry/Mesh.js";
 import type { Camera } from "../camera/Camera.js";
 
-import { Light } from "../geometry/Light.js";
+import { Light } from "../geometry/light/Light.js";
 import { Field } from "../geometry/Field.js";
-import { Line } from "../geometry/Line.js";
+import { TriangleInput } from "../geometry/light/Light.js";
 import type { RenderParameters } from "./RenderParameters.js";
 import { Vector } from "../geometry/Vector.js"
 import { Scene } from "./Scene.js";
 import { Entity } from "../geometry/Entity.js";
 import { Triangle } from "../geometry/Triangle.js";
 import { ColorHandler } from "colorhandler";
+import type { Positionable } from "../geometry/light/Light.js";
 export abstract class Renderer {
     protected camera : Camera;
     protected scene : Scene;
@@ -34,12 +35,18 @@ export abstract class Renderer {
     }
     
     private getSceneInZOrder(){
+
         let elements : {z : number, type : "entity" | "light", ref : number}[]= [];
         for (let i = 0; i < this.scene.numEntities; i++) {
             elements.push({type: "entity" , ref: i, z: this.getCameraSpaceMesh(this.scene.getEntity(i)).calculateAverageZ()});
         }
         for (let i = 0 ; i < this.scene.numLights; i++) {
-            elements.push ({type: "light", ref : i, z : this.finalLightPosition(this.scene.getLight(i)).position.z})
+            const light = this.scene.getLight(i);
+            if (!Light.hasPosition(light)) {
+                continue;
+                
+            };
+            elements.push ({type: "light", ref : i, z : this.finalLightPosition(light).z})
         }
         elements.sort((a,b) => b.z-a.z);
         return elements.filter(e => e.z >=0);
@@ -49,6 +56,7 @@ export abstract class Renderer {
     graph () : void {
         this.preWork();
         let sceneItems = this.getSceneInZOrder();
+        console.log("got z order items")
         for (const sceneItem of sceneItems) {
             if (sceneItem.type== "entity") {
                 this.graphEntity(this.scene.getEntity(sceneItem.ref));
@@ -68,11 +76,8 @@ export abstract class Renderer {
         let triangleNormalVector = triangle.computeNormal(mesh.vertices);
         for (let i =0; i < this.scene.numLights; i++) {
             const light = this.scene.getLight(i);
-            const lightingVector = Vector.unitVector(Vector.sub(light.position,centerOfTriangle));
-            const angleBrightness = Vector.dotProduct(lightingVector,triangleNormalVector);
-            let observedColor = light.calculateObservedColor(color);
-            observedColor = observedColor.multiplyByNumber(angleBrightness);
-            colorArray.push(observedColor);
+            let triangleColor = light.calculateTriangleColor({trianglePosition: centerOfTriangle, triangleNormalVector: triangleNormalVector, triangleColor:color})
+            colorArray.push(triangleColor);
         }
 
         return ColorHandler.sumAndClamp(colorArray);
@@ -90,14 +95,12 @@ export abstract class Renderer {
         return outColors;
 
     }
-    protected finalLightPosition(light : Light) : Light {
+    protected finalLightPosition<L extends Light & Positionable>(light : L) : Vector {
         let pos = this.camera.putCameraAtCenterOfPointCoordinateSystem(light.position);
         pos = this.projectIndividualPoint(pos);
         pos = this.pointToCanvas(pos);
-        let l = light.copy();
-        l.position = pos;
         
-        return l;
+        return pos;
     }
     private getCameraSpaceMesh(entity : Entity) : Mesh {
         entity = entity.copy();
@@ -114,7 +117,7 @@ export abstract class Renderer {
             triangleColors = this.getColorsOfTriangles(mesh,triangleColors);
         }
         mesh = entity.worldSpaceMesh;
-        
+        mesh.calculateTrianglesNormalVectors();
         
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);

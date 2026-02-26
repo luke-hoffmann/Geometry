@@ -13,7 +13,8 @@
     "minify": true,
     "dts": true,
     "format": [
-      "iife", "esm"
+      "iife",
+      "esm"
     ],
     "target": "es2022",
     "globalName": "geometry",
@@ -25,7 +26,6 @@
     ],
     "treeshake": true
   },
-
   "scripts": {
     "build": "tsup"
   },

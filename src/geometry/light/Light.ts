@@ -1,20 +1,22 @@
-
 import { ColorHandler } from "colorhandler";
-import { Vector } from "./Vector.js";
-export class Light {
+import { Vector } from "../Vector.js";
+export type TriangleInput = {
+    triangleNormalVector : Vector,
+    trianglePosition : Vector,
+    triangleColor: ColorHandler
+}   
+export type Positionable = {position : Vector};
+export abstract class Light {
     #color : ColorHandler;
-    #position : Vector;
     #brightness : number;
 
-    constructor (color : ColorHandler,position : Vector,brightness : number){
-        // brightness should be between 0 and 1;
-        // r, g, b should be between 0 and 255;
+    constructor (color : ColorHandler, brightness : number){
         if (color == undefined) throw Error("Color is not defined");
-        if (position == undefined) throw Error ("Position is not defined");
         if (brightness == undefined) throw Error("Brightness is not defined");
+        if (0> brightness || brightness > 1) throw Error("Brightness is not between 0 and 1");
+        color = color.clampColor();
         this.#color=color;
         this.#brightness = brightness;
-        this.#position = position;
     }
     
     calculateObservedColor(color : ColorHandler){
@@ -25,20 +27,16 @@ export class Light {
         observedColor = observedColor.multiplyByNumber(255);
         return observedColor;
     }
-    get position () : Vector{
-        return this.#position.copy();
-    }
     get color() : ColorHandler {
         return this.#color.copy();
     }
     get brightness() : number {
         return this.#brightness;
     }
-    copy() {
-        return new Light(this.#color.copy(),this.#position.copy(),this.#brightness);
-    }
-    set position(pos : Vector) {
-        this.#position = pos;
+    abstract copy(): this;
+    abstract calculateTriangleColor(triangleInput : TriangleInput): ColorHandler;
+    static hasPosition(light: Light): light is Light & Positionable {
+        return "position" in light;
     }
 }
 

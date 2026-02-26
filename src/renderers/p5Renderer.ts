@@ -10,7 +10,7 @@ import type p5 from "p5";
 import { Scene } from "../interface/Scene.js";
 
 import { ColorHandler } from "colorhandler";
-import { Light } from "../geometry/Light.js";
+import { Light, Positionable } from "../geometry/light/Light.js";
 export class p5Renderer extends Renderer  {
     #graphicsBuffer : p5.Graphics;
     #p5 : p5;
@@ -65,9 +65,10 @@ export class p5Renderer extends Renderer  {
         }
         
     }
-    protected graphLight(light : Light) : void{
-        light = this.finalLightPosition(light);
-        this.graphVertex_noStroke(light.position, light.color.multiplyByNumber(light.brightness), 30);
+    protected graphLight<L extends Light & Positionable> (light : L) : void{
+        console.log("graphing light")
+        let position = this.finalLightPosition(light);
+        this.graphVertex_noStroke(position, light.color.multiplyByNumber(light.brightness), 30);
     }
     private graphVertex_noStroke(vertex : Vector, color : ColorHandler, size : number) : void {
         this.#graphicsBuffer.noStroke();

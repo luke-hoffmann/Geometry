@@ -1,5 +1,5 @@
-
-export * from "./geometry/Light";
+export * from "./geometry/light/PointLight";
+export * from "./geometry/light/DirectionalLight";
 export * from "./geometry/Vector";
 export * from "./geometry/MeshGenerator";
 

@@ -1,6 +1,6 @@
 import type { Vector } from "../geometry/Vector.js";
 import { Entity } from "../geometry/Entity.js";
-import { Light } from "../geometry/Light.js";
+import { Light } from "../geometry/light/Light.js";
 
 export class Scene {
     #entities : Entity[];
@@ -28,6 +28,7 @@ export class Scene {
         return this.#lights.length;
     }
     setLightPos(pos :Vector, i :number) : void {
+        if (!Light.hasPosition(this.#lights[i])) return;
         this.#lights[i].position = pos;
     }
     set meshes (meshes : Entity[]) {
