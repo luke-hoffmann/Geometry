@@ -18,7 +18,7 @@ let cameraSpotTracker = new geometry.CameraSpotTracker(new geometry.Vector(0,0,0
 
 let screenSize = new geometry.Vector(1400,800);
 let i =0;
-let scene = new geometry.Scene([entity,entity2],lights);
+let scene = new geometry.Scene([entity, entity2],lights);
 const s = ( sketch ) => {
   sketch.setup = () => {
     renderer = new geometry.p5Renderer(scene,screenSize,camera, new geometry.RenderParameters({
@@ -28,7 +28,7 @@ const s = ( sketch ) => {
       doBackFaceCulling:true,
       pointRadius: 3,
       isWindingOrderBackFaceCulling: true,
-      doNormalVectors: false,
+      doNormalVectors: true,
       normalVectorLength: 40
     }),sketch);
 
