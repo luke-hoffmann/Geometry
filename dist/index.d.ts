@@ -211,9 +211,18 @@ declare class CameraSpotTracker {
     get radius(): number;
 }
 
+declare class Line {
+    #private;
+    constructor(p1: Vector, p2: Vector);
+    get p1(): Vector;
+    get p2(): Vector;
+    isEqual(line: this): boolean;
+    distanceToPoint(v: Vector): number;
+}
+
 declare class RenderParameters {
     #private;
-    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, }?: Partial<{
+    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength }?: Partial<{
         doBackFaceCulling: boolean;
         doOutline: boolean;
         doFill: boolean;
@@ -224,6 +233,8 @@ declare class RenderParameters {
         isPerspective: boolean;
         doTriangles: boolean;
         isWindingOrderBackFaceCulling: boolean;
+        doNormalVectors: boolean;
+        normalVectorLength: number;
     }>);
     get doBackFaceCulling(): boolean;
     get doOutline(): boolean;
@@ -235,6 +246,8 @@ declare class RenderParameters {
     get isPerspective(): boolean;
     get doTriangles(): boolean;
     get isWindingOrderBackFaceCulling(): boolean;
+    get doNormalVectors(): boolean;
+    get normalVectorLength(): number;
     set doBackFaceCulling(v: boolean);
     set doOutline(v: boolean);
     set doFill(v: boolean);
@@ -245,6 +258,8 @@ declare class RenderParameters {
     set isPerspective(v: boolean);
     set doTriangles(v: boolean);
     set isWindingOrderBackFaceCulling(v: boolean);
+    set doNormalVectors(v: boolean);
+    set normalVectorLength(v: number);
 }
 
 declare abstract class Renderer {
@@ -254,6 +269,7 @@ declare abstract class Renderer {
     constructor(scene: Scene, camera: Camera, renderParameters: RenderParameters);
     protected abstract preWork(): void;
     protected abstract meshToCanvas(mesh: Mesh): Mesh;
+    protected abstract graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     protected abstract graphVertices(mesh: Mesh): void;
     protected abstract graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
     protected abstract postWork(): void;
@@ -278,6 +294,9 @@ declare abstract class Renderer {
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
     private orthographicProjectIndividualVector;
     private perspectiveProjectIndividualVector;
+    private orthographicProjectNormalVectorIntoLine;
+    private perspectiveProjectNormalVectorIntoLine;
+    protected projectNormalVectorsIntoLines(normalVectors: NormalVector[], length: number): Line[];
     protected applyProjection(mesh: Mesh): Mesh;
     private projectIndividualPoint;
 }
@@ -301,16 +320,8 @@ declare class p5Renderer extends Renderer {
     private graphLine;
     private graphBetweenTwoPoints;
     private convertColorHandlerToP5;
+    protected graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     copy(): void;
-}
-
-declare class Line {
-    #private;
-    constructor(p1: Vector, p2: Vector);
-    get p1(): Vector;
-    get p2(): Vector;
-    isEqual(line: this): boolean;
-    distanceToPoint(v: Vector): number;
 }
 
 export { Camera, CameraMover, CameraSpotTracker, DirectionalLight, Entity, Field, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, PointLight, RenderParameters, Renderer, Scene, Vector, p5Renderer };

@@ -4,6 +4,7 @@ import { NormalVector } from "../geometry/NormalVector.js";
 import { Light } from "../geometry/light/Light.js";
 import { Field } from "../geometry/Field.js";
 import { TriangleInput } from "../geometry/light/Light.js";
+import { Line } from "../geometry/Line.js";
 import type { RenderParameters } from "./RenderParameters.js";
 import { Vector } from "../geometry/Vector.js"
 import { Scene } from "./Scene.js";
