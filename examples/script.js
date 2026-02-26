@@ -45,7 +45,6 @@ const s = ( sketch ) => {
     cameraSpotTracker.update(renderer.camera);
   };
   sketch.mouseWheel = (e)=> {
-    console.log('cheese')
     let dir = 1;
     if (e.delta < 0) {
       dir = -1
