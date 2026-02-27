@@ -39,7 +39,6 @@ export class CameraMover {
     set hTheta(theta : number) {
         if (!Number.isFinite(theta)) throw Error("hTheta is not finite")
         this.#hTheta =theta;
-        console.log(this.#hTheta);
         this.updateViewDirectionFromAngles();
     }
     get vTheta() : number{

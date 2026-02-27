@@ -3,16 +3,16 @@ let pos = new geometry.PhysicsBody(new geometry.Vector(0,0,0));
 let entity = geometry.Entity.randomConvexEntityWithColors(700,100, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255),false);
 entities.push(entity);
 pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
-entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120), false);
+entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255), false);
 entities.push(entity);
 pos = new geometry.PhysicsBody(new geometry.Vector(0,-1000,0));
-entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120), false);
+entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255), false);
 entities.push(entity);
 
 let lights = [];
-lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(0,255,0),1, new geometry.Vector(0,0,1)));
-lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,2,0),1, new geometry.Vector(0,1,0)));
-lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,2,255),1, new geometry.Vector(1000,0,0)));
+//lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),1, new geometry.Vector(0,0,1000)));
+//lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,2,0),1, new geometry.Vector(0,1000,0)));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,255,255),1000000, new geometry.Vector(1000,0,0)));
 let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-1200))
 let camera = new geometry.Camera(cameraPB,new geometry.Vector(0,0,1),90,400,0);
@@ -33,7 +33,7 @@ const s = ( sketch ) => {
       doBackFaceCulling:true,
       pointRadius: 3,
       isWindingOrderBackFaceCulling: true,
-      doNormalVectors: true,
+      doNormalVectors: false,
       normalVectorLength: 40
     }),sketch);
 
@@ -67,7 +67,7 @@ const s = ( sketch ) => {
 
 
     const light_pos = new geometry.Vector(1000, Math.sin(i)*2000,0);
-    renderer.setSceneLightPos(light_pos,2);
+    renderer.setSceneLightPos(light_pos,0);
 
   };
   sketch.mouseWheel = (e)=> {

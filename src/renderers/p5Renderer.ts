@@ -86,15 +86,6 @@ export class p5Renderer extends Renderer  {
         let p1 = mesh.getVertex(triangle.getVerticeReference(0));
         let p2 = mesh.getVertex(triangle.getVerticeReference(1));
         let p3 = mesh.getVertex(triangle.getVerticeReference(2));
-        // if (p1.z === -Infinity) {
-        //     console.log(-Infinity);
-        // }
-        // if (p2.z === -Infinity) {
-        //     console.log(-Infinity);
-        // }
-        // if (p3.z === -Infinity) {
-        //     console.log(-Infinity);
-        // }
         this.#graphicsBuffer.strokeJoin(this.#p5.ROUND);
         this.#graphicsBuffer.stroke(this.#p5.color(0));
         this.#graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);

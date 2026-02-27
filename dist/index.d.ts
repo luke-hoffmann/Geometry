@@ -34,6 +34,7 @@ type TriangleInput = {
     triangleNormalVector: Vector;
     trianglePosition: Vector;
     triangleColor: ColorHandler;
+    distance: number;
 };
 type Positionable = {
     position: Vector;
@@ -41,9 +42,11 @@ type Positionable = {
 declare abstract class Light {
     #private;
     constructor(color: ColorHandler, brightness: number);
-    calculateObservedColor(color: ColorHandler): ColorHandler;
+    calculateObservedColor(color: ColorHandler, distance: number): ColorHandler;
     get color(): ColorHandler;
     get brightness(): number;
+    set brightness(brightness: number);
+    protected clampBrightness(value: number): number;
     abstract copy(): this;
     abstract calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
     static hasPosition(light: Light): light is Light & Positionable;
@@ -61,6 +64,9 @@ declare class PointLight extends Light {
 declare class DirectionalLight extends Light {
     #private;
     constructor(color: ColorHandler, brightness: number, directionOfLight: Vector);
+    protected clampBrightness(brightness: number): number;
+    set direction(direction: Vector);
+    get direction(): Vector;
     copy(): this;
     calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
 }

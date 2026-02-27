@@ -69,25 +69,32 @@ export abstract class Renderer {
     }
 
 
-    private getColorOfTriangle(mesh : Mesh, triangle : Triangle, color : ColorHandler) : ColorHandler {
+    private getColorOfTriangle(mesh : Mesh, triangle : Triangle, color : ColorHandler, positionOfMesh: Vector) : ColorHandler {
        
         let centerOfTriangle = triangle.computeCentroid(mesh.vertices);
         let colorArray = [];
         let triangleNormalVector = triangle.computeNormal(mesh.vertices);
+        
         for (let i =0; i < this.scene.numLights; i++) {
             const light = this.scene.getLight(i);
-            let triangleColor = light.calculateTriangleColor({trianglePosition: centerOfTriangle, triangleNormalVector: triangleNormalVector, triangleColor:color});
+            let distance = -Infinity;
+            if (Light.hasPosition(light)) {
+                distance = Vector.distanceBetweenVectors(centerOfTriangle,light.position);
+                if (distance ==0) distance=1;
+            }
+            let triangleColor = light.calculateTriangleColor({trianglePosition: centerOfTriangle, triangleNormalVector: triangleNormalVector, triangleColor:color, distance:distance});
+            
             colorArray.push(triangleColor);
         }
 
         return ColorHandler.sumAndClamp(colorArray);
     }
 
-    protected getColorsOfTriangles(mesh : Mesh, colors : ColorHandler[]) : ColorHandler[] {
+    protected getColorsOfTriangles(mesh : Mesh, colors : ColorHandler[], positionOfMesh: Vector) : ColorHandler[] {
         let outColors = [];
         for (let i = 0 ;i < mesh.numTriangles; i++) {
             const triangle = mesh.getTriangle(i);
-            const col = (this.getColorOfTriangle(mesh,triangle, colors[i]));
+            const col = (this.getColorOfTriangle(mesh,triangle, colors[i],positionOfMesh));
             outColors.push(col);
         }
 
@@ -113,7 +120,7 @@ export abstract class Renderer {
         let mesh = entity.worldSpaceMesh
         let triangleColors = entity.triangleColors;
         if (!entity.isIndifferentToLight) {
-            triangleColors = this.getColorsOfTriangles(mesh,triangleColors);
+            triangleColors = this.getColorsOfTriangles(mesh,triangleColors,entity.physicsBody.position);
         }
         mesh.calculateTrianglesNormalVectors();
         
@@ -239,12 +246,9 @@ export abstract class Renderer {
     }
     private generateNewMeshWithAppropriateColorsWithTwoNewVisibleTrianglesFromOneTriangleWithHiddenVertex(triangle : Triangle, hiddenVertex : Vector, mesh : Mesh, colorMap : Map<string,ColorHandler>) : {mesh:Mesh, colorMap : Map<string,ColorHandler>} {
         let visibleVerticesReferences = [];
-        console.log("start-------\n")
-        console.log(hiddenVertex)
         for (let i =0; i < 3; i++) {
             let vertRef = triangle.getVerticeReference(i)
             let v = mesh.getVertex(vertRef);
-            console.log(v);
             if (hiddenVertex.equals(v)) continue;
             visibleVerticesReferences.push(vertRef);
         } 
