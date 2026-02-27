@@ -57,7 +57,6 @@ export abstract class Renderer {
     graph () : void {
         this.preWork();
         let sceneItems = this.getSceneInZOrder();
-        console.log("got z order items")
         for (const sceneItem of sceneItems) {
             if (sceneItem.type== "entity") {
                 this.graphEntity(this.scene.getEntity(sceneItem.ref));
@@ -77,7 +76,7 @@ export abstract class Renderer {
         let triangleNormalVector = triangle.computeNormal(mesh.vertices);
         for (let i =0; i < this.scene.numLights; i++) {
             const light = this.scene.getLight(i);
-            let triangleColor = light.calculateTriangleColor({trianglePosition: centerOfTriangle, triangleNormalVector: triangleNormalVector, triangleColor:color})
+            let triangleColor = light.calculateTriangleColor({trianglePosition: centerOfTriangle, triangleNormalVector: triangleNormalVector, triangleColor:color});
             colorArray.push(triangleColor);
         }
 
@@ -88,7 +87,6 @@ export abstract class Renderer {
         let outColors = [];
         for (let i = 0 ;i < mesh.numTriangles; i++) {
             const triangle = mesh.getTriangle(i);
-            // need to calculate color of triangle before projection.
             const col = (this.getColorOfTriangle(mesh,triangle, colors[i]));
             outColors.push(col);
         }
@@ -112,12 +110,11 @@ export abstract class Renderer {
     }
     private graphEntity (entity : Entity) : void{
         
-        let mesh = entity.mesh
+        let mesh = entity.worldSpaceMesh
         let triangleColors = entity.triangleColors;
         if (!entity.isIndifferentToLight) {
             triangleColors = this.getColorsOfTriangles(mesh,triangleColors);
         }
-        mesh = entity.worldSpaceMesh;
         mesh.calculateTrianglesNormalVectors();
         
 

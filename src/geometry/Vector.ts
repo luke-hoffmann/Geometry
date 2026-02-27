@@ -129,5 +129,8 @@ export class Vector {
         
         return new Vector(this.#x, this.#y, this.#z);
     }
+    static oppositeVector(vector : Vector){
+        return this.scalarMult(vector,-1);
+    }
 }
 
