@@ -1,21 +1,25 @@
 let entities = [];
 let pos = new geometry.PhysicsBody(new geometry.Vector(0,0,0));
 let entity = geometry.Entity.randomConvexEntityWithColors(700,100, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255),false);
-pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
-let entity2 = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120), false);
 entities.push(entity);
-entities.push(entity2);
+pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
+entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120), false);
+entities.push(entity);
+pos = new geometry.PhysicsBody(new geometry.Vector(0,-1000,0));
+entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(200,200,0),new colorhandler.ColorHandler(140,190,120), false);
+entities.push(entity);
 
 let lights = [];
-//lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(0,255,0),1, new geometry.Vector(0,0,1)));
-//lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,2,0),1, new geometry.Vector(0,1,0)));
-lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,2,0),1, new geometry.Vector(1000,0,0)));
+lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(0,255,0),1, new geometry.Vector(0,0,1)));
+lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,2,0),1, new geometry.Vector(0,1,0)));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,2,255),1, new geometry.Vector(1000,0,0)));
 let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-1200))
 let camera = new geometry.Camera(cameraPB,new geometry.Vector(0,0,1),90,400,0);
 
+let cameraMover = new geometry.CameraMover(new geometry.Vector(0,0,0),new geometry.Vector(0,0,0),new geometry.Vector(0,0,0));
 let cameraSpotTracker = new geometry.CameraSpotTracker(new geometry.Vector(1000,0,0), 1000,0,0);
-
+let isPointerLocked = false;
 
 let screenSize = new geometry.Vector(1400,800);
 let i =0;
@@ -39,21 +43,48 @@ const s = ( sketch ) => {
   sketch.draw = () => {
     i+=0.005;
     renderer.graph();
-    if (sketch.mouseIsPressed) {
 
-      cameraSpotTracker.mouseInputRotate(sketch.pmouseX,sketch.pmouseY,sketch.mouseX,sketch.mouseY);
+
+    let input = new geometry.KeyboardInput();
+    input.updateLeftRightUpDown(
+      sketch.keyIsDown(sketch.LEFT_ARROW)  || sketch.keyIsDown(65), // A
+      sketch.keyIsDown(sketch.RIGHT_ARROW) || sketch.keyIsDown(68), // D
+      sketch.keyIsDown(sketch.UP_ARROW)    || sketch.keyIsDown(87), // W
+      sketch.keyIsDown(sketch.DOWN_ARROW)  || sketch.keyIsDown(83)  // S
+  );
+  input.updateControlSpace(sketch.keyIsDown(32),sketch.keyIsDown(17));
+    cameraMover.keyboardInputs(input);
+
+
+    if (isPointerLocked) {
+      cameraMover.mouseInputRotate(sketch.movedX,sketch.movedY);
+    } else if (sketch.mouseIsPressed) {
+      cameraMover.mouseInputRotate(sketch.mouseX-sketch.pmouseX,sketch.mouseY-sketch.pmouseY);
     }
-    cameraSpotTracker.update(renderer.camera);
+
+
+    renderer.camera = cameraMover.update(renderer.camera);
+
+
     const light_pos = new geometry.Vector(1000, Math.sin(i)*2000,0);
-    renderer.setSceneLightPos(light_pos,0);
+    renderer.setSceneLightPos(light_pos,2);
+
   };
   sketch.mouseWheel = (e)=> {
-    console.log('cheese')
     let dir = 1;
     if (e.delta < 0) {
       dir = -1
     } 
     cameraSpotTracker.changeRadius(30 * dir);
+  }
+  sketch.doubleClicked = ()=> {
+    if (isPointerLocked) {
+      sketch.exitPointerLock();
+      isPointerLocked = !isPointerLocked;
+      return
+    }
+    sketch.requestPointerLock();
+    isPointerLocked = !isPointerLocked;
   }
   
 };

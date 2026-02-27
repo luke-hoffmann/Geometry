@@ -181,6 +181,7 @@ declare class Camera {
     private projectWorldPointOntoCameraAxis;
     copy(): Camera;
     pointAtPoint(point: Vector): void;
+    pointInDirection(direction: Vector): void;
 }
 
 declare class Scene {
@@ -195,12 +196,40 @@ declare class Scene {
     set meshes(meshes: Entity[]);
 }
 
+declare class KeyboardInput {
+    #private;
+    constructor();
+    get up(): boolean;
+    get down(): boolean;
+    get left(): boolean;
+    get right(): boolean;
+    get space(): boolean;
+    get control(): boolean;
+    set up(value: boolean);
+    set down(value: boolean);
+    set left(value: boolean);
+    set right(value: boolean);
+    set space(value: boolean);
+    set control(value: boolean);
+    updateLeftRightUpDown(left: boolean, right: boolean, up: boolean, down: boolean): void;
+    updateControlSpace(control: boolean, space: boolean): void;
+    movementInCertainCoordinateSystem(forward: Vector, up: Vector, right: Vector): Vector;
+}
+
 declare class CameraMover {
-    private acceleration;
-    private currentTheta;
-    constructor(acceleration: Vector);
-    rotateCameraAroundPointOnXZPlane(camera: Camera, point: Vector, radius: number, deltaTheta: number): Camera;
-    rotateCameraAroundPointAtYAbove(camera: Camera, point: Vector, radius: number, yAbove: number, deltaTheta: number): Camera;
+    #private;
+    constructor(position: Vector, velocity: Vector, acceleration: Vector);
+    set vTheta(theta: number);
+    set hTheta(theta: number);
+    get vTheta(): number;
+    get hTheta(): number;
+    set viewVector(v: Vector);
+    private updateViewDirectionFromAngles;
+    private updateAnglesFromViewDirection;
+    private updateKinematics;
+    update(camera: Camera): Camera;
+    keyboardInputs(keyboardInput: KeyboardInput): void;
+    mouseInputRotate(xChange: number, yChange: number): void;
 }
 
 declare class CameraSpotTracker {
@@ -325,4 +354,4 @@ declare class p5Renderer extends Renderer {
     copy(): void;
 }
 
-export { Camera, CameraMover, CameraSpotTracker, DirectionalLight, Entity, Field, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, PointLight, RenderParameters, Renderer, Scene, Vector, p5Renderer };
+export { Camera, CameraMover, CameraSpotTracker, DirectionalLight, Entity, Field, KeyboardInput, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, PointLight, RenderParameters, Scene, Vector, p5Renderer };

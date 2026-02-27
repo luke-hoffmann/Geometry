@@ -8,7 +8,7 @@ export class CameraSpotTracker {
     #hTheta : number;
     #vTheta : number;
     #vChangeInverse : boolean;
-    #mouseSensitivity = 0.01;
+    #mouseSensitivity : number = 0.01;
     constructor(trackSpot : Vector, radius: number, horizontalTheta : number, verticalTheta: number) {
         this.#trackSpot = trackSpot;
         this.#radius = radius;

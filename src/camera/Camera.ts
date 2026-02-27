@@ -86,5 +86,10 @@ export class Camera {
         this.viewVector = Vector.unitVector(Vector.sub(point,this.#physicsBody.position));
         
     }
+    pointInDirection(direction : Vector) : void{
+        if (!(direction instanceof Vector)) throw Error("direction is not an instance of Vector");
+        this.viewVector = Vector.unitVector(direction);
+        
+    }
     
 }
