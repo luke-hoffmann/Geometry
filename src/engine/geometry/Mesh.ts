@@ -1,8 +1,8 @@
 
-import { Vector } from "./Vector.js";
-import { Field } from "./Field.js";
+import { Vector } from "../../core/math/Vector";
+import { Field } from "../../core/field/Field";
 import { Triangle } from "./Triangle.js";
-import { NormalVector } from "./NormalVector.js";
+import { NormalVector } from "../../core/math/NormalVector.js";
 
 export class Mesh {
     #vertices : Field;
@@ -91,6 +91,22 @@ export class Mesh {
     }
     get numTriangles() : number {
         return this.#triangles.length;
+    }
+    get triangleCentroids() : Vector[] {
+        let centroids = [];
+        for (let i =0 ; i < this.#triangles.length; i++) {
+            const triangle = this.#triangles[i];
+            centroids.push(triangle.computeCentroid(this.vertices));
+        }
+        return centroids;
+    }
+    get triangleNormalVectors() : Vector[] {
+        let normalVectors = [];
+        for (let i =0 ; i < this.#triangles.length; i++) {
+            const triangle = this.#triangles[i];
+            normalVectors.push(triangle.computeNormal(this.vertices));
+        }
+        return normalVectors;
     }
     getVertex(index : number) : Vector{
         if (!Number.isSafeInteger(index)) throw Error ("index is not a safe integer")

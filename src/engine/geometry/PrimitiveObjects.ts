@@ -1,6 +1,6 @@
-import { Field } from "./Field.js";
-import { Vector } from "./Vector.js";
-import { MeshGenerator } from "./MeshGenerator.js";
+import { Field } from "../../core/field/Field.js";
+import { Vector } from "../../core/math/Vector.js";
+import { MeshGenerator } from "./generation/MeshGenerator.js";
 import type { Mesh } from "./Mesh.js";
 export class PrimitiveObject {
     

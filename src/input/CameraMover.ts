@@ -1,6 +1,6 @@
-import { Vector } from "../geometry/Vector.js";
-import { Camera } from "../camera/Camera.js";
-import { KeyboardInput } from "./KeyboardInput.js";
+import { Vector } from "../core/math/Vector";
+import { Camera } from "../engine/scene/Camera";
+import { KeyboardInput } from ".//KeyboardInput";
 export class CameraMover {
     #acceleration : Vector;
     #velocity : Vector;

@@ -1,6 +1,6 @@
 import { ColorHandler } from "colorhandler";
 import { Light } from "./Light";
-import { Vector } from "../Vector";
+import { Vector } from "../../core/math/Vector";
 import { TriangleInput } from "./Light";
 export class DirectionalLight extends Light {
     #direction : Vector;
@@ -27,6 +27,9 @@ export class DirectionalLight extends Light {
     }
     calculateTriangleColor(triangleInput : TriangleInput): ColorHandler {
         const angleBrightness = Vector.dotProduct(this.#direction,triangleInput.triangleNormalVector);
+        if (angleBrightness <= 0) {
+            return new ColorHandler(0,0,0);
+        }
         let observedColor = this.calculateObservedColor(triangleInput.triangleColor,1);
         observedColor = observedColor.multiplyByNumber(angleBrightness);
         return observedColor;

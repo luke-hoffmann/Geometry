@@ -1,6 +1,6 @@
-import { Vector } from "./Vector.js";
-import { Triangle } from "./Triangle.js";
-import {Line} from "./Line.js";
+import { Vector } from "../math/Vector";
+import { Triangle } from "../../engine/geometry/Triangle";
+import {Line} from "../../engine/geometry/Line";
 import { UsefulFunction } from "usefulfunction";
 export class Field {
     private array : Vector[];

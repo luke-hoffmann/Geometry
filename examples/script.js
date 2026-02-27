@@ -10,9 +10,9 @@ entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhand
 entities.push(entity);
 
 let lights = [];
-//lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),1, new geometry.Vector(0,0,1000)));
-//lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,2,0),1, new geometry.Vector(0,1000,0)));
-lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,255,255),1000000, new geometry.Vector(1000,0,0)));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),100, new geometry.Vector(0,0,1000)));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,0,0),100, new geometry.Vector(0,1000,0)));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,255,255),100, new geometry.Vector(1000,0,0)));
 let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-1200))
 let camera = new geometry.Camera(cameraPB,new geometry.Vector(0,0,1),90,400,0);

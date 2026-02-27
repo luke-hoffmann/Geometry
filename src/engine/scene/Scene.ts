@@ -1,6 +1,6 @@
-import type { Vector } from "../geometry/Vector.js";
-import { Entity } from "../geometry/Entity.js";
-import { Light } from "../geometry/light/Light.js";
+import type { Vector } from "../../core/math/Vector.js";
+import { Entity } from "./Entity.js";
+import { Light } from "../lighting/Light.js";
 
 export class Scene {
     #entities : Entity[];

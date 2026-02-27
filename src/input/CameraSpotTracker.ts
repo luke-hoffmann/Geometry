@@ -1,6 +1,6 @@
 import { CameraMover } from "./CameraMover";
-import { Vector } from "../geometry/Vector";
-import { Camera } from "../camera/Camera";
+import { Vector } from "../core/math/Vector";
+import { Camera } from "../engine/scene/Camera";
 export class CameraSpotTracker {
     #trackSpot : Vector;
 

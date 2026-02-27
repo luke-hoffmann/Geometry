@@ -1,4 +1,4 @@
-import { Vector } from "../geometry/Vector";
+import { Vector } from "../core/math/Vector";
 
 export class KeyboardInput {
     #up : boolean;

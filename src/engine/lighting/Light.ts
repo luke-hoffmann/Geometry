@@ -1,5 +1,5 @@
 import { ColorHandler } from "colorhandler";
-import { Vector } from "../Vector.js";
+import { Vector } from "../../core/math/Vector.js";
 export type TriangleInput = {
     triangleNormalVector : Vector,
     trianglePosition : Vector,

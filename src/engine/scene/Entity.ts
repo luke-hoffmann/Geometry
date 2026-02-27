@@ -1,9 +1,9 @@
-import { Mesh } from "./Mesh.js";
-import { PhysicsBody } from "./PhysicsBody.js";
-import { Vector } from "./Vector.js";
-import { Field } from "./Field.js";
+import { Mesh } from "../geometry/Mesh";
+import { PhysicsBody } from "../physics/PhysicsBody";
+import { Vector } from "../../core/math/Vector";
+import { Field } from "../../core/field/Field";
 import { ColorHandler } from "colorhandler";
-import { MeshGenerator } from "./MeshGenerator.js";
+import { MeshGenerator } from "../geometry/generation/MeshGenerator";
 export class Entity {
     #mesh : Mesh;
     #pB : PhysicsBody;

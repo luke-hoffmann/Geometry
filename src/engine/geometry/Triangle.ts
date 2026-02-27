@@ -1,7 +1,7 @@
-import { Vector } from "./Vector.js";
+import { Vector } from "../../core/math/Vector";
 import { UsefulFunction } from "usefulfunction";
-import { Field } from "./Field.js";
-import { NormalVector } from "./NormalVector.js";
+import { Field } from "../../core/field/Field";
+import { NormalVector } from "../../core/math/NormalVector";
 export class Triangle {
     #verticeReferences : number[];
     constructor (verticeReferences : number[]) {

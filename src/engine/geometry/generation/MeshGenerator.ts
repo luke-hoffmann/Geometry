@@ -1,7 +1,7 @@
 import { UsefulFunction } from "usefulfunction";
-import { Field } from "./Field.js";
-import { Triangle } from "./Triangle.js";
-import { Mesh } from "./Mesh.js";
+import { Field } from "../../../core/field/Field.js";
+import { Triangle } from "../Triangle.js";
+import { Mesh } from "../Mesh.js";
 
 
 export class MeshGenerator {

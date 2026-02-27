@@ -1,7 +1,7 @@
-import {Vector} from "../geometry/Vector.js"
-import { Field } from "../geometry/Field.js";
-import { Mesh } from "../geometry/Mesh.js";
-import { PhysicsBody } from "../geometry/PhysicsBody.js";
+import {Vector} from "../../core/math/Vector"
+import { Field } from "../../core/field/Field";
+import { Mesh } from "../geometry/Mesh";
+import { PhysicsBody } from "../physics/PhysicsBody";
 export class Camera {
     #physicsBody : PhysicsBody;
     #viewVector : Vector;

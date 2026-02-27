@@ -1,16 +1,16 @@
-import { Renderer } from "../interface/Renderer.js";
-import {Mesh } from "../geometry/Mesh.js";
-import { Camera } from "../camera/Camera.js";
-import { Vector } from "../geometry/Vector.js";
-import { Field } from "../geometry/Field.js";
-import { Triangle } from "../geometry/Triangle.js";
-import { Line } from "../geometry/Line.js";
-import { RenderParameters } from "../interface/RenderParameters.js";
+import { Renderer } from "./Renderer.js";
+import {Mesh } from "../engine/geometry/Mesh";
+import { Camera } from "../engine/scene/Camera";
+import { Vector } from "../core/math/Vector";
+import { Field } from "../core/field/Field";
+import { Triangle } from "../engine/geometry/Triangle";
+import { Line } from "../engine/geometry/Line";
+import { RenderParameters } from "./RenderParameters";
 import type p5 from "p5";
-import { Scene } from "../interface/Scene.js";
-import { NormalVector } from "../geometry/NormalVector.js";
+import { Scene } from "../engine/scene/Scene";
+import { NormalVector } from "../core/math/NormalVector";
 import { ColorHandler } from "colorhandler";
-import { Light, Positionable } from "../geometry/light/Light.js";
+import { Light, Positionable } from "../engine/lighting/Light";
 export class p5Renderer extends Renderer  {
     #graphicsBuffer : p5.Graphics;
     #p5 : p5;

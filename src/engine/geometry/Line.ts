@@ -1,4 +1,4 @@
-import { Vector } from "./Vector.js";
+import { Vector } from "../../core/math/Vector.js";
 export class Line {
     #p1 : Vector;
     #p2 : Vector;

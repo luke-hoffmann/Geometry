@@ -1,23 +1,23 @@
-export * from "./geometry/light/PointLight";
-export * from "./geometry/light/DirectionalLight";
-export * from "./geometry/Vector";
-export * from "./geometry/MeshGenerator";
+export * from "./engine/lighting/PointLight";
+export * from "./engine/lighting/DirectionalLight";
+export * from "./core/math/Vector";
+export * from "./engine/geometry/generation/MeshGenerator";
 
-export * from "./geometry/PhysicsBody";
-export * from "./geometry/Entity"
+export * from "./engine/physics/PhysicsBody";
+export * from "./engine/scene/Entity"
 
-export * from "./camera/Camera";
+export * from "./engine/scene/Camera";
 
-export * from "./interface/Scene";
-export * from "./interface/CameraMover";
-export * from "./interface/CameraSpotTracker";
-export * from "./renderers/p5Renderer";
-export * from "./interface/RenderParameters";
+export * from "./engine/scene/Scene";
+export * from "./input/CameraMover";
+export * from "./input/CameraSpotTracker";
+export * from "./rendering/p5Renderer";
+export * from "./rendering/RenderParameters";
 
-export * from "./interface/KeyboardInput";
+export * from "./input/KeyboardInput";
 
-export type {Field} from "./geometry/Field";
-export type {Line} from "./geometry/Line";
-export type {Mesh} from "./geometry/Mesh";
-export type {NormalVector} from "./geometry/NormalVector";
-export type {PhysicsBody} from "./geometry/PhysicsBody";
+export type {Field} from "./core/field/Field";
+export type {Line} from "./engine/geometry/Line";
+export type {Mesh} from "./engine/geometry/Mesh";
+export type {NormalVector} from "./core/math/NormalVector";
+export type {PhysicsBody} from "./engine/physics/PhysicsBody";

@@ -136,6 +136,8 @@ declare class Mesh {
     get triangles(): Triangle[];
     get numPoints(): number;
     get numTriangles(): number;
+    get triangleCentroids(): Vector[];
+    get triangleNormalVectors(): Vector[];
     getVertex(index: number): Vector;
     getTriangle(index: number): Triangle;
     set vertices(vertices: Field);
@@ -315,7 +317,8 @@ declare abstract class Renderer {
     private getSceneInZOrder;
     graph(): void;
     private getColorOfTriangle;
-    protected getColorsOfTriangles(mesh: Mesh, colors: ColorHandler[]): ColorHandler[];
+    private getColorOfTrianglesFromLight;
+    protected getColorsOfTrianglesFromAllLights(mesh: Mesh, colors: ColorHandler[], meshCentroids: Vector[], meshNormalVectors: Vector[], positionOfMesh: Vector): ColorHandler[];
     protected finalLightPosition<L extends Light & Positionable>(light: L): Vector;
     private getCameraSpaceMesh;
     private graphEntity;

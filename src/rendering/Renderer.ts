@@ -1,17 +1,17 @@
-import { Mesh } from "../geometry/Mesh.js";
-import type { Camera } from "../camera/Camera.js";
-import { NormalVector } from "../geometry/NormalVector.js";
-import { Light } from "../geometry/light/Light.js";
-import { Field } from "../geometry/Field.js";
-import { TriangleInput } from "../geometry/light/Light.js";
-import { Line } from "../geometry/Line.js";
+import { Mesh } from "../engine/geometry/Mesh.js";
+import type { Camera } from "../engine/scene/Camera.js";
+import { NormalVector } from "../core/math/NormalVector.js";
+import { Light } from "../engine/lighting/Light.js";
+import { Field } from "../core/field/Field.js";
+import { TriangleInput } from "../engine/lighting/Light.js";
+import { Line } from "../engine/geometry/Line.js";
 import type { RenderParameters } from "./RenderParameters.js";
-import { Vector } from "../geometry/Vector.js"
-import { Scene } from "./Scene.js";
-import { Entity } from "../geometry/Entity.js";
-import { Triangle } from "../geometry/Triangle.js";
+import { Vector } from "../core/math/Vector.js"
+import { Scene } from "../engine/scene/Scene.js";
+import { Entity } from "../engine/scene/Entity.js";
+import { Triangle } from "../engine/geometry/Triangle.js";
 import { ColorHandler } from "colorhandler";
-import type { Positionable } from "../geometry/light/Light.js";
+import type { Positionable } from "../engine/lighting/Light.js";
 export abstract class Renderer {
     protected camera : Camera;
     protected scene : Scene;
@@ -69,36 +69,39 @@ export abstract class Renderer {
     }
 
 
-    private getColorOfTriangle(mesh : Mesh, triangle : Triangle, color : ColorHandler, positionOfMesh: Vector) : ColorHandler {
-       
-        let centerOfTriangle = triangle.computeCentroid(mesh.vertices);
-        let colorArray = [];
-        let triangleNormalVector = triangle.computeNormal(mesh.vertices);
-        
-        for (let i =0; i < this.scene.numLights; i++) {
-            const light = this.scene.getLight(i);
-            let distance = -Infinity;
-            if (Light.hasPosition(light)) {
-                distance = Vector.distanceBetweenVectors(centerOfTriangle,light.position);
-                if (distance ==0) distance=1;
-            }
-            let triangleColor = light.calculateTriangleColor({trianglePosition: centerOfTriangle, triangleNormalVector: triangleNormalVector, triangleColor:color, distance:distance});
-            
-            colorArray.push(triangleColor);
-        }
+    private getColorOfTriangle(mesh : Mesh,color : ColorHandler, triangleCentroid : Vector, triangleNormalVector : Vector, light: Light, distance: number) : ColorHandler {
+        let triangleColor = light.calculateTriangleColor({trianglePosition: triangleCentroid, triangleNormalVector: triangleNormalVector, triangleColor:color, distance:distance});
 
-        return ColorHandler.sumAndClamp(colorArray);
+        return triangleColor
     }
+    private getColorOfTrianglesFromLight(mesh : Mesh, colors : ColorHandler[], meshCentroids : Vector[], meshNormalVectors : Vector[], light: Light, positionOfMesh: Vector, outColors : ColorHandler[]) : ColorHandler[] {
+        let distance = -Infinity;
+        if (Light.hasPosition(light)) {
+            distance = Vector.distanceBetweenVectors(positionOfMesh,light.position);
+            if (distance ==0) distance=1;
+        }
+        for (let i = 0; i < mesh.numTriangles; i++) {
+            
+            const col = (this.getColorOfTriangle(mesh,colors[i], meshCentroids[i], meshNormalVectors[i], light, distance));
+            outColors[i].addInto(col);
+        }
+        return outColors;
+    }
+    protected getColorsOfTrianglesFromAllLights(mesh : Mesh, colors : ColorHandler[], meshCentroids : Vector[], meshNormalVectors : Vector[], positionOfMesh: Vector) : ColorHandler[] {
 
-    protected getColorsOfTriangles(mesh : Mesh, colors : ColorHandler[], positionOfMesh: Vector) : ColorHandler[] {
-        let outColors = [];
-        for (let i = 0 ;i < mesh.numTriangles; i++) {
-            const triangle = mesh.getTriangle(i);
-            const col = (this.getColorOfTriangle(mesh,triangle, colors[i],positionOfMesh));
-            outColors.push(col);
+        let output : ColorHandler[] = new Array(mesh.numTriangles);
+        for (let i =0 ; i < output.length;i ++) {
+            output[i] = new ColorHandler(0,0,0);
+        }
+        for (let i =0 ; i < this.scene.numLights; i++) {
+            const light = this.scene.getLight(i);
+            output = this.getColorOfTrianglesFromLight(mesh,colors,meshCentroids,meshNormalVectors, light,positionOfMesh, output);
+        }
+        for (let i =0 ; i < output.length; i++) {
+            output[i] = output[i].clampColor();
         }
 
-        return outColors;
+        return output;
 
     }
     protected finalLightPosition<L extends Light & Positionable>(light : L) : Vector {
@@ -119,8 +122,10 @@ export abstract class Renderer {
         
         let mesh = entity.worldSpaceMesh
         let triangleColors = entity.triangleColors;
+        let meshCentroids = mesh.triangleCentroids;
+        let meshNormalVectors = mesh.triangleNormalVectors;
         if (!entity.isIndifferentToLight) {
-            triangleColors = this.getColorsOfTriangles(mesh,triangleColors,entity.physicsBody.position);
+            triangleColors = this.getColorsOfTrianglesFromAllLights(mesh,triangleColors,meshCentroids,meshNormalVectors,entity.physicsBody.position);
         }
         mesh.calculateTrianglesNormalVectors();
         
