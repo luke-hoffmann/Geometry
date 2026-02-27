@@ -27,6 +27,7 @@ declare class Vector {
     static scalarMult(v: Vector, c: number): Vector;
     isDotProductLEThanX(vector: Vector, x: number): boolean;
     copy(): Vector;
+    static oppositeVector(vector: Vector): Vector;
 }
 
 type TriangleInput = {
