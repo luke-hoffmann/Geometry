@@ -48,7 +48,7 @@ export abstract class Renderer {
         this.scene.setLightPos(pos, i);
     }
     
-    private getSceneInZOrder() : Element[]{
+    protected getSceneInZOrder() : Element[]{
 
         let elements : Element[]= [];
 
