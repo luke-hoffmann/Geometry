@@ -8,13 +8,11 @@ export class Entity {
     #mesh : Mesh;
     #pB : PhysicsBody;
     #triangleColors : ColorHandler[];
-    // #colorMap : Map<string,ColorHandler>;
     #isIndifferentToLight : boolean;
     constructor (mesh : Mesh, physicsBody : PhysicsBody,triangleColors : ColorHandler[], isIndifferentToLight : boolean) {
         this.#mesh = mesh;
         this.#pB = physicsBody; 
         this.#triangleColors = triangleColors;
-        // this.#colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
         this.#isIndifferentToLight = isIndifferentToLight;
     }
     static randomConvexEntityWithColors(radius : number, n : number, physicsBody : PhysicsBody, c1 : ColorHandler, c2 :ColorHandler, isIndifferentToLight : boolean) : Entity {
@@ -46,7 +44,10 @@ export class Entity {
         newMesh.vertices = field;
         return newMesh;
     }
-    get physicsBody () {
+    set physicsBody(physicsBody : PhysicsBody)  {
+        this.#pB = physicsBody;
+    }
+    get physicsBody () : PhysicsBody{
         return this.#pB.copy();
     }
     get mesh() : Mesh {
