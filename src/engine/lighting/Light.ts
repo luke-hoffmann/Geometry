@@ -21,7 +21,7 @@ export abstract class Light {
     }
     
     calculateObservedColor(color : ColorHandler, distance : number){
-        const brightness = this.#brightness/distance;
+        const brightness = this.#brightness/((distance **2) + (0.1**2));
         let light = this.#color.multiplyByNumber(brightness);
         let normalizedLight = light.multiplyByNumber(1/255);
         let normalizedColor = color.multiplyByNumber(1/255);
