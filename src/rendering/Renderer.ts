@@ -80,7 +80,7 @@ export abstract class Renderer {
             if (sceneItem.type== "entity") {
                 this.graphEntity(this.scene.getEntity(sceneItem.ref));
             }
-            if (sceneItem.type == "light") {
+            if (sceneItem.type == "light" && this.renParam.showLights) {
                 this.graphLight(sceneItem);
             }
         }
