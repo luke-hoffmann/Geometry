@@ -6,7 +6,7 @@ export type TriangleInput = {
     triangleColor: ColorHandler,
     distance : number
 }   
-export type Positionable = {position : Vector};
+export type Positionable = {position : Vector, radius : number};
 export abstract class Light {
     #color : ColorHandler;
     #brightness : number;

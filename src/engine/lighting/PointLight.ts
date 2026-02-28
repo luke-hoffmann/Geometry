@@ -4,9 +4,11 @@ import { Vector } from "../../core/math/Vector";
 import { TriangleInput } from "./Light";
 export class PointLight extends Light {
     #position : Vector;
-    constructor(color : ColorHandler, brightness : number, position : Vector) {
+    #radius : number;
+    constructor(color : ColorHandler, brightness : number, position : Vector, radius : number = 70) {
         super(color,brightness);
         this.#position = position;
+        this.#radius = radius;
     }
     copy() : this {
         let clone = new PointLight(this.color,this.brightness,this.#position);
@@ -22,7 +24,12 @@ export class PointLight extends Light {
         observedColor = observedColor.multiplyByNumber(angleBrightness);
         return observedColor;
     }
-
+    get radius () {
+        return this.#radius;
+    }
+    set radius(radius: number) {
+        this.#radius = radius;
+    }
     get position () {
         return this.#position;
     }

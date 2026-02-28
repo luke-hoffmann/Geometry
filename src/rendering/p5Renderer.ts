@@ -11,6 +11,7 @@ import { Scene } from "../engine/scene/Scene";
 import { NormalVector } from "../core/math/NormalVector";
 import { ColorHandler } from "colorhandler";
 import { Light, Positionable } from "../engine/lighting/Light";
+import { LightElement } from "./Renderer.js";
 export class p5Renderer extends Renderer  {
     #graphicsBuffer : p5.Graphics;
     #p5 : p5;
@@ -65,9 +66,8 @@ export class p5Renderer extends Renderer  {
         }
         
     }
-    protected graphLight<L extends Light & Positionable> (light : L) : void{
-        let position = this.finalLightPosition(light);
-        this.graphVertex_noStroke(position, light.color.multiplyByNumber(light.brightness), 30);
+    protected graphLight (light : LightElement) : void{
+        this.graphVertex_noStroke(light.finalLightPosition.canvasPosition, light.light.color.multiplyByNumber(light.light.brightness), light.finalLightPosition.radius);
     }
     private graphVertex_noStroke(vertex : Vector, color : ColorHandler, size : number) : void {
         this.#graphicsBuffer.noStroke();

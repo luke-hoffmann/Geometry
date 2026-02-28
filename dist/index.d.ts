@@ -3,6 +3,7 @@ import p5 from 'p5';
 
 declare class Vector {
     #private;
+    static readonly ZERO: Vector;
     constructor(x: number, y: number, z: number);
     get x(): number;
     get y(): number;
@@ -38,6 +39,7 @@ type TriangleInput = {
 };
 type Positionable = {
     position: Vector;
+    radius: number;
 };
 declare abstract class Light {
     #private;
@@ -54,9 +56,11 @@ declare abstract class Light {
 
 declare class PointLight extends Light {
     #private;
-    constructor(color: ColorHandler, brightness: number, position: Vector);
+    constructor(color: ColorHandler, brightness: number, position: Vector, radius?: number);
     copy(): this;
     calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
+    get radius(): number;
+    set radius(radius: number);
     get position(): Vector;
     set position(position: Vector);
 }
@@ -300,6 +304,16 @@ declare class RenderParameters {
     set normalVectorLength(v: number);
 }
 
+type LightElement = {
+    z: number;
+    type: "light";
+    ref: number;
+    light: Light;
+    finalLightPosition: {
+        canvasPosition: Vector;
+        radius: number;
+    };
+};
 declare abstract class Renderer {
     protected camera: Camera;
     protected scene: Scene;
@@ -312,14 +326,17 @@ declare abstract class Renderer {
     protected abstract graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
     protected abstract postWork(): void;
     protected abstract pointToCanvas(point: Vector): Vector;
-    protected abstract graphLight(light: Light): void;
+    protected abstract graphLight(light: LightElement): void;
     setSceneLightPos(pos: Vector, i: number): void;
     private getSceneInZOrder;
     graph(): void;
     private getColorOfTriangle;
     private getColorOfTrianglesFromLight;
     protected getColorsOfTrianglesFromAllLights(mesh: Mesh, colors: ColorHandler[], meshCentroids: Vector[], meshNormalVectors: Vector[], positionOfMesh: Vector): ColorHandler[];
-    protected finalLightPosition<L extends Light & Positionable>(light: L): Vector;
+    protected finalLightPosition<L extends Light & Positionable>(light: L): {
+        canvasPosition: Vector;
+        radius: number;
+    };
     private getCameraSpaceMesh;
     private graphEntity;
     private isAnyMeshPointBehindCamera;
@@ -350,7 +367,7 @@ declare class p5Renderer extends Renderer {
     private calculateCanvasPos;
     private linesToCanvas;
     protected graphVertices(mesh: Mesh): void;
-    protected graphLight<L extends Light & Positionable>(light: L): void;
+    protected graphLight(light: LightElement): void;
     private graphVertex_noStroke;
     private graphVertex;
     private graphTriangle;

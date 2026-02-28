@@ -12,6 +12,19 @@ import { Entity } from "../engine/scene/Entity.js";
 import { Triangle } from "../engine/geometry/Triangle.js";
 import { ColorHandler } from "colorhandler";
 import type { Positionable } from "../engine/lighting/Light.js";
+type EntityElement = {
+    z: number,
+    type: "entity",
+    ref: number
+}
+export type LightElement = {
+    z: number,
+    type: "light",
+    ref: number,
+    light: Light,
+    finalLightPosition: {canvasPosition: Vector, radius: number}
+}
+type Element = EntityElement | LightElement;
 export abstract class Renderer {
     protected camera : Camera;
     protected scene : Scene;
@@ -28,26 +41,29 @@ export abstract class Renderer {
     protected abstract graphTriangles (mesh : Mesh, triangleColors : ColorHandler[]) : void;
     protected abstract postWork() : void;
     protected abstract pointToCanvas(point : Vector) : Vector;
-    protected abstract graphLight(light : Light) : void;
+    protected abstract graphLight(light : LightElement) : void;
 
 
     setSceneLightPos(pos : Vector, i : number) : void {
         this.scene.setLightPos(pos, i);
     }
     
-    private getSceneInZOrder(){
+    private getSceneInZOrder() : Element[]{
 
-        let elements : {z : number, type : "entity" | "light", ref : number}[]= [];
+        let elements : Element[]= [];
+
         for (let i = 0; i < this.scene.numEntities; i++) {
             elements.push({type: "entity" , ref: i, z: this.getCameraSpaceMesh(this.scene.getEntity(i)).calculateAverageZ()});
         }
+        
         for (let i = 0 ; i < this.scene.numLights; i++) {
             const light = this.scene.getLight(i);
             if (!Light.hasPosition(light)) {
                 continue;
                 
             };
-            elements.push ({type: "light", ref : i, z : this.finalLightPosition(light).z})
+            const finalLightPosition= this.finalLightPosition(light)
+            elements.push ({type: "light", ref : i, light: light,finalLightPosition: finalLightPosition, z : finalLightPosition.canvasPosition.z})
         }
         elements.sort((a,b) => b.z-a.z);
         return elements.filter(e => e.z >=0);
@@ -62,7 +78,7 @@ export abstract class Renderer {
                 this.graphEntity(this.scene.getEntity(sceneItem.ref));
             }
             if (sceneItem.type == "light") {
-                this.graphLight(this.scene.getLight(sceneItem.ref));
+                this.graphLight(sceneItem);
             }
         }
         this.postWork();
@@ -104,12 +120,16 @@ export abstract class Renderer {
         return output;
 
     }
-    protected finalLightPosition<L extends Light & Positionable>(light : L) : Vector {
+    protected finalLightPosition<L extends Light & Positionable>(light : L) : {canvasPosition: Vector, radius: number} {
+        
         let pos = this.camera.putCameraAtCenterOfPointCoordinateSystem(light.position);
+        const ratio = this.camera.focalDistance / pos.z;
+        let canvasRadius = light.radius * ratio;
+
         pos = this.projectIndividualPoint(pos);
         pos = this.pointToCanvas(pos);
         
-        return pos;
+        return {canvasPosition: pos, radius: canvasRadius};
     }
     private getCameraSpaceMesh(entity : Entity) : Mesh {
         entity = entity.copy();
