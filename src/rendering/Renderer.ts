@@ -138,7 +138,7 @@ export abstract class Renderer {
         return this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
 
     }
-    private graphEntity (entity : Entity) : void{
+    protected graphEntity (entity : Entity) : void{
         
         let mesh = entity.worldSpaceMesh
         let triangleColors = entity.triangleColors;
