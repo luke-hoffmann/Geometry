@@ -265,7 +265,7 @@ declare class Line {
 
 declare class RenderParameters {
     #private;
-    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength }?: Partial<{
+    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength, showLights }?: Partial<{
         doBackFaceCulling: boolean;
         doOutline: boolean;
         doFill: boolean;
@@ -278,6 +278,7 @@ declare class RenderParameters {
         isWindingOrderBackFaceCulling: boolean;
         doNormalVectors: boolean;
         normalVectorLength: number;
+        showLights: boolean;
     }>);
     get doBackFaceCulling(): boolean;
     get doOutline(): boolean;
@@ -291,6 +292,7 @@ declare class RenderParameters {
     get isWindingOrderBackFaceCulling(): boolean;
     get doNormalVectors(): boolean;
     get normalVectorLength(): number;
+    get showLight(): boolean;
     set doBackFaceCulling(v: boolean);
     set doOutline(v: boolean);
     set doFill(v: boolean);
@@ -303,6 +305,7 @@ declare class RenderParameters {
     set isWindingOrderBackFaceCulling(v: boolean);
     set doNormalVectors(v: boolean);
     set normalVectorLength(v: number);
+    set showLights(v: boolean);
 }
 
 type EntityElement = {
