@@ -5,6 +5,7 @@ export class Vector {
     #x : number;
     #y : number;
     #z : number;
+    public static readonly ZERO : Vector = new Vector(0,0,0);
     constructor (x : number,y : number,z : number){
         this.#x = x;
         this.#y = y;
