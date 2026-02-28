@@ -231,7 +231,7 @@ declare class KeyboardInput {
 
 declare class CameraMover {
     #private;
-    constructor(position: Vector, velocity: Vector, acceleration: Vector);
+    constructor(position: Vector, velocity: Vector, acceleration: Vector, scale?: number);
     set vTheta(theta: number);
     set hTheta(theta: number);
     get vTheta(): number;

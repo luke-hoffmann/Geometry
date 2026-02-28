@@ -12,7 +12,8 @@ export class CameraMover {
     #viewVector : Vector;
     #upVector : Vector;
     #rightVector : Vector;
-    constructor (position: Vector, velocity : Vector, acceleration: Vector) {
+    #scale : number;
+    constructor (position: Vector, velocity : Vector, acceleration: Vector, scale:number= 1) {
         this.#hTheta = 0;
         this.#vTheta = 0;
         this.#vChangeInverse = false;
@@ -23,7 +24,7 @@ export class CameraMover {
         this.#viewVector = new Vector(1,0,0);
         this.#upVector = new Vector(0,1,0);
         this.#rightVector = Vector.unitVector(Vector.crossProduct(this.#viewVector,this.#upVector));
-
+        this.#scale = scale;
         this.viewVector = this.#viewVector;
     }
     set vTheta(theta : number) {
@@ -91,6 +92,7 @@ export class CameraMover {
     }
     keyboardInputs(keyboardInput : KeyboardInput) {
         let acceleration = keyboardInput.movementInCertainCoordinateSystem(this.#viewVector,this.#upVector,this.#rightVector);
+        acceleration = Vector.scalarMult(acceleration,this.#scale);
         this.#acceleration = Vector.add(this.#acceleration,acceleration);
     }  
     mouseInputRotate(xChange : number, yChange: number) {
