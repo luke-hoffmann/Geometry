@@ -304,6 +304,11 @@ declare class RenderParameters {
     set normalVectorLength(v: number);
 }
 
+type EntityElement = {
+    z: number;
+    type: "entity";
+    ref: number;
+};
 type LightElement = {
     z: number;
     type: "light";
@@ -314,6 +319,7 @@ type LightElement = {
         radius: number;
     };
 };
+type Element = EntityElement | LightElement;
 declare abstract class Renderer {
     protected camera: Camera;
     protected scene: Scene;
@@ -328,7 +334,7 @@ declare abstract class Renderer {
     protected abstract pointToCanvas(point: Vector): Vector;
     protected abstract graphLight(light: LightElement): void;
     setSceneLightPos(pos: Vector, i: number): void;
-    private getSceneInZOrder;
+    protected getSceneInZOrder(): Element[];
     graph(): void;
     private getColorOfTriangle;
     private getColorOfTrianglesFromLight;
