@@ -117,6 +117,7 @@ export class Mesh {
         return this.#triangles[index];
     }
     set vertices(vertices : Field) {
+        
         if (!(vertices instanceof Field)) throw Error("vertices must be an instance of Field");
         this.#vertices = vertices;
     }

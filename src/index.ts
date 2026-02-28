@@ -16,8 +16,8 @@ export * from "./rendering/RenderParameters";
 
 export * from "./input/KeyboardInput";
 
-export type {Field} from "./core/field/Field";
+export *from "./core/field/Field";
 export type {Line} from "./engine/geometry/Line";
-export type {Mesh} from "./engine/geometry/Mesh";
+export * from "./engine/geometry/Mesh";
 export type {NormalVector} from "./core/math/NormalVector";
 export type {PhysicsBody} from "./engine/physics/PhysicsBody";
