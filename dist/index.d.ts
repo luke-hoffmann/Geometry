@@ -337,8 +337,8 @@ declare abstract class Renderer {
         canvasPosition: Vector;
         radius: number;
     };
-    private getCameraSpaceMesh;
-    private graphEntity;
+    protected getCameraSpaceMesh(entity: Entity): Mesh;
+    protected graphEntity(entity: Entity): void;
     private isAnyMeshPointBehindCamera;
     private generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles;
     private generateNewMeshWithAppropriateColorsWithNewVisibleTriangleFromOneTriangleWithTwoHiddenVertices;
