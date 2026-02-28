@@ -131,7 +131,7 @@ export abstract class Renderer {
         
         return {canvasPosition: pos, radius: canvasRadius};
     }
-    private getCameraSpaceMesh(entity : Entity) : Mesh {
+    protected getCameraSpaceMesh(entity : Entity) : Mesh {
         entity = entity.copy();
         let mesh = entity.worldSpaceMesh;
         
