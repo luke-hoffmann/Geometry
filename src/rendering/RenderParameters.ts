@@ -69,7 +69,7 @@ export class RenderParameters {
   get isWindingOrderBackFaceCulling() { return this.#isWindingOrderBackFaceCulling; }
   get doNormalVectors() { return this.#doNormalVectors;}
   get normalVectorLength() {return this.#normalVectorLength};
-  get showLight() {return this.#showLights};
+  get showLights() {return this.#showLights};
   // setters (safe)
   set doBackFaceCulling(v: boolean) {
     if (typeof v !== "boolean") throw new TypeError("doBackFaceCulling must be boolean");

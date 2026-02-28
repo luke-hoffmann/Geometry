@@ -292,7 +292,7 @@ declare class RenderParameters {
     get isWindingOrderBackFaceCulling(): boolean;
     get doNormalVectors(): boolean;
     get normalVectorLength(): number;
-    get showLight(): boolean;
+    get showLights(): boolean;
     set doBackFaceCulling(v: boolean);
     set doOutline(v: boolean);
     set doFill(v: boolean);
