@@ -34,6 +34,8 @@ export abstract class Renderer {
         this.camera = camera;
         this.renParam = renderParameters;
     }  
+    protected functionalPreWork() : void{};
+    protected functionalPostWork(): void{};
     protected abstract renderingPreWork() : void;
     protected abstract meshToCanvas(mesh : Mesh) : Mesh;
     protected abstract graphNormalVectors(mesh : Mesh, normalVectors : NormalVector[],length : number) : void;
@@ -71,6 +73,7 @@ export abstract class Renderer {
     
     
     graph () : void {
+        this.functionalPreWork();
         this.renderingPreWork();
         let sceneItems = this.getSceneInZOrder();
         for (const sceneItem of sceneItems) {
@@ -82,6 +85,7 @@ export abstract class Renderer {
             }
         }
         this.renderingPostWork();
+        this.functionalPostWork();
     }
 
 
