@@ -329,14 +329,14 @@ declare abstract class Renderer {
     protected scene: Scene;
     protected renParam: RenderParameters;
     constructor(scene: Scene, camera: Camera, renderParameters: RenderParameters);
-    protected functionalPreWork(): void;
-    protected functionalPostWork(): void;
-    protected abstract renderingPreWork(): void;
+    protected mainGraphFunctionalPreWork(): void;
+    protected mainGraphFunctionalPostWork(): void;
+    protected abstract mainGraphRenderingPreWork(): void;
+    protected abstract mainGraphRenderingPostWork(): void;
     protected abstract meshToCanvas(mesh: Mesh): Mesh;
     protected abstract graphNormalVectors(mesh: Mesh, normalVectors: NormalVector[], length: number): void;
     protected abstract graphVertices(mesh: Mesh): void;
     protected abstract graphTriangles(mesh: Mesh, triangleColors: ColorHandler[]): void;
-    protected abstract renderingPostWork(): void;
     protected abstract pointToCanvas(point: Vector): Vector;
     protected abstract graphLight(light: LightElement): void;
     setSceneLightPos(pos: Vector, i: number): void;
@@ -372,8 +372,8 @@ declare abstract class Renderer {
 declare class p5Renderer extends Renderer {
     #private;
     constructor(scene: Scene, screenSize: Vector, camera: Camera, renderParameters: RenderParameters, p: p5);
-    protected renderingPreWork(): void;
-    protected renderingPostWork(): void;
+    protected mainGraphRenderingPreWork(): void;
+    protected mainGraphRenderingPostWork(): void;
     protected meshToCanvas(mesh: Mesh): Mesh;
     protected pointToCanvas(point: Vector): Vector;
     private calculateCanvasPos;

@@ -21,11 +21,11 @@ export class p5Renderer extends Renderer  {
         this.#p5 = p;
         this.#graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
     }
-    protected renderingPreWork() {
+    protected mainGraphRenderingPreWork() {
         this.#graphicsBuffer.clear();
         this.#graphicsBuffer.background(0);
     }
-    protected renderingPostWork(){
+    protected mainGraphRenderingPostWork(){
         this.#p5.image(this.#graphicsBuffer,0,0);
     }
     

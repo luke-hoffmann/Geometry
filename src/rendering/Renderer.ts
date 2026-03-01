@@ -34,14 +34,15 @@ export abstract class Renderer {
         this.camera = camera;
         this.renParam = renderParameters;
     }  
-    protected functionalPreWork() : void{};
-    protected functionalPostWork(): void{};
-    protected abstract renderingPreWork() : void;
+    protected mainGraphFunctionalPreWork() : void{};
+    protected mainGraphFunctionalPostWork(): void{};
+    protected abstract mainGraphRenderingPreWork() : void;
+    protected abstract mainGraphRenderingPostWork() : void;
     protected abstract meshToCanvas(mesh : Mesh) : Mesh;
     protected abstract graphNormalVectors(mesh : Mesh, normalVectors : NormalVector[],length : number) : void;
     protected abstract graphVertices(mesh : Mesh) : void;
     protected abstract graphTriangles (mesh : Mesh, triangleColors : ColorHandler[]) : void;
-    protected abstract renderingPostWork() : void;
+    
     protected abstract pointToCanvas(point : Vector) : Vector;
     protected abstract graphLight(light : LightElement) : void;
 
@@ -73,8 +74,8 @@ export abstract class Renderer {
     
     
     graph () : void {
-        this.functionalPreWork();
-        this.renderingPreWork();
+        this.mainGraphFunctionalPreWork();
+        this.mainGraphRenderingPreWork();
         let sceneItems = this.getSceneInZOrder();
         for (const sceneItem of sceneItems) {
             if (sceneItem.type== "entity") {
@@ -84,8 +85,8 @@ export abstract class Renderer {
                 this.graphLight(sceneItem);
             }
         }
-        this.renderingPostWork();
-        this.functionalPostWork();
+        this.mainGraphRenderingPostWork();
+        this.mainGraphFunctionalPostWork();
     }
 
 
