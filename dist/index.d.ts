@@ -265,7 +265,7 @@ declare class Line {
 
 declare class RenderParameters {
     #private;
-    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength, showLights }?: Partial<{
+    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength, showLights, doEntityHooks }?: Partial<{
         doBackFaceCulling: boolean;
         doOutline: boolean;
         doFill: boolean;
@@ -279,6 +279,7 @@ declare class RenderParameters {
         doNormalVectors: boolean;
         normalVectorLength: number;
         showLights: boolean;
+        doEntityHooks: boolean;
     }>);
     get doBackFaceCulling(): boolean;
     get doOutline(): boolean;
@@ -293,6 +294,7 @@ declare class RenderParameters {
     get doNormalVectors(): boolean;
     get normalVectorLength(): number;
     get showLights(): boolean;
+    get doEntityHooks(): boolean;
     set doBackFaceCulling(v: boolean);
     set doOutline(v: boolean);
     set doFill(v: boolean);
@@ -306,6 +308,7 @@ declare class RenderParameters {
     set doNormalVectors(v: boolean);
     set normalVectorLength(v: number);
     set showLights(v: boolean);
+    set doEntityHooks(v: boolean);
 }
 
 type EntityElement = {
@@ -329,8 +332,8 @@ declare abstract class Renderer {
     protected scene: Scene;
     protected renParam: RenderParameters;
     constructor(scene: Scene, camera: Camera, renderParameters: RenderParameters);
-    protected meshGraphBeforeChangesHook(mesh: Mesh): void;
-    protected meshGraphCameraSpaceHook(mesh: Mesh): void;
+    protected entityGraphBeforeChangesHook(entity: Entity): void;
+    protected entityGraphCameraSpaceHook(entity: Entity): void;
     protected mainGraphFunctionalPreWork(): void;
     protected mainGraphFunctionalPostWork(): void;
     protected abstract mainGraphRenderingPreWork(): void;

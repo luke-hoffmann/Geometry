@@ -12,6 +12,7 @@ export class RenderParameters {
   #doNormalVectors : boolean;
   #normalVectorLength : number;
   #showLights : boolean;
+  #doEntityHooks : boolean;
   constructor({
     doBackFaceCulling = true,
     doOutline = true,
@@ -25,7 +26,8 @@ export class RenderParameters {
     isWindingOrderBackFaceCulling = true,
     doNormalVectors = false,
     normalVectorLength = 30,
-    showLights = true
+    showLights = true,
+    doEntityHooks = false
   }: Partial<{
     doBackFaceCulling: boolean;
     doOutline: boolean;
@@ -40,6 +42,7 @@ export class RenderParameters {
     doNormalVectors : boolean;
     normalVectorLength : number;
     showLights : boolean;
+    doEntityHooks : boolean;
   }> = {}) {
     this.#doBackFaceCulling = doBackFaceCulling;
     this.#doOutline = doOutline;
@@ -54,6 +57,7 @@ export class RenderParameters {
     this.#doNormalVectors = doNormalVectors;
     this.#normalVectorLength = normalVectorLength;
     this.#showLights = showLights;
+    this.#doEntityHooks = doEntityHooks;
   }
 
   // getters
@@ -70,6 +74,7 @@ export class RenderParameters {
   get doNormalVectors() { return this.#doNormalVectors;}
   get normalVectorLength() {return this.#normalVectorLength};
   get showLights() {return this.#showLights};
+  get doEntityHooks() {return this.#doEntityHooks;};
   // setters (safe)
   set doBackFaceCulling(v: boolean) {
     if (typeof v !== "boolean") throw new TypeError("doBackFaceCulling must be boolean");
@@ -144,5 +149,11 @@ export class RenderParameters {
       throw new TypeError("showLights must be boolean");
     }
     this.#showLights = v;
+  }
+  set doEntityHooks(v: boolean) {
+    if (typeof v !== "boolean") {
+      throw new TypeError("doEntityHooks must be boolean");
+    }
+    this.#doEntityHooks = v;
   }
 }
