@@ -373,7 +373,7 @@ declare abstract class Renderer {
     private perspectiveProjectNormalVectorIntoLine;
     protected projectNormalVectorsIntoLines(normalVectors: NormalVector[], length: number): Line[];
     protected applyProjection(mesh: Mesh): Mesh;
-    private projectIndividualPoint;
+    protected projectIndividualPoint(point: Vector): Vector;
 }
 
 declare class p5Renderer extends Renderer {

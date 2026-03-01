@@ -466,7 +466,7 @@ export abstract class Renderer {
         newMesh.vertices = projectedField;
         return newMesh;
     }
-    private projectIndividualPoint(point : Vector) : Vector {
+    protected projectIndividualPoint(point : Vector) : Vector {
         if (this.renParam.isPerspective) {
             point =this.perspectiveProjectIndividualVector(point);
         } else {
