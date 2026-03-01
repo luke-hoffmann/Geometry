@@ -7,7 +7,7 @@ entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhand
 entities.push(entity);
 
 let lights = [];
-lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),1000, new geometry.Vector(0,0,1000),100));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),1000000, new geometry.Vector(0,0,1000),100));
 //lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,1000,0)));
 //lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,0,255),1000, new geometry.Vector(1000,0,0)));
 let renderer;
@@ -31,7 +31,8 @@ const s = ( sketch ) => {
       pointRadius: 3,
       isWindingOrderBackFaceCulling: true,
       doNormalVectors: false,
-      normalVectorLength: 40
+      normalVectorLength: 40,
+      doOutline : false
     }),sketch);
 
   };
