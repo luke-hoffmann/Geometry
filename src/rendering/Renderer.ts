@@ -34,6 +34,10 @@ export abstract class Renderer {
         this.camera = camera;
         this.renParam = renderParameters;
     }  
+
+
+    protected meshGraphBeforeChangesHook(mesh : Mesh) : void{};
+    protected meshGraphCameraSpaceHook(mesh: Mesh) : void{};
     protected mainGraphFunctionalPreWork() : void{};
     protected mainGraphFunctionalPostWork(): void{};
     protected abstract mainGraphRenderingPreWork() : void;
@@ -146,6 +150,7 @@ export abstract class Renderer {
     protected graphEntity (entity : Entity) : void{
         
         let mesh = entity.worldSpaceMesh
+        this.meshGraphBeforeChangesHook(mesh);
         let triangleColors = entity.triangleColors;
         let meshCentroids = mesh.triangleCentroids;
         let meshNormalVectors = mesh.triangleNormalVectors;
@@ -157,7 +162,7 @@ export abstract class Renderer {
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
         mesh = this.getCameraSpaceMesh(entity);
-        
+        this.meshGraphCameraSpaceHook(mesh);
         if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
         let normalVectors;
         normalVectors = mesh.calculateTrianglesNormalVectors();

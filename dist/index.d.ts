@@ -329,6 +329,8 @@ declare abstract class Renderer {
     protected scene: Scene;
     protected renParam: RenderParameters;
     constructor(scene: Scene, camera: Camera, renderParameters: RenderParameters);
+    protected meshGraphBeforeChangesHook(mesh: Mesh): void;
+    protected meshGraphCameraSpaceHook(mesh: Mesh): void;
     protected mainGraphFunctionalPreWork(): void;
     protected mainGraphFunctionalPostWork(): void;
     protected abstract mainGraphRenderingPreWork(): void;
