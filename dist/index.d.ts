@@ -335,6 +335,7 @@ declare abstract class Renderer {
     protected entityGraphBeforeChangesHook(entity: Entity): void;
     protected entityGraphCameraSpaceHook(entity: Entity): void;
     protected entityGraphProjectedSpaceHook(entity: Entity): void;
+    protected entityGraphBackFaceCulledSpaceHook(entity: Entity): void;
     protected mainGraphFunctionalPreWork(): void;
     protected mainGraphFunctionalPostWork(): void;
     protected abstract mainGraphRenderingPreWork(): void;
