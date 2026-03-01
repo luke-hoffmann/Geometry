@@ -373,6 +373,7 @@ declare abstract class Renderer {
 
 declare class p5Renderer extends Renderer {
     #private;
+    protected p5: p5;
     constructor(scene: Scene, screenSize: Vector, camera: Camera, renderParameters: RenderParameters, p: p5);
     protected mainGraphRenderingPreWork(): void;
     protected mainGraphRenderingPostWork(): void;
