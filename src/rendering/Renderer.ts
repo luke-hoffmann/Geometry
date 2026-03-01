@@ -38,10 +38,13 @@ export abstract class Renderer {
 
     protected entityGraphBeforeChangesHook(entity : Entity) : void{};
     protected entityGraphCameraSpaceHook(entity: Entity) : void{};
+    protected entityGraphProjectedSpaceHook(entity: Entity) : void{};
     protected mainGraphFunctionalPreWork() : void{};
     protected mainGraphFunctionalPostWork(): void{};
     protected abstract mainGraphRenderingPreWork() : void;
     protected abstract mainGraphRenderingPostWork() : void;
+
+
     protected abstract meshToCanvas(mesh : Mesh) : Mesh;
     protected abstract graphNormalVectors(mesh : Mesh, normalVectors : NormalVector[],length : number) : void;
     protected abstract graphVertices(mesh : Mesh) : void;
@@ -174,7 +177,9 @@ export abstract class Renderer {
         if (this.isAnyMeshPointBehindCamera(mesh)) {
             return;
         }
-        
+        if (this.renParam.doEntityHooks) {
+            this.entityGraphProjectedSpaceHook(new Entity(mesh,entity.physicsBody,entity.triangleColors,entity.isIndifferentToLight));
+        }
         
         //mesh = this.generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles(mesh,colorMap);
         if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
