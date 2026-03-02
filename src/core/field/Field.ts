@@ -14,7 +14,9 @@ export class Field {
     getVertex(index : number) : Vector {
         return this.array[index];
     }
-    
+    setVertex (index : number, v : Vector) : void {
+        this.array[index] = v.copy();
+    }
     generateRandomPointsInSphere(radius : number,n : number){
         this.array = [];
         for (let i =0; i < n; i++) {

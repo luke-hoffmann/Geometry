@@ -178,6 +178,9 @@ export class Mesh {
         }   
         return new Mesh(newPoints,newTriangles);
     }
-
+    setVertex(index : number, v : Vector) : void {
+        if (!Number.isSafeInteger(index)) throw Error ("index is not a safe integer");
+        this.#vertices.setVertex(index,v);
+    }
     
 }

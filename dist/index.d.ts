@@ -108,6 +108,7 @@ declare class Field {
     private array;
     constructor(array: Vector[]);
     getVertex(index: number): Vector;
+    setVertex(index: number, v: Vector): void;
     generateRandomPointsInSphere(radius: number, n: number): void;
     getTrianglesUpspace(triangle: Triangle, indices: number[]): number[];
     getTrianglesWithPointInUpspace(triangles: Triangle[], point: number): Triangle[];
@@ -150,6 +151,7 @@ declare class Mesh {
     set triangles(triangles: Triangle[]);
     private static twoPointsMapString;
     static subdivideMeshTriangles(mesh: Mesh): Mesh;
+    setVertex(index: number, v: Vector): void;
 }
 
 declare class MeshGenerator {
