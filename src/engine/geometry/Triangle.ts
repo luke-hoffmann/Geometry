@@ -71,8 +71,6 @@ export class Triangle {
     }
     
     
-    
-    
     flipNormal() : Triangle{
         let outputTriangle = new Triangle([this.#verticeReferences[2],this.#verticeReferences[1],this.#verticeReferences[0]]);
         return outputTriangle;
@@ -124,5 +122,7 @@ export class Triangle {
         return new NormalVector(centerOfTriangle,normalVector);
     }
 
-    
+    get verticeReferences() : number[]{
+        return [...this.#verticeReferences];
+    }
 }
