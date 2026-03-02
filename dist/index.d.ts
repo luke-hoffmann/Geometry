@@ -23,6 +23,11 @@ declare class Vector {
     static lerpVector(v1: Vector, v2: Vector, t: number): Vector;
     static crossProduct(v1: Vector, v2: Vector): Vector;
     static dotProduct(v1: Vector, v2: Vector): number;
+    /**
+     * Return (v1 - v2)
+     *
+     *
+     */
     static sub(v1: Vector, v2: Vector): Vector;
     static add(...vectors: Vector[]): Vector;
     static scalarMult(v: Vector, c: number): Vector;

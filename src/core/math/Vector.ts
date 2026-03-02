@@ -101,7 +101,11 @@ export class Vector {
         return ((v1.x *v2.x) + (v1.y *v2.y) + (v1.z *v2.z));
     }
 
-
+    /**
+     * Return (v1 - v2)
+     * 
+     * 
+     */
     static sub (v1 : Vector,v2 : Vector) : Vector{
         return new this(v1.x-v2.x,v1.y-v2.y,v1.z-v2.z);
     }
