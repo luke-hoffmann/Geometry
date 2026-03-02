@@ -13,20 +13,20 @@ import { ColorHandler } from "colorhandler";
 import { Light, Positionable } from "../engine/lighting/Light";
 import { LightElement } from "./Renderer.js";
 export class p5Renderer extends Renderer  {
-    #graphicsBuffer : p5.Graphics;
+    protected graphicsBuffer : p5.Graphics;
     protected p5 : p5;
     constructor(scene : Scene, screenSize : Vector ,camera: Camera,renderParameters : RenderParameters,p : p5) {
         super(scene,camera,renderParameters);
         p.createCanvas(screenSize.x,screenSize.y);
         this.p5 = p;
-        this.#graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
+        this.graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
     }
     protected mainGraphRenderingPreWork() {
-        this.#graphicsBuffer.clear();
-        this.#graphicsBuffer.background(0);
+        this.graphicsBuffer.clear();
+        this.graphicsBuffer.background(0);
     }
     protected mainGraphRenderingPostWork(){
-        this.p5.image(this.#graphicsBuffer,0,0);
+        this.p5.image(this.graphicsBuffer,0,0);
     }
     
     protected meshToCanvas(mesh : Mesh) : Mesh{
@@ -43,7 +43,7 @@ export class p5Renderer extends Renderer  {
         return (this.calculateCanvasPos(point));
     }
     private calculateCanvasPos(meshPos : Vector) {
-        return Vector.add(new Vector(this.#graphicsBuffer.width/2,this.#graphicsBuffer.height/2,0),meshPos);
+        return Vector.add(new Vector(this.graphicsBuffer.width/2,this.graphicsBuffer.height/2,0),meshPos);
     }
     
 
@@ -70,12 +70,12 @@ export class p5Renderer extends Renderer  {
         this.graphVertex_noStroke(light.finalLightPosition.canvasPosition, light.light.color, light.finalLightPosition.radius);
     }
     private graphVertex_noStroke(vertex : Vector, color : ColorHandler, size : number) : void {
-        this.#graphicsBuffer.noStroke();
-        this.#graphicsBuffer.fill(this.convertColorHandlerToP5(color));
+        this.graphicsBuffer.noStroke();
+        this.graphicsBuffer.fill(this.convertColorHandlerToP5(color));
         this.graphVertex(vertex,color,size);
     }
     private graphVertex(vertex : Vector,color : ColorHandler, size : number){
-        this.#graphicsBuffer.circle(vertex.x,vertex.y,size);
+        this.graphicsBuffer.circle(vertex.x,vertex.y,size);
     }
     
     
@@ -86,20 +86,20 @@ export class p5Renderer extends Renderer  {
         let p1 = mesh.getVertex(triangle.getVerticeReference(0));
         let p2 = mesh.getVertex(triangle.getVerticeReference(1));
         let p3 = mesh.getVertex(triangle.getVerticeReference(2));
-        this.#graphicsBuffer.strokeJoin(this.p5.ROUND);
-        
-        this.#graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
+        this.graphicsBuffer.strokeJoin(this.p5.ROUND);
+
+        this.graphicsBuffer.triangle(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y);
     }
     protected graphTriangles(mesh : Mesh, triangleColors : ColorHandler[]){
-        //this.#graphicsBuffer.stroke(this.p5.color(0));
+        //this.graphicsBuffer.stroke(this.p5.color(0));
         for (let i = 0 ;i < mesh.numTriangles; i++) {
             const triangle = mesh.getTriangle(i);
             if (this.renParam.doOutline) {
-                this.#graphicsBuffer.stroke(this.p5.color(0));
+                this.graphicsBuffer.stroke(this.p5.color(0));
             } else {
-                this.#graphicsBuffer.stroke(this.convertColorHandlerToP5(triangleColors[i]))
+                this.graphicsBuffer.stroke(this.convertColorHandlerToP5(triangleColors[i]))
             }
-            this.#graphicsBuffer.fill(this.convertColorHandlerToP5(triangleColors[i]));
+            this.graphicsBuffer.fill(this.convertColorHandlerToP5(triangleColors[i]));
             
             
             this.graphTriangle(mesh,triangle);
@@ -120,8 +120,8 @@ export class p5Renderer extends Renderer  {
         this.graphBetweenTwoPoints(line.p1,line.p2,color)
     }
     private graphBetweenTwoPoints(p1 : Vector,p2 : Vector,color : p5.Color) : void {
-        this.#graphicsBuffer.stroke(color);
-        this.#graphicsBuffer.line(p1.x,p1.y,p2.x,p2.y);
+        this.graphicsBuffer.stroke(color);
+        this.graphicsBuffer.line(p1.x,p1.y,p2.x,p2.y);
     }
     private convertColorHandlerToP5(color : ColorHandler) : p5.Color {
         return this.p5.color(color.red,color.green,color.blue);
