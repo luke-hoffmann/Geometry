@@ -6,7 +6,7 @@ import { Mesh } from "../Mesh.js";
 
 export class MeshGenerator {
     private static convexHullIterativeProcess(field : Field,triangles : Triangle[],graphIndices : number[]) : Triangle[] {
-        triangles = [...triangles] // could be a source of large memory usage
+        //triangles = [...triangles] // could be a source of large memory usage
         let upSpaceIndices = field.getTrianglesUpspaces_Fast(triangles,graphIndices);
         let farthestPoint = upSpaceIndices[0];
         if (upSpaceIndices.length == 1 ) {
@@ -44,8 +44,6 @@ export class MeshGenerator {
     }
 
     static generateConvexMesh(field : Field,iterationNumber : number) {
-        let unusedField = field;
-        let searchToRemoveDuplicateTriangles = true;
         let triangles = undefined;
         triangles = [field.calculateLargestTriangleFromField()];
         triangles.push(triangles[0].flipNormal());
@@ -66,7 +64,17 @@ export class MeshGenerator {
     static generateRandomConvexMesh(radius : number, numberOfPoints : number) {
         let field = new Field([]);
         field.generateRandomPointsInSphere(radius,numberOfPoints);
-        return this.generateConvexMesh(field,310);
+        return Mesh.subdivideMeshTriangles(this.generateConvexMesh(field,310));
 
     }
+    static generateRandomSubdividedConvexMesh(radius : number, numberOfPoints : number, numberOfSubdivisions : number = 0) {
+        if (numberOfSubdivisions == undefined) numberOfSubdivisions = 0;
+        let mesh = this.generateRandomConvexMesh(radius,numberOfPoints);
+        for (let i =0 ; i < numberOfPoints;i++) {
+            mesh = Mesh.subdivideMeshTriangles(mesh);
+        }
+        return mesh;
+        
+    }
+    
 }
