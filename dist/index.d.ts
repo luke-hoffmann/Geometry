@@ -101,6 +101,7 @@ declare class Triangle {
     copy(): Triangle;
     getDistinctIdentifier(): string;
     calculateTriangleNormalVector(field: Field): NormalVector;
+    get verticeReferences(): number[];
 }
 
 declare class Field {
@@ -123,6 +124,7 @@ declare class Field {
     private lowestVectorInField;
     moveEntireField(moveQuantity: Vector): Field;
     copy(): Field;
+    addVertexInPlace(v: Vector): void;
     addVertex(v: Vector): Field;
     get numPoints(): number;
 }
@@ -146,6 +148,8 @@ declare class Mesh {
     getTriangle(index: number): Triangle;
     set vertices(vertices: Field);
     set triangles(triangles: Triangle[]);
+    private static twoPointsMapString;
+    static subdivideMeshTriangles(mesh: Mesh): Mesh;
 }
 
 declare class MeshGenerator {
@@ -153,6 +157,7 @@ declare class MeshGenerator {
     private static addTrianglesToTrianglesArray;
     static generateConvexMesh(field: Field, iterationNumber: number): Mesh;
     static generateRandomConvexMesh(radius: number, numberOfPoints: number): Mesh;
+    static generateRandomSubdividedConvexMesh(radius: number, numberOfPoints: number, numberOfSubdivisions?: number): Mesh;
 }
 
 declare class PhysicsBody {
@@ -179,6 +184,12 @@ declare class Entity {
     get physicsBody(): PhysicsBody;
     get mesh(): Mesh;
     get isIndifferentToLight(): boolean;
+    private generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles;
+    private generateNewMeshWithAppropriateColorsWithNewVisibleTriangleFromOneTriangleWithTwoHiddenVertices;
+    private generateNewMeshWithAppropriateColorsWithTwoNewVisibleTrianglesFromOneTriangleWithHiddenVertex;
+    private findPointBetweenTwoPointsAtZeroZ;
+    private whichPointsInMap;
+    private getHiddenPoints;
 }
 
 declare class Camera {
@@ -359,12 +370,6 @@ declare abstract class Renderer {
     protected getCameraSpaceMesh(entity: Entity): Mesh;
     protected graphEntity(entity: Entity): void;
     private isAnyMeshPointBehindCamera;
-    private generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles;
-    private generateNewMeshWithAppropriateColorsWithNewVisibleTriangleFromOneTriangleWithTwoHiddenVertices;
-    private generateNewMeshWithAppropriateColorsWithTwoNewVisibleTrianglesFromOneTriangleWithHiddenVertex;
-    private findPointBetweenTwoPointsAtZeroZ;
-    private whichPointsInMap;
-    private getHiddenPoints;
     protected backFaceCulling_Normal(mesh: Mesh): Mesh;
     protected backFaceCulling_WindingOrder(mesh: Mesh): Mesh;
     private orthographicProjectIndividualVector;
