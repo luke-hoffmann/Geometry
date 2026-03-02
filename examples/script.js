@@ -14,7 +14,7 @@ let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-1200))
 let camera = new geometry.Camera(cameraPB,new geometry.Vector(0,0,1),90,400,0);
 
-let cameraMover = new geometry.CameraMover(new geometry.Vector(0,0,0),new geometry.Vector(0,0,0),new geometry.Vector(0,0,0));
+let cameraMover = new geometry.CameraMover(new geometry.Vector(1000,0,-2000),new geometry.Vector(0,0,1),new geometry.Vector(0,0,0),new geometry.Vector(0,0,0));
 let cameraSpotTracker = new geometry.CameraSpotTracker(new geometry.Vector(1000,0,0), 1000,0,0);
 let isPointerLocked = false;
 

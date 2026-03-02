@@ -24,7 +24,7 @@ export class CameraMover {
         this.#mouseSensitivity = 0.01;
         this.#viewVector = new Vector(1,0,0);
         this.#upVector = new Vector(0,1,0);
-        this.#rightVector = Vector.unitVector(Vector.crossProduct(this.#viewVector,this.#upVector));
+        this.#rightVector = new Vector(0,0,0);
         this.#scale = scale;
         this.viewVector = initalViewVector;
     }
