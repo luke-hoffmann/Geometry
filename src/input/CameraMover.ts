@@ -13,7 +13,8 @@ export class CameraMover {
     #upVector : Vector;
     #rightVector : Vector;
     #scale : number;
-    constructor (position: Vector, velocity : Vector, acceleration: Vector, scale:number= 1) {
+    constructor (position: Vector, initalViewVector : Vector, velocity : Vector, acceleration: Vector, scale:number= 1) {
+        
         this.#hTheta = 0;
         this.#vTheta = 0;
         this.#vChangeInverse = false;
@@ -25,7 +26,7 @@ export class CameraMover {
         this.#upVector = new Vector(0,1,0);
         this.#rightVector = Vector.unitVector(Vector.crossProduct(this.#viewVector,this.#upVector));
         this.#scale = scale;
-        this.viewVector = this.#viewVector;
+        this.viewVector = initalViewVector;
     }
     set vTheta(theta : number) {
         if (!Number.isFinite(theta)) throw Error("vTheta is not finite")

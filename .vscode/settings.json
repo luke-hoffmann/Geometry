@@ -3,5 +3,6 @@
     "**/dist/**",
     "**/*.map",
     "**/node_modules/**"
-  ]
+  ],
+  "liveServer.settings.port": 5502
 }
