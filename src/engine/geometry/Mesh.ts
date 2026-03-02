@@ -127,4 +127,57 @@ export class Mesh {
         this.#triangles = triangles;
     }
 
+    private static twoPointsMapString(num1 : number, num2 : number) {
+        let n1 = num1;
+        let n2 = num2;
+        if (num1 > num2) {
+            n1 = num2;
+            n2 = num1;
+        }
+        return n1 + ":" + n2;
+    }
+    static subdivideMeshTriangles(mesh : Mesh) : Mesh {
+        let lineToMidpointMap = new Map<string,number>;
+        let newTriangles = [];
+        let newPoints = mesh.vertices;
+        for (let i=0; i < mesh.numTriangles; i++) {
+            const triangle = mesh.getTriangle(i);
+            let references = triangle.verticeReferences;
+            let midPointReferences : number[]= Array<number>(3); 
+            for (let i =0 ; i< references.length;i++) {
+                let next_index = i+1;
+                if (next_index ==3) {
+                    next_index = 0;
+                }
+                
+                let keyString = Mesh.twoPointsMapString(references[i],references[next_index]);
+                let midPointRef : number | undefined = lineToMidpointMap.get(keyString);
+                if (midPointRef!= undefined) {
+                    midPointReferences.push(midPointRef); 
+                    continue;
+                }
+                let p1 = mesh.getVertex(references[i]);
+                let p2 = mesh.getVertex(references[next_index]);
+                let midPoint = Vector.lerpVector(p1,p2,0.5);
+                newPoints.addVertexInPlace(midPoint);
+                midPointReferences[i]= newPoints.numPoints-1;
+
+            }
+            const a = references[0];
+            const b = references[1];
+            const c = references[2];
+            const x = midPointReferences[0];
+            const y = midPointReferences[1];
+            const z = midPointReferences[2];
+            // some pattern exists below, could be optimized off of this.
+            newTriangles.push(new Triangle([a,x,z]));
+            newTriangles.push(new Triangle([x,b,y]));
+            newTriangles.push(new Triangle([z,y,c]));
+            newTriangles.push(new Triangle([y,z,x]));
+            // some pattern exists above, could be optimized off of this.
+        }   
+        return new Mesh(newPoints,newTriangles);
+    }
+
+    
 }
