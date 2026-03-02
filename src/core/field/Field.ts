@@ -237,6 +237,9 @@ export class Field {
 
         return new Field(copiedPoints);
     }
+    addVertexInPlace(v : Vector) : void {
+        this.array.push(v);
+    }
     addVertex(v: Vector) : Field {
         let copiedPoints = [];
         for (const vertex of this.array) {
