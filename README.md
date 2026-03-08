@@ -5,9 +5,9 @@ The purpose of this library is to provide a system to work with different mathem
 
 Originally this library was created in order to implement a back face culling algorithm. The mathematical constructs were needed in order to complete the algorithm. 
 
-Due to this single minded goal, the library was not created for versatility, thus, it lacked many functions and features that more versatile libraries may.
+Due to this single minded goal, the library was not created for versatility, thus, it currently lacks many functions and features that more versatile libraries may have.
 
-However, since the back face culling algorithm has been completed, the library will now start to be devloped into more versatile systems.
+However, since the back face culling algorithm has been completed, the library will be devloped into more broad systems.
 
 
 
