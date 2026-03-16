@@ -10,16 +10,15 @@ import type p5 from "p5";
 import { Scene } from "../engine/scene/Scene";
 import { NormalVector } from "../core/math/NormalVector";
 import { ColorHandler } from "colorhandler";
-import { Light, Positionable } from "../engine/lighting/Light";
 import { LightElement } from "./Renderer.js";
 export class p5Renderer extends Renderer  {
     protected graphicsBuffer : p5.Graphics;
     protected p5 : p5;
-    constructor(scene : Scene, screenSize : Vector ,camera: Camera,renderParameters : RenderParameters,p : p5) {
-        super(scene,camera,renderParameters);
-        p.createCanvas(screenSize.x,screenSize.y);
+    constructor(scene: Scene,screenSize: Vector,camera: Camera,renderParameters: RenderParameters,p: p5) {
+        super(scene, camera, renderParameters);
+
         this.p5 = p;
-        this.graphicsBuffer = p.createGraphics(screenSize.x,screenSize.y);
+        this.graphicsBuffer = p.createGraphics(screenSize.x, screenSize.y);
     }
     protected mainGraphRenderingPreWork() {
         this.graphicsBuffer.clear();

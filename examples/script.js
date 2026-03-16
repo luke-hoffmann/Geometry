@@ -4,11 +4,13 @@ let entity = geometry.Entity.randomConvexEntityWithColors(700,100, pos,new color
 entities.push(entity);
 pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
 entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255), false);
+console.log(entity.mesh.triangles)
 entities.push(entity);
 
 let lights = [];
 lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),1000000, new geometry.Vector(0,0,1000),100));
-//lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,1000,0)));
+lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,-1,0)));
+//lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,1,0)));
 //lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,0,255),1000, new geometry.Vector(1000,0,0)));
 let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-1200))
@@ -23,6 +25,7 @@ let i =0;
 let scene = new geometry.Scene(entities,lights);
 const s = ( sketch ) => {
   sketch.setup = () => {
+    const canvas = sketch.createCanvas(screenSize.x,screenSize.y)
     renderer = new geometry.p5Renderer(scene,screenSize,camera, new geometry.RenderParameters({
       doVertices: false,
       doTriangles: true,
