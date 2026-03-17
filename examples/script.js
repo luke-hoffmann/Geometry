@@ -23,9 +23,8 @@ let isPointerLocked = false;
 let screenSize = new geometry.Vector(1400,800);
 let i =0;
 let scene = new geometry.Scene(entities,lights);
-const s = ( sketch ) => {
-  sketch.setup = () => {
-    const canvas = sketch.createCanvas(screenSize.x,screenSize.y)
+function setup () {
+    const canvas = createCanvas(screenSize.x,screenSize.y)
     renderer = new geometry.p5Renderer(scene,screenSize,camera, new geometry.RenderParameters({
       doVertices: false,
       doTriangles: true,
@@ -36,59 +35,47 @@ const s = ( sketch ) => {
       doNormalVectors: false,
       normalVectorLength: 40,
       doOutline : false
-    }),sketch);
+    }),window);
 
   };
 
 
-  sketch.draw = () => {
-    i+=0.005;
-    renderer.graph();
-
-
-    let input = new geometry.KeyboardInput();
-    input.updateLeftRightUpDown(
-      sketch.keyIsDown(sketch.LEFT_ARROW)  || sketch.keyIsDown(65), // A
-      sketch.keyIsDown(sketch.RIGHT_ARROW) || sketch.keyIsDown(68), // D
-      sketch.keyIsDown(sketch.UP_ARROW)    || sketch.keyIsDown(87), // W
-      sketch.keyIsDown(sketch.DOWN_ARROW)  || sketch.keyIsDown(83)  // S
-  );
-  input.updateControlSpace(sketch.keyIsDown(32),sketch.keyIsDown(17));
-    cameraMover.keyboardInputs(input);
-
-
-    if (isPointerLocked) {
-      cameraMover.mouseInputRotate(sketch.movedX,sketch.movedY);
-    } else if (sketch.mouseIsPressed) {
-      cameraMover.mouseInputRotate(sketch.mouseX-sketch.pmouseX,sketch.mouseY-sketch.pmouseY);
-    }
-
-
-    renderer.camera = cameraMover.update(renderer.camera);
-
-
-    const light_pos = new geometry.Vector(1000, Math.sin(i)*2000,0);
-    renderer.setSceneLightPos(light_pos,0);
-
-  };
-  sketch.mouseWheel = (e)=> {
-    let dir = 1;
-    if (e.delta < 0) {
-      dir = -1
-    } 
-    cameraSpotTracker.changeRadius(30 * dir);
+function draw () {
+  i+=0.005;
+  renderer.graph();
+  let input = new geometry.KeyboardInput();
+  input.updateLeftRightUpDown(
+    keyIsDown(LEFT_ARROW)  || keyIsDown(65), // A
+    keyIsDown(RIGHT_ARROW) || keyIsDown(68), // D
+    keyIsDown(UP_ARROW)    || keyIsDown(87), // W
+    keyIsDown(DOWN_ARROW)  || keyIsDown(83)  // S
+);
+input.updateControlSpace(keyIsDown(32),keyIsDown(17));
+  cameraMover.keyboardInputs(input);
+  if (isPointerLocked) {
+    cameraMover.mouseInputRotate(movedX,movedY);
+  } else if (mouseIsPressed) {
+    cameraMover.mouseInputRotate(mouseX-pmouseX,mouseY-pmouseY);
   }
-  sketch.doubleClicked = ()=> {
-    if (isPointerLocked) {
-      sketch.exitPointerLock();
-      isPointerLocked = !isPointerLocked;
-      return
-    }
-    sketch.requestPointerLock();
-    isPointerLocked = !isPointerLocked;
-  }
-  
+  renderer.camera = cameraMover.update(renderer.camera);
+  const light_pos = new geometry.Vector(1000, Math.sin(i)*2000,0);
+  renderer.setSceneLightPos(light_pos,0);
 };
-
-let myp5 = new p5(s);
+function mouseWheel (e) {
+  let dir = 1;
+  if (e.delta < 0) {
+    dir = -1
+  } 
+  cameraSpotTracker.changeRadius(30 * dir);
+}
+function doubleClicked () {
+  if (isPointerLocked) {
+    exitPointerLock();
+    isPointerLocked = !isPointerLocked;
+    return
+  }
+  requestPointerLock();
+  isPointerLocked = !isPointerLocked;
+}
+  
 

@@ -4,30 +4,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
-  "tsup": {
-    "entry": [
-      "src/index.ts"
-    ],
-    "splitting": false,
-    "clean": true,
-    "minify": true,
-    "dts": true,
-    "format": [
-      "iife",
-      "esm"
-    ],
-    "target": "es2022",
-    "globalName": "geometry",
-    "platform": "browser",
-    "external": [
-      "usefulfunction",
-      "colorhandler",
-      "p5"
-    ],
-    "treeshake": true
-  },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup && node copy-global-dts.js"
   },
   "repository": {
     "type": "git",
