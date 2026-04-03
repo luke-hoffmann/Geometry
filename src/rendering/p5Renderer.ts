@@ -61,7 +61,7 @@ export class p5Renderer extends Renderer  {
     protected graphVertices(mesh : Mesh)  : void{
         
         for (let i =0; i < mesh.numPoints; i++) {
-            this.graphVertex(mesh.getVertex(i),this.renderParameters.colorOfVertices,3);
+            this.graphVertex(mesh.getVertex(i),this._renParam.colorOfVertices,3);
         }
         
     }
@@ -99,7 +99,7 @@ export class p5Renderer extends Renderer  {
                 this.graphicsBuffer.stroke(this.convertColorHandlerToP5(triangleColors[i]))
                 
             } else if(!this._renParam.doFill) {
-                this.graphicsBuffer.stroke(this.convertColorHandlerToP5(this.renderParameters.colorOfVertices))
+                this.graphicsBuffer.stroke(this.convertColorHandlerToP5(this._renParam.colorOfVertices))
             } else {
                 this.graphicsBuffer.stroke(this.p5.color(0));
             }
