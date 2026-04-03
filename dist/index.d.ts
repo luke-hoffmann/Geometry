@@ -202,6 +202,7 @@ declare class Entity {
 declare class Camera {
     #private;
     constructor(physicsBody: PhysicsBody, viewVector: Vector, fovAngle: number, focalDistance: number, aspectRatio: number);
+    private rebuildBasis;
     get focalDistance(): number;
     get position(): Vector;
     set position(position: Vector);

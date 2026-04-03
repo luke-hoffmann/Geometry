@@ -12,15 +12,29 @@ export class Camera {
     #right : Vector;
     constructor(physicsBody : PhysicsBody,viewVector : Vector,fovAngle : number ,focalDistance : number,aspectRatio : number) {
         this.#physicsBody = physicsBody;
-        this.#viewVector = Vector.unitVector(viewVector);
+        
         this.#fovAngle = fovAngle;
         this.#focalDistance = focalDistance;
         this.#aspectRatio = aspectRatio;
-        //this.projectionPlane = ProjectionPlane.generateProjectionPlaneFromCamera(this,fovAngle,focalDistance,aspectRatio);
-        this.#up = new Vector(0,1,0);
-        this.#right = Vector.unitVector(Vector.crossProduct(viewVector,this.#up));
+        this.#viewVector = Vector.ZERO;
+        this.#right = Vector.ZERO;
+        this.#up=Vector.ZERO;
+        this.rebuildBasis(viewVector);
     }
-    
+    private rebuildBasis(viewVector : Vector){
+        this.#viewVector = Vector.unitVector(viewVector);
+
+        let up = new Vector(0,1,0);
+
+        // handle singularity
+        if (this.#viewVector.equals(Vector.upVector()) ||
+            this.#viewVector.equals(Vector.downVector())) {
+            up = new Vector(1,0,0);
+        }
+
+        this.#right = Vector.unitVector(Vector.crossProduct(this.#viewVector, up));
+        this.#up = Vector.unitVector(Vector.crossProduct(this.#viewVector, this.#right));
+    }
     get focalDistance() {
         return this.#focalDistance;
     }
@@ -32,11 +46,8 @@ export class Camera {
         this.#physicsBody.position = position;
     }
     set viewVector (v : Vector) {
-        this.#viewVector = v;
-        this.#up = new Vector(0,1,0);
-        if (v.equals(Vector.upVector()) || v.equals(Vector.downVector())) this.#up = new Vector(1,0,0);
-        this.#right = Vector.unitVector(Vector.crossProduct(v,this.#up));
-        this.#up = Vector.unitVector(Vector.crossProduct(v, this.#right));
+        this.rebuildBasis(v);
+        
     }
 
     
