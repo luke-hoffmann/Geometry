@@ -153,7 +153,6 @@ export abstract class Renderer {
 
     }
     protected graphEntity (entity : Entity) : void{
-        console.log(this._renParam.doBackFaceCulling)
         let mesh = entity.worldSpaceMesh
         if (this._renParam.doEntityHooks) {
             this.entityGraphCameraSpaceHook(new Entity(mesh,entity.physicsBody,entity.triangleColors,entity.isIndifferentToLight));
