@@ -26,13 +26,13 @@ export type LightElement = {
 }
 type Element = EntityElement | LightElement;
 export abstract class Renderer {
-    protected camera : Camera;
-    protected scene : Scene;
-    protected renParam : RenderParameters;
+    protected _camera : Camera;
+    protected _scene : Scene;
+    protected _renParam : RenderParameters;
     constructor (scene : Scene ,camera: Camera,renderParameters: RenderParameters) {
-        this.scene = scene;
-        this.camera = camera;
-        this.renParam = renderParameters;
+        this._scene = scene;
+        this._camera = camera;
+        this._renParam = renderParameters;
     }  
 
 
@@ -57,19 +57,19 @@ export abstract class Renderer {
 
 
     setSceneLightPos(pos : Vector, i : number) : void {
-        this.scene.setLightPos(pos, i);
+        this._scene.setLightPos(pos, i);
     }
     
     protected getSceneInZOrder() : Element[]{
 
         let elements : Element[]= [];
 
-        for (let i = 0; i < this.scene.numEntities; i++) {
-            elements.push({type: "entity" , ref: i, z: this.getCameraSpaceMesh(this.scene.getEntity(i)).calculateAverageZ()});
+        for (let i = 0; i < this._scene.numEntities; i++) {
+            elements.push({type: "entity" , ref: i, z: this.getCameraSpaceMesh(this._scene.getEntity(i)).calculateAverageZ()});
         }
         
-        for (let i = 0 ; i < this.scene.numLights; i++) {
-            const light = this.scene.getLight(i);
+        for (let i = 0 ; i < this._scene.numLights; i++) {
+            const light = this._scene.getLight(i);
             if (!Light.hasPosition(light)) {
                 continue;
                 
@@ -88,9 +88,9 @@ export abstract class Renderer {
         let sceneItems = this.getSceneInZOrder();
         for (const sceneItem of sceneItems) {
             if (sceneItem.type== "entity") {
-                this.graphEntity(this.scene.getEntity(sceneItem.ref));
+                this.graphEntity(this._scene.getEntity(sceneItem.ref));
             }
-            if (sceneItem.type == "light" && this.renParam.showLights) {
+            if (sceneItem.type == "light" && this._renParam.showLights) {
                 this.graphLight(sceneItem);
             }
         }
@@ -123,8 +123,8 @@ export abstract class Renderer {
         for (let i =0 ; i < output.length;i ++) {
             output[i] = new ColorHandler(0,0,0);
         }
-        for (let i =0 ; i < this.scene.numLights; i++) {
-            const light = this.scene.getLight(i);
+        for (let i =0 ; i < this._scene.numLights; i++) {
+            const light = this._scene.getLight(i);
             output = this.getColorOfTrianglesFromLight(mesh,colors,meshCentroids,meshNormalVectors, light,positionOfMesh, output);
         }
         for (let i =0 ; i < output.length; i++) {
@@ -136,8 +136,8 @@ export abstract class Renderer {
     }
     protected finalLightPosition<L extends Light & Positionable>(light : L) : {canvasPosition: Vector, radius: number} {
         
-        let pos = this.camera.putCameraAtCenterOfPointCoordinateSystem(light.position);
-        const ratio = this.camera.focalDistance / pos.z;
+        let pos = this._camera.putCameraAtCenterOfPointCoordinateSystem(light.position);
+        const ratio = this._camera.focalDistance / pos.z;
         let canvasRadius = light.radius * ratio;
 
         pos = this.projectIndividualPoint(pos);
@@ -149,13 +149,13 @@ export abstract class Renderer {
         entity = entity.copy();
         let mesh = entity.worldSpaceMesh;
         
-        return this.camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
+        return this._camera.putCameraAtCenterOfMeshCoordinateSystem(mesh);
 
     }
     protected graphEntity (entity : Entity) : void{
-        
+        console.log(this._renParam.doBackFaceCulling)
         let mesh = entity.worldSpaceMesh
-        if (this.renParam.doEntityHooks) {
+        if (this._renParam.doEntityHooks) {
             this.entityGraphCameraSpaceHook(new Entity(mesh,entity.physicsBody,entity.triangleColors,entity.isIndifferentToLight));
         }
         let triangleColors = entity.triangleColors;
@@ -169,37 +169,36 @@ export abstract class Renderer {
 
         let colorMap = mesh.mapTrianglesToAnyObject(triangleColors);
         mesh = this.getCameraSpaceMesh(entity);
-        if (this.renParam.doEntityHooks) {
+        if (this._renParam.doEntityHooks) {
             this.entityGraphCameraSpaceHook(new Entity(mesh,entity.physicsBody,entity.triangleColors,entity.isIndifferentToLight));
         }
-        if (!this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
+        if (!this._renParam.isWindingOrderBackFaceCulling && this._renParam.doBackFaceCulling) mesh = this.backFaceCulling_Normal(mesh);
         let normalVectors;
         normalVectors = mesh.calculateTrianglesNormalVectors();
-        mesh= this.applyProjection(mesh);
+        mesh = this.applyProjection(mesh);
         if (this.isAnyMeshPointBehindCamera(mesh)) {
             return;
         }
-        if (this.renParam.doEntityHooks) {
+        if (this._renParam.doEntityHooks) {
             this.entityGraphProjectedSpaceHook(new Entity(mesh,entity.physicsBody,entity.triangleColors,entity.isIndifferentToLight));
         }
         
-        //mesh = this.generateMeshWithAppropriateColorsWithOnlyVisiblePartsOfTriangles(mesh,colorMap);
-        if (this.renParam.isWindingOrderBackFaceCulling && this.renParam.doBackFaceCulling) {
+        if (this._renParam.isWindingOrderBackFaceCulling && this._renParam.doBackFaceCulling) {
             const map = mesh.mapTrianglesToAnyObject(normalVectors!);
             mesh = this.backFaceCulling_WindingOrder(mesh);
             normalVectors = mesh.findAnyObjectFromMap(map);
         }
         let colors = mesh.findAnyObjectFromMap(colorMap);
         let normalVectorsMesh = mesh;
-        if (this.renParam.doEntityHooks) {
+        if (this._renParam.doEntityHooks) {
             this.entityGraphBackFaceCulledSpaceHook(new Entity(mesh,entity.physicsBody,entity.triangleColors,entity.isIndifferentToLight));
         }
         
         mesh = this.meshToCanvas(mesh);
         
-        if (this.renParam.doVertices) this.graphVertices(mesh);
-        if (this.renParam.doTriangles) this.graphTriangles(mesh,colors);
-        if (this.renParam.doNormalVectors) this.graphNormalVectors(normalVectorsMesh, normalVectors!,this.renParam.normalVectorLength);
+        if (this._renParam.doVertices) this.graphVertices(mesh);
+        if (this._renParam.doTriangles) this.graphTriangles(mesh,colors);
+        if (this._renParam.doNormalVectors) this.graphNormalVectors(normalVectorsMesh, normalVectors!,this._renParam.normalVectorLength);
         
     }
     private isAnyMeshPointBehindCamera(mesh : Mesh) {
@@ -214,7 +213,6 @@ export abstract class Renderer {
     
     protected backFaceCulling_Normal(mesh : Mesh) : Mesh{
         let viewVector = new Vector(0,0,1);
-        let visibleTriangles = [];
         let backFaceCulledMesh = mesh.copy();
         let cameraFacingTriangles = [];
 
@@ -222,7 +220,7 @@ export abstract class Renderer {
         
         for (let i =0; i < mesh.numTriangles ; i++) {
             let isTriangleVisible;
-            if (this.renParam.isPerspective)  {
+            if (this._renParam.isPerspective)  {
                 isTriangleVisible = Vector.sub( normalVectors[i].position, new Vector(0,0,0)).isDotProductLEThanX(normalVectors[i].direction,0);
             } else {
                 isTriangleVisible = viewVector.isDotProductLEThanX(normalVectors[i].direction,0);
@@ -259,15 +257,14 @@ export abstract class Renderer {
 
 
     private orthographicProjectIndividualVector(vector : Vector): Vector {
-        let z= this.camera.focalDistance;
+        let z= this._camera.focalDistance;
          if (vector.z < 0 ) {
             z = -Infinity;
         }
-        return new Vector(vector.x,vector.y,this.camera.focalDistance);
+        return new Vector(vector.x,vector.y,this._camera.focalDistance);
     }
     private perspectiveProjectIndividualVector(vector : Vector) : Vector{
-        
-        const ratio = this.camera.focalDistance/vector.z;
+        const ratio = this._camera.focalDistance/vector.z;
         let x = vector.x * ratio;
         let y= vector.y * ratio;
             
@@ -291,7 +288,7 @@ export abstract class Renderer {
     protected projectNormalVectorsIntoLines(normalVectors : NormalVector[],length : number) : Line[]{
         let lines = [];
         for (const v of normalVectors) {
-            let line = this.renParam.isPerspective ? this.perspectiveProjectNormalVectorIntoLine(v,length) : this.orthographicProjectNormalVectorIntoLine(v,length);
+            let line = this._renParam.isPerspective ? this.perspectiveProjectNormalVectorIntoLine(v,length) : this.orthographicProjectNormalVectorIntoLine(v,length);
             if (line.p1.z == -Infinity) continue;
             if (line.p2.z == -Infinity) continue;
             lines.push(line);
@@ -316,12 +313,32 @@ export abstract class Renderer {
         return newMesh;
     }
     protected projectIndividualPoint(point : Vector) : Vector {
-        if (this.renParam.isPerspective) {
+        if (this._renParam.isPerspective) {
             point =this.perspectiveProjectIndividualVector(point);
         } else {
             point = this.orthographicProjectIndividualVector(point);
         }
         return point;
     }
-    
+    public get camera(): Camera {
+        return this._camera.copy();
+    }
+
+    public set camera(v: Camera) {
+        this._camera = v.copy();
+    }
+
+    public get renderParameters(): RenderParameters {
+        return this._renParam;
+    }
+
+    public set renderParameters(v: RenderParameters) {
+        this._renParam = v;
+    }
+    public set scene(scene : Scene) {
+        this._scene = scene.copy();
+    }
+    public get scene() {
+        return this._scene.copy();
+    }
 }

@@ -22,7 +22,6 @@ export class p5Renderer extends Renderer  {
     }
     protected mainGraphRenderingPreWork() {
         this.graphicsBuffer.clear();
-        this.graphicsBuffer.background(0);
     }
     protected mainGraphRenderingPostWork(){
         this.p5.image(this.graphicsBuffer,0,0);
@@ -60,8 +59,9 @@ export class p5Renderer extends Renderer  {
     }
    
     protected graphVertices(mesh : Mesh)  : void{
+        
         for (let i =0; i < mesh.numPoints; i++) {
-            this.graphVertex(mesh.getVertex(i),new ColorHandler(0,0,0),3);
+            this.graphVertex(mesh.getVertex(i),this.renderParameters.colorOfVertices,3);
         }
         
     }
@@ -74,6 +74,8 @@ export class p5Renderer extends Renderer  {
         this.graphVertex(vertex,color,size);
     }
     private graphVertex(vertex : Vector,color : ColorHandler, size : number){
+        this.graphicsBuffer.noStroke();
+        this.graphicsBuffer.fill(this.convertColorHandlerToP5(color));
         this.graphicsBuffer.circle(vertex.x,vertex.y,size);
     }
     
@@ -93,12 +95,20 @@ export class p5Renderer extends Renderer  {
         //this.graphicsBuffer.stroke(this.p5.color(0));
         for (let i = 0 ;i < mesh.numTriangles; i++) {
             const triangle = mesh.getTriangle(i);
-            if (this.renParam.doOutline) {
-                this.graphicsBuffer.stroke(this.p5.color(0));
-            } else {
+            if (this._renParam.doOutline && this._renParam.doFill) {
                 this.graphicsBuffer.stroke(this.convertColorHandlerToP5(triangleColors[i]))
+                
+            } else if(!this._renParam.doFill) {
+                this.graphicsBuffer.stroke(this.convertColorHandlerToP5(this.renderParameters.colorOfVertices))
+            } else {
+                this.graphicsBuffer.stroke(this.p5.color(0));
             }
-            this.graphicsBuffer.fill(this.convertColorHandlerToP5(triangleColors[i]));
+            if (this._renParam.doFill) {
+                this.graphicsBuffer.fill(this.convertColorHandlerToP5(triangleColors[i]));
+            } else {
+                this.graphicsBuffer.noFill();
+            }
+            
             
             
             this.graphTriangle(mesh,triangle);

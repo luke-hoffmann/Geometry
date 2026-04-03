@@ -1,4 +1,6 @@
-export class RenderParameters {
+import { ColorHandler } from "colorhandler";
+
+ export class RenderParameters {
   #doBackFaceCulling: boolean;
   #doOutline: boolean;
   #doFill: boolean;
@@ -13,6 +15,7 @@ export class RenderParameters {
   #normalVectorLength : number;
   #showLights : boolean;
   #doEntityHooks : boolean;
+  #colorOfVertices : ColorHandler
   constructor({
     doBackFaceCulling = true,
     doOutline = true,
@@ -27,7 +30,8 @@ export class RenderParameters {
     doNormalVectors = false,
     normalVectorLength = 30,
     showLights = true,
-    doEntityHooks = false
+    doEntityHooks = false,
+    colorOfVertices = ColorHandler.WHITE
   }: Partial<{
     doBackFaceCulling: boolean;
     doOutline: boolean;
@@ -43,6 +47,7 @@ export class RenderParameters {
     normalVectorLength : number;
     showLights : boolean;
     doEntityHooks : boolean;
+    colorOfVertices : ColorHandler;
   }> = {}) {
     this.#doBackFaceCulling = doBackFaceCulling;
     this.#doOutline = doOutline;
@@ -58,6 +63,7 @@ export class RenderParameters {
     this.#normalVectorLength = normalVectorLength;
     this.#showLights = showLights;
     this.#doEntityHooks = doEntityHooks;
+    this.#colorOfVertices = colorOfVertices;
   }
 
   // getters
@@ -75,6 +81,7 @@ export class RenderParameters {
   get normalVectorLength() {return this.#normalVectorLength};
   get showLights() {return this.#showLights};
   get doEntityHooks() {return this.#doEntityHooks;};
+  get colorOfVertices() {return this.#colorOfVertices.copy();};
   // setters (safe)
   set doBackFaceCulling(v: boolean) {
     if (typeof v !== "boolean") throw new TypeError("doBackFaceCulling must be boolean");
@@ -155,5 +162,11 @@ export class RenderParameters {
       throw new TypeError("doEntityHooks must be boolean");
     }
     this.#doEntityHooks = v;
+  }
+  set colorOfVertices (c : ColorHandler) {
+    if (!(c instanceof ColorHandler)) {
+      throw new TypeError("colorOfVertices must be a ColorHandler");
+    }
+    this.#colorOfVertices = c;
   }
 }

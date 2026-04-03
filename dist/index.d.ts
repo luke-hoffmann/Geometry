@@ -283,7 +283,7 @@ declare class Line {
 
 declare class RenderParameters {
     #private;
-    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength, showLights, doEntityHooks }?: Partial<{
+    constructor({ doBackFaceCulling, doOutline, doFill, doVertices, doShadingWithLighting, lineWidth, pointRadius, isPerspective, doTriangles, isWindingOrderBackFaceCulling, doNormalVectors, normalVectorLength, showLights, doEntityHooks, colorOfVertices }?: Partial<{
         doBackFaceCulling: boolean;
         doOutline: boolean;
         doFill: boolean;
@@ -298,6 +298,7 @@ declare class RenderParameters {
         normalVectorLength: number;
         showLights: boolean;
         doEntityHooks: boolean;
+        colorOfVertices: ColorHandler;
     }>);
     get doBackFaceCulling(): boolean;
     get doOutline(): boolean;
@@ -313,6 +314,7 @@ declare class RenderParameters {
     get normalVectorLength(): number;
     get showLights(): boolean;
     get doEntityHooks(): boolean;
+    get colorOfVertices(): ColorHandler;
     set doBackFaceCulling(v: boolean);
     set doOutline(v: boolean);
     set doFill(v: boolean);
@@ -327,6 +329,7 @@ declare class RenderParameters {
     set normalVectorLength(v: number);
     set showLights(v: boolean);
     set doEntityHooks(v: boolean);
+    set colorOfVertices(c: ColorHandler);
 }
 
 type EntityElement = {
@@ -346,9 +349,9 @@ type LightElement = {
 };
 type Element = EntityElement | LightElement;
 declare abstract class Renderer {
-    protected camera: Camera;
-    protected scene: Scene;
-    protected renParam: RenderParameters;
+    protected _camera: Camera;
+    protected _scene: Scene;
+    protected _renParam: RenderParameters;
     constructor(scene: Scene, camera: Camera, renderParameters: RenderParameters);
     protected entityGraphBeforeChangesHook(entity: Entity): void;
     protected entityGraphCameraSpaceHook(entity: Entity): void;
@@ -386,6 +389,12 @@ declare abstract class Renderer {
     protected projectNormalVectorsIntoLines(normalVectors: NormalVector[], length: number): Line[];
     protected applyProjection(mesh: Mesh): Mesh;
     protected projectIndividualPoint(point: Vector): Vector;
+    get camera(): Camera;
+    set camera(v: Camera);
+    get renderParameters(): RenderParameters;
+    set renderParameters(v: RenderParameters);
+    set scene(scene: Scene);
+    get scene(): Scene;
 }
 
 declare class p5Renderer extends Renderer {
