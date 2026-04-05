@@ -1,16 +1,17 @@
 let entities = [];
 let pos = new geometry.PhysicsBody(new geometry.Vector(0,0,0));
-let entity = geometry.Entity.randomConvexEntityWithColors(700,100, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255),false);
+let entity = geometry.Entity.entityWithColorsFromMesh(geometry.MeshGenerator.generateEvenSphereMesh(300,100), pos,new colorhandler.ColorHandler(100,140,180),new colorhandler.ColorHandler(130,170,200),true);
 entities.push(entity);
-pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
-entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255), false);
-entities.push(entity);
+// pos = new geometry.PhysicsBody(new geometry.Vector(2000,0,0));
+// entity = geometry.Entity.randomConvexEntityWithColors(300,200, pos,new colorhandler.ColorHandler(255,255,255),new colorhandler.ColorHandler(255,255,255), false);
+//entities.push(entity);
 
 let lights = [];
-lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,255,0),1000000, new geometry.Vector(0,0,1000),100));
-lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,-1,0)));
-lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,1,0)));
-lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,0,255),1000, new geometry.Vector(1000,0,0)));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(0,0,255),1000000, new geometry.Vector(0,0,1000),100));
+lights.push(new geometry.PointLight(new colorhandler.ColorHandler(255,0,0),1000000, new geometry.Vector(0,0,1000),100));
+//lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,-1,0)));
+//lights.push(new geometry.DirectionalLight(new colorhandler.ColorHandler(255,0,0),1000, new geometry.Vector(0,1,0)));
+//lights.push(new geometry.GlobalLight(new colorhandler.ColorHandler(255,255,0),0.3, new geometry.Vector(1000,0,0)));
 let renderer;
 let cameraPB = new geometry.PhysicsBody(new geometry.Vector(0,0,-1200))
 let camera = new geometry.Camera(cameraPB,new geometry.Vector(0,0,1),90,400,0);
@@ -19,11 +20,11 @@ let cameraMover = new geometry.CameraMover(new geometry.Vector(1000,0,-2000),new
 let cameraSpotTracker = new geometry.CameraSpotTracker(new geometry.Vector(1000,0,0), 1000,0,0);
 let isPointerLocked = false;
 
-let screenSize = new geometry.Vector(1400,800);
+let screenSize = new geometry.Vector(900,700);
 let i =0;
 let scene = new geometry.Scene(entities,lights);
 function setup () {
-  createCanvas(screenSize.x,screenSize.y)
+  createCanvas(window.innerWidth,window.innerHeight)
   renderer = new geometry.p5Renderer(scene,screenSize,camera, new geometry.RenderParameters({
     doVertices: false,
     doTriangles: true,
@@ -42,6 +43,8 @@ function setup () {
 function draw () {
   i+=0.005;
   clear()
+  background(0);
+  
   renderer.graph();
   let input = new geometry.KeyboardInput();
   input.updateLeftRightUpDown(
@@ -49,7 +52,7 @@ function draw () {
     keyIsDown(RIGHT_ARROW) || keyIsDown(68), // D
     keyIsDown(UP_ARROW)    || keyIsDown(87), // W
     keyIsDown(DOWN_ARROW)  || keyIsDown(83)  // S
-);
+  );
 input.updateControlSpace(keyIsDown(32),keyIsDown(17));
   cameraMover.keyboardInputs(input);
   if (isPointerLocked) {
@@ -58,8 +61,10 @@ input.updateControlSpace(keyIsDown(32),keyIsDown(17));
     cameraMover.mouseInputRotate(mouseX-pmouseX,mouseY-pmouseY);
   }
   renderer.camera = cameraMover.update(renderer.camera);
-  const light_pos = new geometry.Vector(1000, Math.sin(i)*2000,0);
+  let light_pos = new geometry.Vector(1000, Math.sin(i)*1000,0);
   renderer.setSceneLightPos(light_pos,0);
+  light_pos = new geometry.Vector(Math.cos(i)*1000, 0,Math.sin(i)*1000);
+  renderer.setSceneLightPos(light_pos,1);
 };
 function mouseWheel (e) {
   let dir = 1;

@@ -31,6 +31,12 @@ export class MeshGenerator {
         triangles = MeshGenerator.addTrianglesToTrianglesArray(triangles,newTriangles);
         return triangles;
     }
+    static generateEvenSphereMesh(radius: number, numberOfPoints: number): Mesh {
+        //source chatgpt
+        const field = new Field([]);
+        field.generateEvenSpherePoints(radius, numberOfPoints);
+        return this.generateConvexMesh(field, numberOfPoints);
+    }
     private static addTrianglesToTrianglesArray(trianglesArray : Triangle[],triangles : Triangle[]) : Triangle[]{
         let newArray  = [];
         trianglesArray.forEach(element => {

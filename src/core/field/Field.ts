@@ -253,5 +253,34 @@ export class Field {
     get numPoints() : number{
         return this.array.length;
     }
-    
+    generateEvenSpherePoints(radius: number, n: number): void {
+        //source chatgpt
+        this.array = [];
+
+        if (n <= 0) return;
+        if (n === 1) {
+            this.array.push(new Vector(0,0,0));
+            return;
+        }
+
+        const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+
+        for (let i = 0; i < n; i++) {
+            const t = i / (n - 1);
+            const y = 1 - 2 * t;
+            const ringRadius = Math.sqrt(1 - y * y);
+            const theta = i * goldenAngle;
+
+            const x = Math.cos(theta) * ringRadius;
+            const z = Math.sin(theta) * ringRadius;
+
+            this.array.push(
+                new Vector(
+                    x * radius,
+                    y * radius,
+                    z * radius
+                )
+            );
+        }
+    }
 }

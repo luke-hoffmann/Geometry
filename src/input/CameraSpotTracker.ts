@@ -29,9 +29,9 @@ export class CameraSpotTracker {
         const verticalChange = new Vector(0, this.#radius * Math.sin(this.#vTheta), 0)
         //y is up
         const updatedCameraPosition = Vector.add(this.#trackSpot,horizontalChange,verticalChange)
-        camera.position = updatedCameraPosition;
+        newCamera.position = updatedCameraPosition;
 
-        camera.pointAtPoint(this.#trackSpot);
+        newCamera.pointAtPoint(this.#trackSpot);
         return newCamera;
     }
     changeRadius(deltaRadius : number) {

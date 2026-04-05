@@ -14,11 +14,13 @@ import { LightElement } from "./Renderer.js";
 export class p5Renderer extends Renderer  {
     protected graphicsBuffer : p5.Graphics;
     protected p5 : p5;
+    protected scaleNumber : number;
     constructor(scene: Scene,screenSize: Vector,camera: Camera,renderParameters: RenderParameters,p: p5) {
         super(scene, camera, renderParameters);
 
         this.p5 = p;
         this.graphicsBuffer = p.createGraphics(screenSize.x, screenSize.y);
+        this.scaleNumber = Math.min(screenSize.x / 400, screenSize.y / 400);
     }
     protected mainGraphRenderingPreWork() {
         this.graphicsBuffer.clear();
@@ -26,7 +28,6 @@ export class p5Renderer extends Renderer  {
     protected mainGraphRenderingPostWork(){
         this.p5.image(this.graphicsBuffer,0,0);
     }
-    
     protected meshToCanvas(mesh : Mesh) : Mesh{
         let newMesh = mesh.copy();
         let canvasArray = [];
@@ -34,14 +35,16 @@ export class p5Renderer extends Renderer  {
             canvasArray.push(this.pointToCanvas(mesh.getVertex(i)));
         }
 
-        mesh.vertices = new Field(canvasArray);
-        return mesh;
+        newMesh.vertices = new Field(canvasArray);
+        return newMesh;
     }
     protected pointToCanvas(point : Vector) : Vector {
         return (this.calculateCanvasPos(point));
     }
     private calculateCanvasPos(meshPos : Vector) {
-        return Vector.add(new Vector(this.graphicsBuffer.width/2,this.graphicsBuffer.height/2,0),meshPos);
+        var temp = new Vector(meshPos.x,meshPos.y,0);
+        var tempZ = new Vector(0,0,meshPos.z);
+        return Vector.add(new Vector(this.graphicsBuffer.width/2,this.graphicsBuffer.height/2,0),Vector.add(Vector.scalarMult(temp,this.scaleNumber),tempZ));
     }
     
 
@@ -61,12 +64,12 @@ export class p5Renderer extends Renderer  {
     protected graphVertices(mesh : Mesh)  : void{
         
         for (let i =0; i < mesh.numPoints; i++) {
-            this.graphVertex(mesh.getVertex(i),this._renParam.colorOfVertices,3);
+            this.graphVertex(mesh.getVertex(i),this._renParam.colorOfVertices,3*this.scaleNumber);
         }
         
     }
     protected graphLight (light : LightElement) : void{
-        this.graphVertex_noStroke(light.finalLightPosition.canvasPosition, light.light.color, light.finalLightPosition.radius);
+        this.graphVertex_noStroke(light.finalLightPosition.canvasPosition, light.light.color, light.finalLightPosition.radius*this.scaleNumber);
     }
     private graphVertex_noStroke(vertex : Vector, color : ColorHandler, size : number) : void {
         this.graphicsBuffer.noStroke();

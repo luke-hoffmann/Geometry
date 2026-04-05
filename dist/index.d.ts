@@ -80,6 +80,12 @@ declare class DirectionalLight extends Light {
     calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
 }
 
+declare class GlobalLight extends Light {
+    constructor(color: ColorHandler, brightness: number);
+    calculateTriangleColor(triangleInput: TriangleInput): ColorHandler;
+    copy(): this;
+}
+
 declare class NormalVector {
     #private;
     constructor(position: Vector, direction: Vector);
@@ -133,6 +139,7 @@ declare class Field {
     addVertexInPlace(v: Vector): void;
     addVertex(v: Vector): Field;
     get numPoints(): number;
+    generateEvenSpherePoints(radius: number, n: number): void;
 }
 
 declare class Mesh {
@@ -161,10 +168,16 @@ declare class Mesh {
 
 declare class MeshGenerator {
     private static convexHullIterativeProcess;
+    static generateEvenSphereMesh(radius: number, numberOfPoints: number): Mesh;
     private static addTrianglesToTrianglesArray;
     static generateConvexMesh(field: Field, iterationNumber: number): Mesh;
     static generateRandomConvexMesh(radius: number, numberOfPoints: number): Mesh;
     static generateRandomSubdividedConvexMesh(radius: number, numberOfPoints: number, numberOfSubdivisions?: number): Mesh;
+}
+
+declare class PrimitiveObject {
+    static cube(sideLength: number, centeredAt: Vector): Mesh;
+    private static generateFieldFromMatrixOfPoints;
 }
 
 declare class PhysicsBody {
@@ -184,6 +197,7 @@ declare class Entity {
     #private;
     constructor(mesh: Mesh, physicsBody: PhysicsBody, triangleColors: ColorHandler[], isIndifferentToLight: boolean);
     static randomConvexEntityWithColors(radius: number, n: number, physicsBody: PhysicsBody, c1: ColorHandler, c2: ColorHandler, isIndifferentToLight: boolean): Entity;
+    static entityWithColorsFromMesh(mesh: Mesh, physicsBody: PhysicsBody, c1: ColorHandler, c2: ColorHandler, isIndifferentToLight: boolean): Entity;
     copy(): Entity;
     get triangleColors(): ColorHandler[];
     get worldSpaceMesh(): Mesh;
@@ -401,6 +415,7 @@ declare abstract class Renderer {
 declare class p5Renderer extends Renderer {
     protected graphicsBuffer: p5.Graphics;
     protected p5: p5;
+    protected scaleNumber: number;
     constructor(scene: Scene, screenSize: Vector, camera: Camera, renderParameters: RenderParameters, p: p5);
     protected mainGraphRenderingPreWork(): void;
     protected mainGraphRenderingPostWork(): void;
@@ -422,4 +437,4 @@ declare class p5Renderer extends Renderer {
     copy(): void;
 }
 
-export { Camera, CameraMover, CameraSpotTracker, DirectionalLight, Entity, Field, KeyboardInput, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, PointLight, RenderParameters, Scene, Vector, p5Renderer };
+export { Camera, CameraMover, CameraSpotTracker, DirectionalLight, Entity, Field, GlobalLight, KeyboardInput, Line, Mesh, MeshGenerator, NormalVector, PhysicsBody, PointLight, PrimitiveObject, RenderParameters, Scene, Vector, p5Renderer };

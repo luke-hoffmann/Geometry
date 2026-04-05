@@ -21,6 +21,10 @@ export class Entity {
         let colors = ColorHandler.randomColorsBetween(mesh.numTriangles,c1,c2);
         return new this(mesh,physicsBody,colors,isIndifferentToLight);
     }
+    static entityWithColorsFromMesh(mesh: Mesh, physicsBody : PhysicsBody, c1 : ColorHandler, c2 :ColorHandler, isIndifferentToLight : boolean) : Entity {
+        let colors = ColorHandler.randomColorsBetween(mesh.numTriangles,c1,c2);
+        return new this(mesh,physicsBody,colors,isIndifferentToLight);
+    }
     copy () : Entity{
         let newColors = [];
         for (const color of this.#triangleColors) {

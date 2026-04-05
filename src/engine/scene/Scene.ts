@@ -28,6 +28,7 @@ export class Scene {
         return this.#lights.length;
     }
     setLightPos(pos :Vector, i :number) : void {
+        if (this.#lights.length-1 < i) return;
         if (!Light.hasPosition(this.#lights[i])) return;
         this.#lights[i].position = pos;
     }

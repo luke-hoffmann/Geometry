@@ -1,7 +1,9 @@
 export * from "./engine/lighting/PointLight";
 export * from "./engine/lighting/DirectionalLight";
+export * from "./engine/lighting/GlobalLight";
 export * from "./core/math/Vector";
 export * from "./engine/geometry/generation/MeshGenerator";
+export * from "./engine/geometry/PrimitiveObjects"
 
 export * from "./engine/physics/PhysicsBody";
 export * from "./engine/scene/Entity"
